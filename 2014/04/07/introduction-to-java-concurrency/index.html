@@ -1,16 +1,15 @@
 
-  
-    <!DOCTYPE HTML>
+ <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   
-    <title>About Ace | Fantasy Ace&#39;s blog</title>
+    <title>Java并发介绍 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" content="Walk steps step by step">
+    <meta name="description" itemprop="description" content="过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。">
     
     
     
@@ -27,9 +26,9 @@
     <link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
 
-      <body>
-        <header>
-          <div>
+  <body>
+    <header>
+      <div>
 		
 			<div id="imglogo">
 				<a href="/"><img src="/img/logo.png" alt="Fantasy Ace&#39;s blog" title="Fantasy Ace&#39;s blog"/></a>
@@ -59,33 +58,58 @@
 				</ul>
 			</nav>			
 </div>
-        </header>
-        <div id="container">
-          <div id="main" class="page" itemscope itemprop="blogPost">
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
 	<article itemprop="articleBody"> 
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/about/index.html" title="About Ace" itemprop="url">About Ace</a>
+      <a href="/2014/04/07/introduction-to-java-concurrency/" title="Java并发介绍" itemprop="url">Java并发介绍</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-13T14:40:31.000Z" itemprop="datePublished">发表于4月 13 2014</time>
+    <time datetime="2014-04-07T14:06:44.000Z" itemprop="datePublished">发表于4月 7 2014</time>
     
   </p>
 </header>
 	<div class="article-content">
 		
 		
-		<p><ul><li>Name:  牛 万庆 ( Fantasy )  </li><li>QQ: 624187772</li><li>​​Email: jingjiewuying@163.com</li></ul><h2 id="profile">Profile</h2><p>毕业于大连理工大学，现就职于新东方在线的一只程序猿。<br>喜欢尝试新鲜的事物，爱读书，爱游泳，爱骑行，爱旅游，爱生活。<br>健康的发展事业，快乐的享受生活。^_^</p></p>
-<p><h2 id="skills">Skills</h2><ul><li>常用Java / JS / Oracle</li><li>会点 Python / NodeJs</li><li>用过 memcache / java NIO</li><li>参与过几个项目的设计开发，上线的有koolearn直播课堂，雅思智能学习产品等等</li></ul></p>
-<p><h2 id="contact">Contact</h2><p>你可以在 <a href="http://weibo.com/3312405915" target="_blank">新浪微博</a> ， <a href="https://github.com/FantasyNew" target="_blank">Github</a> ， <a href="http://www.douban.com/people/62072069/" target="_blank">豆瓣</a>上找到我</p></p>
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-number">1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java的多线程和并发"><span class="toc-number">2.</span> <span class="toc-text">Java的多线程和并发</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java并发"><span class="toc-number">2.1.</span> <span class="toc-text">Java并发</span></a></li></ol>
+		
+		</div>
+		
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
+<h2 id="引子">引子</h2>
+<p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  <a id="more"></a></p>
+<p>　　多任务处理技术给软件开发人员带来了新的挑战。程序不能被假设占用所有的CPU可用时间、所有的内存和其它资源。一个“表现良好”的程序应该在不用这些资源的时候对其释放，以保证其它程序的使用。  </p>
+<p>　　再后来出现了多线程技术，使得你可以在一个程序内部并行执行多个线程。一个线程的执行可以被认为是一个CPU在执行该程序。当你在一个程序内部执行多个线程时，就好像有多个CPU在同时执行该程序。  </p>
+<p>　　多线程比多任务处理更具挑战性，这些线程运行在一个程序里因此会对相同的内存块进行并发读写操作，这可能导致一些在单线程程序里没出现过的错误。这些错误之所以没出现在单CPU的机器中是因为两个线程永远都不会真正意义上“并发”执行。但是伴随着现代多核CPU计算机的出现，也就意味着不同线程可以在不同CPU内核中得到真正意义上的并行执行。  </p>
+<p>　　如果一个线程对一个内存块进行读取的时候，另一个线程对它进行写操作，进行第一个线程读出的值应该是哪个？写操作之前的旧值？第二个线程写入的新值？还是这两个值之间的混合值？如果两个线程同时对同一内存块进行写操作，当它们写操作完成之后内存块里的值应该是哪个？第一个线程写入的值？第二个线程写入的值？还是这两个值之间的混合值？没有适当的防护措施任何输出结果都是可能的，这种行为甚至都不可预测，输出结果可以随时改变。  </p>
+<h2 id="Java的多线程和并发">Java的多线程和并发</h2>
+<p>　　Java是最先支持多线程开发的编程语言之一，java一开始就提供了多线程开发的功能。因此，java开发者们经常会碰到上面提到的那些问题。这就是我写这篇java并发系列的原因，作为自己的笔记，希望其它java开发人员都可从中受益。  </p>
+<p>　　这个博客系列主要是关心java的多线程开发，但是多线程中出现的一些问题与多任务处理和分布式系统中出现的问题存在类似，因此这个博客系列会将多任务处理和分布式系统作为参考，所以叫法上称为“并发性”而不是“多线程”。  </p>
+<p>　　这个博客系列仍在继续更新中，只要有时间写我就会把新文章更新出来。下表是已经更新的文章：
+　　</p>
+<h3 id="Java并发">Java并发</h3>
+<ul>
+<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
+</ul>
   
 	</div>
 		<footer class="article-footer clearfix">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/java多线程/">java多线程</a>
+</div>
 
 
 
@@ -93,13 +117,34 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/about/index.html" data-title="About Ace | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/" data-title="Java并发介绍 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
 </footer>   	       
 	</article>
 	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/04/09/multithreading-benefits/" title="多线程的优点">
+  <strong>上一篇：</strong><br/>
+  <span>
+  多线程的优点</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/04/01/hello-world/"  title="Hello World">
+ <strong>下一篇：</strong><br/> 
+ <span>Hello World
+</span>
+</a>
+</div>
+
+</nav>
+
 	
 <section id="comment">
 <!-- 多说评论框 start -->
@@ -121,8 +166,43 @@ var duoshuoQuery = {short_name:"fantasynew"};
 </section>
 
 </div>  
-        </div>
-        <footer><div id="footer" >
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>3</sup></a></li>
+		
+			<li><a href="/categories/杂乱/" title="杂乱">杂乱<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://michaelhuang.github.io" target="_blank" title="michaelhuang">彼得林奇's Blog</a></li>
+      <li><a href="http://www.koolearn.com/" target="_blank" title="koolearn">koolearn.com</a></li>
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
 	
 	<div class="line">
 		<span></span>
@@ -159,7 +239,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 		</p>
 </div>
 </footer>
-        <script src="/js/jquery-2.0.3.min.js"></script>
+    <script src="/js/jquery-2.0.3.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){ 
   $('.navbar').click(function(){
@@ -202,6 +282,38 @@ $(document).ready(function(){
   $(window).scroll(function(){
     o.css("top",Math.max(80,260-$(this).scrollTop()));
   });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
 });
 </script>
 
@@ -286,6 +398,5 @@ MathJax.Hub.Config({
 <script type="text/javascript"
    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
-      </body>
-     </html>
-     
+  </body>
+</html>
