@@ -4,7 +4,7 @@
   <subtitle><![CDATA[当你的才华还撑不起你的野心时，你就应该静下心来学习。]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://fantasynew.github.io/"/>
-  <updated>2014-04-25T14:46:42.918Z</updated>
+  <updated>2014-04-25T14:50:39.394Z</updated>
   <id>http://fantasynew.github.io/</id>
   
   <author>
@@ -231,7 +231,7 @@
     <link href="http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/"/>
     <id>http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/</id>
     <published>2014-04-07T14:06:44.000Z</published>
-    <updated>2014-04-25T14:26:05.000Z</updated>
+    <updated>2014-04-25T14:49:46.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
 <h2 id="引子">引子</h2>
 <p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  <a id="more"></a></p>
@@ -249,8 +249,8 @@
 <li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
 <li><a href="http://fantasynew.github.io/2014/04/09/multithreading-benefits/">多线程的优点</a></li>
 <li><a href="http://fantasynew.github.io/2014/04/11/costs-of-multithreading/">多线程的代价</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/">创建和启动java线程</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/15/race-conditions-and-critical-sections/">竞态条件与临界区</a></li>
 </ul>
 ]]></content>
     <summary type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
