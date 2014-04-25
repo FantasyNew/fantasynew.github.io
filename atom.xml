@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[Fantasy Ace's blog]]></title>
+  <subtitle><![CDATA[当你的才华还撑不起你的野心时，你就应该静下心来学习。]]></subtitle>
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://fantasynew.github.io/"/>
+  <updated>2014-04-25T14:46:42.918Z</updated>
+  <id>http://fantasynew.github.io/</id>
+  
+  <author>
+    <name><![CDATA[Fantasy Ace]]></name>
+    <email><![CDATA[jingjiewuying@163.com]]></email>
+  </author>
+  
+  <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[竞态条件与临界区]]></title>
+    <link href="http://fantasynew.github.io/2014/04/15/race-conditions-and-critical-sections/"/>
+    <id>http://fantasynew.github.io/2014/04/15/race-conditions-and-critical-sections/</id>
+    <published>2014-04-15T14:06:44.000Z</published>
+    <updated>2014-04-25T14:46:34.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html</a></p>
+<p>　　在一个应用程序中同时运行多个线程本身不会引起问题，问题出现在多个线程访问相同资源的时候，比如同一内存（变量，数组或者对象），系统（数据库，网络服务等等）或者文件。事实上，问题只出现在一个或者多个线程对这些资源进行写操作的时候。只要这些资源没有变化，多个线程对同一资源进行读操作是安全的。</p>
+<p>　　下面是被多个线程同时执行时可能会失败的代码示例：
+　　</p>
+<blockquote>
+<p><code>public class Counter {</code><br>　　<code>protected long count = 0;</code><br>　　<code>public void add(long value){</code><br>　　　　<code>this.count = this.count + value;</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　想象如果两个线程A和B在同一个Counter实例中执行这个add方法，我们无法知道操作系统什么时候在这两个线程之间进行切换。java虚拟机不会把这段代码作为单指令执行，而是按照下面的顺序执行：</p>
+<blockquote>
+<p><code>把this.count从内存中读取到寄存器</code><br><code>将寄存器中的值加1</code><br><code>把寄存器中的值写到内存中</code>  </p>
+</blockquote>
+<p>　　观察如果线程A和B混合执行会发生什么：</p>
+<blockquote>
+<p><code>this.count = 0;</code><br><code>A: 把this.count从内存中读取到寄存器(0)</code><br><code>B: 把this.count从内存中读取到寄存器(0)</code><br><code>B: 将寄存器中的值加2</code><br><code>B：把寄存器中的值2写到内存中，this.count的值是2</code><br><code>A：将寄存器中的值加3</code><br><code>A：把寄存器中的值3写到内存中，this.count的值是3</code>  </p>
+</blockquote>
+<p>　　这两个线程把数值2和3加到了counter上面，所以两个线程混合执行完成之后预期值应该是5。然而，由于两个线程的执行是交错的，这两个线程从内存中读取的都是0，接着它们分别加它们自己的值2和3并写回到内存中。取代5留在this.count的值会是最后一个线程写入的值。在上面的例子中是线程A，但是也可能是线程B，没有适当的线程同步机制我们没办法知道线程是如何交错执行的。</p>
+<h2 id="竞态条件与临界区">竞态条件与临界区</h2>
+<p>　　在两个线程竞争同一资源的情况下，资源访问的顺序非常重要的，被称作存在竞态条件。导致竞态条件出现的代码区域被称作临界区。在前一个例子中方法add()就是一个临界区，它导致了竞态条件。临界区里适当的线程同步可以避免竞态条件的发生。　</p>
+]]></content>
+    
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[创建和启动java线程]]></title>
+    <link href="http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/"/>
+    <id>http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/</id>
+    <published>2014-04-13T14:06:44.000Z</published>
+    <updated>2014-04-25T14:33:53.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html</a></p>
+<p>　　java线程对象与其他java对象一样，所有的线程都继承java.lang.Thread类，或者java.lang.Thread的子类。除了作为对象，java线程还可以执行代码。</p>
+<h2 id="创建启动线程">创建启动线程</h2>
+<p>　　在java中可以用如下方式创建一个线程：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread();</code>　　</p>
+</blockquote>
+<p>　　可以通过调用它的start()方法来启动这个线程，像这样：
+　　</p>
+<blockquote>
+<p><code>thread.start();</code>　　</p>
+</blockquote>
+<p>　　这个例子并没有指定线程执行任何代码，调用完成之后它就会停止。  </p>
+<p>　　有两种方式来指定线程执行代码。第一种是创建一个Thread 子类并且重写它的run()方法，第二种创建类时实现Runnable接口，下面会介绍这两种方法。</p>
+<h2 id="Thread子类">Thread子类</h2>
+<p>　　第一种指定线程执行代码的方式是创建一个Thread子类并重写它的run()方法,run()方法就是你的线程调用start()后执行的方法。例子如下：  </p>
+<blockquote>
+<p><code>public class MyThread extends Thread {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;MyThread running&quot;);</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　你可以这样创建和启动上面的线程：</p>
+<blockquote>
+<p><code>MyThread myThread = new MyThread();</code><br><code>myTread.start();</code></p>
+</blockquote>
+<p>　　start()请求会在线程开始之后立刻返回，它不会等待run()方法执行完，run()方法就好像被另一个CPU执行一样。当run()方法执行时它会打印出文本“MyThread running”。</p>
+<p>　　你还可以按照下面的方法创建一个Thread的匿名子类：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(){</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;Thread Running&quot;);</code><br>　　<code>}</code><br><code>}</code><br><code>thread.start();</code> </p>
+</blockquote>
+<p>　　一旦run()方法被这个新线程执行的时候这个例子就会打印出“Thread running”。</p>
+<h2 id="实现Runnable接口">实现Runnable接口</h2>
+<p>　　第二种指定线程执行代码的方式是创建一个实现了java.lang.Runnable接口的类。Runnable对象会被一个线程执行。  </p>
+<p>　　下面是java实现Runnable接口的例子：
+　　</p>
+<blockquote>
+<p><code>public class MyRunnable implements Runnable {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;MyRunnable running&quot;);</code><br>　　<code>}</code><br><code>}</code>  　</p>
+</blockquote>
+<p>　　为了让run()方法被一个线程执行，需要把MyRunnable的实例对象传到Thread类的构造函数中。例子如下：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(new MyRunnable());</code><br><code>myTread.start();</code></p>
+</blockquote>
+<p>　　这个线程开始时他会调用MyRunnable实例对象的run()方法而不是执行它自己的run()方法。上例会打印出“MyRunnable running”。</p>
+<p>　　同样，你也可以这样创建一个实现Runnable接口的匿名类：
+　　</p>
+<blockquote>
+<p><code>Runnable myRunnable = new Runnable(){</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;Runnable running&quot;);</code><br>　　<code>}</code><br><code>}</code><br><code>Thread thread = new Thread(myRunnable);</code><br><code>thread.start();</code>　　</p>
+</blockquote>
+<h2 id="选择创建子类还是实现Runnable接口">选择创建子类还是实现Runnable接口</h2>
+<p>　　这两种方式哪个好没有明确的答案，两种方式都能正常工作。就我个人而言，我喜欢实现Runnable接口，然后把它交给一个线程实例处理。因为实现Runnable接口的线程在线程池中很容易管理，当线程池中的线程有空闲时线程池很容易排列Runnable实例。这对于子类Thread 有一点点困难。</p>
+<p>　　有时候你可能需要同时实现Runnable接口并且创建Thread子类。比如，创建一个Thread 子类运行多个实现Runnable接口的类，这常被用来实现一个线程池。
+　　</p>
+<h2 id="常见错误：调用run()方法而不是start()方法">常见错误：调用run()方法而不是start()方法</h2>
+<p>　　当创建和启动一个线程时常犯的错误是直接调用Thread的run()方法而不是start()方法，像这样：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(new MyRunnable());</code><br><code>thread.run();  //should be start();</code></p>
+</blockquote>
+<p>　　起初你可能不会注意到任何异常因为run()方法按照你所期望的那样被执行了。然而它不是被你刚刚创建的新线程执行的，run()方法反而是被创建新线程的线程所执行的。换句话说，是被执行了上面两行代码的线程执行的。为了让新创建的线程执行MyRunnable 实例的run()方法，你必须调用新线程的start()方法。
+　　</p>
+<h2 id="线程名">线程名</h2>
+<p>　　创建一个线程时你可以给它一个名称，线程名可以帮助你区别其它的线程。比如，如果多个线程都用System.out输出信息，可以很方便查出是哪个线程输出的信息。例子如下：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(&quot;New Thread&quot;) {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;run by: &quot; + getname());</code><br>　　<code>}</code><br><code>}</code><br><code>thread.start();</code><br><code>System.out.println(thread.getName());</code>  </p>
+</blockquote>
+<p>　　注意字符串”New Thread”作为参数传给线程的构造函数，这个字符串就是线程名。这个线程名可以通过线程的getName()方法获得。使用实现Runnable 接口方式时你也可以给线程传递一个名称。例子如下：
+　　</p>
+<blockquote>
+<p><code>MyRunnable runnable = new MyRunnable();</code><br><code>Thread thread = new Thread(runnable, &quot;New Thread&quot;);</code><br><code>thread.start();</code><br><code>System.out.println(thread.getName());</code> 　　</p>
+</blockquote>
+<p>　　不过请注意，既然MyRunnable类不是Thread的子类，它没有使用执行它的线程的getName()方法的权限。当前正在执行的线程引用可以使用下面的方式获得</p>
+<blockquote>
+<p><code>Thread.currentThread();</code>  </p>
+</blockquote>
+<p>　　获取当前正在执行线程名称的代码可以这样写：</p>
+<blockquote>
+<p><code>String threadName = Thread.currentThread().getName();</code></p>
+</blockquote>
+<h2 id="java线程实例">java线程实例</h2>
+<p>　　这里有一个小例子。首先它打印出执行main()方法的线程的名称，这个线程是被JVM分配的。接着它开始10个线程并给它们一个数字作为线程名，每个线程都会打印出它们的名称并结束执行。</p>
+<blockquote>
+<p><code>public class ThreadExample {</code><br>　　<code>public static void main(String[] args){</code><br>　　　　<code>System.out.println(Thread.currentThread().getName());</code><br>　　　　<code>for(int i=0; i&lt;10; i++){</code><br>　　　　　　<code>new Thread(&quot;&quot; + i){</code><br>　　　　　　　　<code>public void run(){</code><br>　　　　　　　　　　<code>System.out.println(&quot;Thread: &quot; + getName() + &quot; running&quot;);</code><br>　　　　　　　　<code>}</code><br>　　　　　　<code>}.start();</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code></p>
+</blockquote>
+<p>　　注意虽然这些线程是按照一定顺序(1、2、3…)启动的，它们可不会按照该顺序执行，也就是线程1可能不会作为第一个把自己名称输出到System.out的线程。因为这些线程原则上是并行执行的而不是顺序执行，JVM和/或操作系统决定线程的执行顺序，打印的顺序和开始的顺序并不一定是一致的。　</p>
+]]></content>
+    
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[多线程的代价]]></title>
+    <link href="http://fantasynew.github.io/2014/04/11/costs-of-multithreading/"/>
+    <id>http://fantasynew.github.io/2014/04/11/costs-of-multithreading/</id>
+    <published>2014-04-11T14:06:44.000Z</published>
+    <updated>2014-04-22T14:38:45.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
+<h2 id="简介">简介</h2>
+<p>　　从单线程应用程序更新到多线程可不光带来优点，它也会付出一些代价。千万不要仅仅因为你可以使用多线程就给应用程序添加多线程。你应该明确的知道使用多线程带来的好处比所付出的代价多的时候才可以使用多线程。有疑问时，试着衡量应用程序的性能和响应时间，不要只是简单的猜想。</p>
+<h2 id="更复杂的设计">更复杂的设计</h2>
+<p>　　尽管多线程应用程序的某些部分比单线程应用程序简单，但是其他部分更为复杂。被多个线程执行的代码在访问共享数据的时候需要特别注意。线程交互可不总是那么简单，不正确的线程同步引起的错误可能更难测试、复现和修改。</p>
+<h2 id="上下文切换的开销">上下文切换的开销</h2>
+<p>　　当CPU从一个线程的执行切换到另一个时，CPU需要保存当前线程的本地数据，程序指针等，并且加载下一个线程的本地数据，程序指针来继续执行，这个切换被称作“上下文切换”。CPU从一个线程的上下文的执行切换到另一个线程的上下文中。  </p>
+<p>　　上下文切换并不廉价，如果没有必要应该减少线程之间的上下文切换。</p>
+<p>　　可以在维基上面看到更多关于上下文切换的信息：
+　　</p>
+<blockquote>
+<p><a href="http://en.wikipedia.org/wiki/Context_switch" target="_blank">http://en.wikipedia.org/wiki/Context_switch</a></p>
+</blockquote>
+<h2 id="增加资源消耗">增加资源消耗</h2>
+<p>　　一个线程需要从计算机中获得一些资源来保证运行。除了CPU时间段线程还需要一些内存来保存它的本地堆栈，还需要一些操作系统中的资源来管理线程。试着创建一个程序，让它创建100个线程，这些线程什么都不做只是等待的，然后看看当这个应用程序运行时有多少内存被占用。  </p>
+]]></content>
+    
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[多线程的优点]]></title>
+    <link href="http://fantasynew.github.io/2014/04/09/multithreading-benefits/"/>
+    <id>http://fantasynew.github.io/2014/04/09/multithreading-benefits/</id>
+    <published>2014-04-09T14:06:44.000Z</published>
+    <updated>2014-04-22T14:39:22.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
+<h2 id="简介">简介</h2>
+<p>　　尽管有许多挑战，多线程仍然被使用的原因是它有几个优点，这些优点是：</p>
+<blockquote>
+<ul>
+<li>更好的资源利用率。 </li>
+<li>在某些情况下程序设计的更简单。</li>
+<li>程序响应很快。</li>
+</ul>
+</blockquote>
+<h2 id="更好的资源利用率">更好的资源利用率</h2>
+<p>　　想象一个从本地文件系统中读取和处理文件的应用程序。假设从硬盘读取一个文件需要5秒，处理它需要2秒。处理两个文件则需要:</p>
+<blockquote>
+<p>　　<code>5秒读取文件A</code><br>　　<code>2秒处理文件A</code><br>　　<code>5秒读取文件B</code><br>　　<code>2秒处理文件B</code>  </p>
+<hr>
+<p>　　<code>总共14秒</code></p>
+</blockquote>
+<p>　　当从硬盘中读取文件时，大部分的CPU时间花费在等待硬盘读取数据上面了。这段时间里CPU处于绝对空闲状态，它可以做一些其他事情。通过改变操作的顺序，CPU可以得到更有效地利用。看下面的顺序：
+　　</p>
+<blockquote>
+<p>　　<code>5秒读取文件A</code><br>　　<code>5秒钟读取文件B + 2秒钟处理文件A</code><br>　　<code>2秒处理文件B</code>  </p>
+<hr>
+<p>　　<code>总共12秒</code>  </p>
+</blockquote>
+<p>　　CPU等待第一个文件的读取，接着开始读取第二个文件，当读取第二个文件的过程中CPU处理第一个文件。记住，在等待磁盘读取文件的时候CPU处于绝对空闲状态。</p>
+<p>　　一般而言，CPU可以在等待IO的过程中做其他事情。不必非得磁盘的IO，还可以是网络IO，或者是用户的输入。网络和硬盘的IO通常都比CPU和内存的IO慢很多。　　</p>
+<h2 id="更简单的程序设计">更简单的程序设计</h2>
+<p>　　在单线程应用程序中如果你想编程实现上面提到的读取和处理功能，你必须跟踪每个文件的读取和处理状态。相反，你可以启动两个线程，每个线程负责一个文件的读取和处理。每个线程在等待硬盘读取它所需要的文件过程中都会堵塞，等待过程中其他线程可以使用CPU来处理他们已经读取过来的文件。导致的结果是硬盘一直处在忙碌状态，不断的读取不同的文件到内存中，这样就使硬盘和CPU都得到了有效利用。这也很好设计，因为每个线程只需要跟踪一个文件。  
+　　</p>
+<h2 id="程序响应更快">程序响应更快</h2>
+<p>　　把单线程应用程序替换成多线程应用程序的另一个常见原因是想获得响应更快的应用程序。想象一个服务器应用在一些端口监听传入的请求。当一个请求到达后，它处理这个请求然后回去继续监听。这个服务器的循环流程概述如下：</p>
+<blockquote>
+<p><code>while(server is active){</code><br>　　<code>listen for request</code><br>　　<code>hand request to worker thread</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　如果一个请求需要花费很长的时间来处理，在这段时间内新的客户端就无法发送请求给服务器。只有在服务器监听的时候请求才能被接收到。  </p>
+<p>　　另一个设计方法是监听线程把请求传递给响应线程，然后立刻返回到监听状态。响应线程负责处理请求并给客户端发送一个回复。这个设计概述如下：  </p>
+<blockquote>
+<p><code>while(server is active){</code><br>　　<code>listen for request</code><br>　　<code>hand request to worker thread</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　这个方式下，服务器线程可以很快回到监听状态，因此更多的客户端可以发送请求到服务器，这个服务也变得响应更快。  </p>
+<p>　　桌面应用程序同样如此，如果你点击一个按钮就开启一个耗时的任务，并且执行这个任务的线程同时负责刷新窗口和按钮，那么在这个任务执行过程中这个应用程序会显示无响应的。相反，这个任务可以交给一个响应线程来处理，当响应线程在处理这个任务的时候，窗口线程可以自由响应其他的用户请求。当响应线程结束的时候它会通知窗口线程，窗口线程就会根据任务的结果来更新应用程序窗口。用户的角度看这种具有响应线程的程序会显得响应速度很快。</p>
+]]></content>
+    
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Java并发介绍]]></title>
+    <link href="http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/"/>
+    <id>http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/</id>
+    <published>2014-04-07T14:06:44.000Z</published>
+    <updated>2014-04-25T14:26:05.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
+<h2 id="引子">引子</h2>
+<p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  <a id="more"></a></p>
+<p>　　多任务处理技术给软件开发人员带来了新的挑战。程序不能被假设占用所有的CPU可用时间、所有的内存和其它资源。一个“表现良好”的程序应该在不用这些资源的时候对其释放，以保证其它程序的使用。  </p>
+<p>　　再后来出现了多线程技术，使得你可以在一个程序内部并行执行多个线程。一个线程的执行可以被认为是一个CPU在执行该程序。当你在一个程序内部执行多个线程时，就好像有多个CPU在同时执行该程序。  </p>
+<p>　　多线程比多任务处理更具挑战性，这些线程运行在一个程序里因此会对相同的内存块进行并发读写操作，这可能导致一些在单线程程序里没出现过的错误。这些错误之所以没出现在单CPU的机器中是因为两个线程永远都不会真正意义上“并发”执行。但是伴随着现代多核CPU计算机的出现，也就意味着不同线程可以在不同CPU内核中得到真正意义上的并行执行。  </p>
+<p>　　如果一个线程对一个内存块进行读取的时候，另一个线程对它进行写操作，进行第一个线程读出的值应该是哪个？写操作之前的旧值？第二个线程写入的新值？还是这两个值之间的混合值？如果两个线程同时对同一内存块进行写操作，当它们写操作完成之后内存块里的值应该是哪个？第一个线程写入的值？第二个线程写入的值？还是这两个值之间的混合值？没有适当的防护措施任何输出结果都是可能的，这种行为甚至都不可预测，输出结果可以随时改变。  </p>
+<h2 id="Java的多线程和并发">Java的多线程和并发</h2>
+<p>　　Java是最先支持多线程开发的编程语言之一，java一开始就提供了多线程开发的功能。因此，java开发者们经常会碰到上面提到的那些问题。这就是我写这篇java并发系列的原因，作为自己的笔记，希望其它java开发人员都可从中受益。  </p>
+<p>　　这个博客系列主要是关心java的多线程开发，但是多线程中出现的一些问题与多任务处理和分布式系统中出现的问题存在类似，因此这个博客系列会将多任务处理和分布式系统作为参考，所以叫法上称为“并发性”而不是“多线程”。  </p>
+<p>　　这个博客系列仍在继续更新中，只要有时间写我就会把新文章更新出来。下表是已经更新的文章：
+　　</p>
+<h3 id="Java并发">Java并发</h3>
+<ul>
+<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/09/multithreading-benefits/">多线程的优点</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/11/costs-of-multithreading/">多线程的代价</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
+</ul>
+]]></content>
+    <summary type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
+<h2 id="引子">引子</h2>
+<p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  ]]></summary>
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <link href="http://fantasynew.github.io/2014/04/01/hello-world/"/>
+    <id>http://fantasynew.github.io/2014/04/01/hello-world/</id>
+    <published>2014-04-01T14:06:44.000Z</published>
+    <updated>2014-04-22T13:40:13.000Z</updated>
+    <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io" target="_blank">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs" target="_blank">documentation</a> to learn how to use.</p>
+]]></content>
+    
+    
+      <category term="杂乱" scheme="http://fantasynew.github.io/categories/%E6%9D%82%E4%B9%B1/"/>
+    
+  </entry>
+  
+</feed>

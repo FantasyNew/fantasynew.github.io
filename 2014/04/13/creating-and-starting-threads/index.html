@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Java并发介绍 | Fantasy Ace&#39;s blog</title>
+    <title>创建和启动java线程 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" itemprop="description" content="过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。">
+    <meta name="description" itemprop="description" content="创建java线程的方法有两种：1、创建一个Thread子类并重写它的run()方法；2、创建一个实现了java.lang.Runnable接口的类。">
     
     
     
@@ -65,14 +65,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/04/07/introduction-to-java-concurrency/" title="Java并发介绍" itemprop="url">Java并发介绍</a>
+      <a href="/2014/04/13/creating-and-starting-threads/" title="创建和启动java线程" itemprop="url">创建和启动java线程</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-07T14:06:44.000Z" itemprop="datePublished">发表于4月 7 2014</time>
+    <time datetime="2014-04-13T14:06:44.000Z" itemprop="datePublished">发表于4月 13 2014</time>
     
   </p>
 </header>
@@ -82,30 +82,96 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-number">1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java的多线程和并发"><span class="toc-number">2.</span> <span class="toc-text">Java的多线程和并发</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java并发"><span class="toc-number">2.1.</span> <span class="toc-text">Java并发</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建启动线程"><span class="toc-number">1.</span> <span class="toc-text">创建启动线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread子类"><span class="toc-number">2.</span> <span class="toc-text">Thread子类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现Runnable接口"><span class="toc-number">3.</span> <span class="toc-text">实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择创建子类还是实现Runnable接口"><span class="toc-number">4.</span> <span class="toc-text">选择创建子类还是实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见错误：调用run()方法而不是start()方法"><span class="toc-number">5.</span> <span class="toc-text">常见错误：调用run()方法而不是start()方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程名"><span class="toc-number">6.</span> <span class="toc-text">线程名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java线程实例"><span class="toc-number">7.</span> <span class="toc-text">java线程实例</span></a></li></ol>
 		
 		</div>
 		
-		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
-<h2 id="引子">引子</h2>
-<p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  <a id="more"></a></p>
-<p>　　多任务处理技术给软件开发人员带来了新的挑战。程序不能被假设占用所有的CPU可用时间、所有的内存和其它资源。一个“表现良好”的程序应该在不用这些资源的时候对其释放，以保证其它程序的使用。  </p>
-<p>　　再后来出现了多线程技术，使得你可以在一个程序内部并行执行多个线程。一个线程的执行可以被认为是一个CPU在执行该程序。当你在一个程序内部执行多个线程时，就好像有多个CPU在同时执行该程序。  </p>
-<p>　　多线程比多任务处理更具挑战性，这些线程运行在一个程序里因此会对相同的内存块进行并发读写操作，这可能导致一些在单线程程序里没出现过的错误。这些错误之所以没出现在单CPU的机器中是因为两个线程永远都不会真正意义上“并发”执行。但是伴随着现代多核CPU计算机的出现，也就意味着不同线程可以在不同CPU内核中得到真正意义上的并行执行。  </p>
-<p>　　如果一个线程对一个内存块进行读取的时候，另一个线程对它进行写操作，进行第一个线程读出的值应该是哪个？写操作之前的旧值？第二个线程写入的新值？还是这两个值之间的混合值？如果两个线程同时对同一内存块进行写操作，当它们写操作完成之后内存块里的值应该是哪个？第一个线程写入的值？第二个线程写入的值？还是这两个值之间的混合值？没有适当的防护措施任何输出结果都是可能的，这种行为甚至都不可预测，输出结果可以随时改变。  </p>
-<h2 id="Java的多线程和并发">Java的多线程和并发</h2>
-<p>　　Java是最先支持多线程开发的编程语言之一，java一开始就提供了多线程开发的功能。因此，java开发者们经常会碰到上面提到的那些问题。这就是我写这篇java并发系列的原因，作为自己的笔记，希望其它java开发人员都可从中受益。  </p>
-<p>　　这个博客系列主要是关心java的多线程开发，但是多线程中出现的一些问题与多任务处理和分布式系统中出现的问题存在类似，因此这个博客系列会将多任务处理和分布式系统作为参考，所以叫法上称为“并发性”而不是“多线程”。  </p>
-<p>　　这个博客系列仍在继续更新中，只要有时间写我就会把新文章更新出来。下表是已经更新的文章：
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html</a></p>
+<p>　　java线程对象与其他java对象一样，所有的线程都继承java.lang.Thread类，或者java.lang.Thread的子类。除了作为对象，java线程还可以执行代码。</p>
+<h2 id="创建启动线程">创建启动线程</h2>
+<p>　　在java中可以用如下方式创建一个线程：
 　　</p>
-<h3 id="Java并发">Java并发</h3>
-<ul>
-<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/09/multithreading-benefits/">多线程的优点</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/11/costs-of-multithreading/">多线程的代价</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
-</ul>
+<blockquote>
+<p><code>Thread thread = new Thread();</code>　　</p>
+</blockquote>
+<p>　　可以通过调用它的start()方法来启动这个线程，像这样：
+　　</p>
+<blockquote>
+<p><code>thread.start();</code>　　</p>
+</blockquote>
+<p>　　这个例子并没有指定线程执行任何代码，调用完成之后它就会停止。  </p>
+<p>　　有两种方式来指定线程执行代码。第一种是创建一个Thread 子类并且重写它的run()方法，第二种创建类时实现Runnable接口，下面会介绍这两种方法。</p>
+<h2 id="Thread子类">Thread子类</h2>
+<p>　　第一种指定线程执行代码的方式是创建一个Thread子类并重写它的run()方法,run()方法就是你的线程调用start()后执行的方法。例子如下：  </p>
+<blockquote>
+<p><code>public class MyThread extends Thread {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;MyThread running&quot;);</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　你可以这样创建和启动上面的线程：</p>
+<blockquote>
+<p><code>MyThread myThread = new MyThread();</code><br><code>myTread.start();</code></p>
+</blockquote>
+<p>　　start()请求会在线程开始之后立刻返回，它不会等待run()方法执行完，run()方法就好像被另一个CPU执行一样。当run()方法执行时它会打印出文本“MyThread running”。</p>
+<p>　　你还可以按照下面的方法创建一个Thread的匿名子类：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(){</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;Thread Running&quot;);</code><br>　　<code>}</code><br><code>}</code><br><code>thread.start();</code> </p>
+</blockquote>
+<p>　　一旦run()方法被这个新线程执行的时候这个例子就会打印出“Thread running”。</p>
+<h2 id="实现Runnable接口">实现Runnable接口</h2>
+<p>　　第二种指定线程执行代码的方式是创建一个实现了java.lang.Runnable接口的类。Runnable对象会被一个线程执行。  </p>
+<p>　　下面是java实现Runnable接口的例子：
+　　</p>
+<blockquote>
+<p><code>public class MyRunnable implements Runnable {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;MyRunnable running&quot;);</code><br>　　<code>}</code><br><code>}</code>  　</p>
+</blockquote>
+<p>　　为了让run()方法被一个线程执行，需要把MyRunnable的实例对象传到Thread类的构造函数中。例子如下：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(new MyRunnable());</code><br><code>myTread.start();</code></p>
+</blockquote>
+<p>　　这个线程开始时他会调用MyRunnable实例对象的run()方法而不是执行它自己的run()方法。上例会打印出“MyRunnable running”。</p>
+<p>　　同样，你也可以这样创建一个实现Runnable接口的匿名类：
+　　</p>
+<blockquote>
+<p><code>Runnable myRunnable = new Runnable(){</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;Runnable running&quot;);</code><br>　　<code>}</code><br><code>}</code><br><code>Thread thread = new Thread(myRunnable);</code><br><code>thread.start();</code>　　</p>
+</blockquote>
+<h2 id="选择创建子类还是实现Runnable接口">选择创建子类还是实现Runnable接口</h2>
+<p>　　这两种方式哪个好没有明确的答案，两种方式都能正常工作。就我个人而言，我喜欢实现Runnable接口，然后把它交给一个线程实例处理。因为实现Runnable接口的线程在线程池中很容易管理，当线程池中的线程有空闲时线程池很容易排列Runnable实例。这对于子类Thread 有一点点困难。</p>
+<p>　　有时候你可能需要同时实现Runnable接口并且创建Thread子类。比如，创建一个Thread 子类运行多个实现Runnable接口的类，这常被用来实现一个线程池。
+　　</p>
+<h2 id="常见错误：调用run()方法而不是start()方法">常见错误：调用run()方法而不是start()方法</h2>
+<p>　　当创建和启动一个线程时常犯的错误是直接调用Thread的run()方法而不是start()方法，像这样：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(new MyRunnable());</code><br><code>thread.run();  //should be start();</code></p>
+</blockquote>
+<p>　　起初你可能不会注意到任何异常因为run()方法按照你所期望的那样被执行了。然而它不是被你刚刚创建的新线程执行的，run()方法反而是被创建新线程的线程所执行的。换句话说，是被执行了上面两行代码的线程执行的。为了让新创建的线程执行MyRunnable 实例的run()方法，你必须调用新线程的start()方法。
+　　</p>
+<h2 id="线程名">线程名</h2>
+<p>　　创建一个线程时你可以给它一个名称，线程名可以帮助你区别其它的线程。比如，如果多个线程都用System.out输出信息，可以很方便查出是哪个线程输出的信息。例子如下：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(&quot;New Thread&quot;) {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;run by: &quot; + getname());</code><br>　　<code>}</code><br><code>}</code><br><code>thread.start();</code><br><code>System.out.println(thread.getName());</code>  </p>
+</blockquote>
+<p>　　注意字符串”New Thread”作为参数传给线程的构造函数，这个字符串就是线程名。这个线程名可以通过线程的getName()方法获得。使用实现Runnable 接口方式时你也可以给线程传递一个名称。例子如下：
+　　</p>
+<blockquote>
+<p><code>MyRunnable runnable = new MyRunnable();</code><br><code>Thread thread = new Thread(runnable, &quot;New Thread&quot;);</code><br><code>thread.start();</code><br><code>System.out.println(thread.getName());</code> 　　</p>
+</blockquote>
+<p>　　不过请注意，既然MyRunnable类不是Thread的子类，它没有使用执行它的线程的getName()方法的权限。当前正在执行的线程引用可以使用下面的方式获得</p>
+<blockquote>
+<p><code>Thread.currentThread();</code>  </p>
+</blockquote>
+<p>　　获取当前正在执行线程名称的代码可以这样写：</p>
+<blockquote>
+<p><code>String threadName = Thread.currentThread().getName();</code></p>
+</blockquote>
+<h2 id="java线程实例">java线程实例</h2>
+<p>　　这里有一个小例子。首先它打印出执行main()方法的线程的名称，这个线程是被JVM分配的。接着它开始10个线程并给它们一个数字作为线程名，每个线程都会打印出它们的名称并结束执行。</p>
+<blockquote>
+<p><code>public class ThreadExample {</code><br>　　<code>public static void main(String[] args){</code><br>　　　　<code>System.out.println(Thread.currentThread().getName());</code><br>　　　　<code>for(int i=0; i&lt;10; i++){</code><br>　　　　　　<code>new Thread(&quot;&quot; + i){</code><br>　　　　　　　　<code>public void run(){</code><br>　　　　　　　　　　<code>System.out.println(&quot;Thread: &quot; + getName() + &quot; running&quot;);</code><br>　　　　　　　　<code>}</code><br>　　　　　　<code>}.start();</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code></p>
+</blockquote>
+<p>　　注意虽然这些线程是按照一定顺序(1、2、3…)启动的，它们可不会按照该顺序执行，也就是线程1可能不会作为第一个把自己名称输出到System.out的线程。因为这些线程原则上是并行执行的而不是顺序执行，JVM和/或操作系统决定线程的执行顺序，打印的顺序和开始的顺序并不一定是一致的。　</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -121,7 +187,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/" data-title="Java并发介绍 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/" data-title="创建和启动java线程 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -131,18 +197,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2014/04/09/multithreading-benefits/" title="多线程的优点">
+ <a href="/2014/04/15/race-conditions-and-critical-sections/" title="竞态条件与临界区">
   <strong>上一篇：</strong><br/>
   <span>
-  多线程的优点</span>
+  竞态条件与临界区</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2014/04/01/hello-world/"  title="Hello World">
+<a href="/2014/04/11/costs-of-multithreading/"  title="多线程的代价">
  <strong>下一篇：</strong><br/> 
- <span>Hello World
+ <span>多线程的代价
 </span>
 </a>
 </div>
