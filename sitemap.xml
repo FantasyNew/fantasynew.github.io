@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://fantasynew.github.io/book/index.html</loc>
+    <lastmod>2014-04-26T14:24:46.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://fantasynew.github.io/2014/04/15/race-conditions-and-critical-sections/</loc>
     <lastmod>2014-04-15T14:06:44.000Z</lastmod>
   </url>
