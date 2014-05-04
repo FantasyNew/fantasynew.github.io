@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>阅历 | Fantasy Ace&#39;s blog</title>
+    <title>线程安全和不可变性 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" content="Walk steps step by step">
+    <meta name="description" itemprop="description" content="我们可以通过创建不可变的共享对象来确保线程之间分享的对象不会被其它线程更新，以确保线程安全。">
     
     
     
@@ -69,49 +69,76 @@
 </div>
     </header>
     <div id="container">
-      <div id="main" class="photo" itemscope itemprop="blogPost">
+      <div id="main" class="post" itemscope itemprop="blogPost">
 	<article itemprop="articleBody"> 
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/book/index.html" title="阅历" itemprop="url">阅历</a>
+      <a href="/2014/04/21/thread-safety-and-immutability/" title="线程安全和不可变性" itemprop="url">线程安全和不可变性</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-03T09:07:07.000Z" itemprop="datePublished">发表于4月 3 2014</time>
+    <time datetime="2014-04-21T14:06:44.000Z" itemprop="datePublished">发表于4月 21 2014</time>
     
   </p>
 </header>
 	<div class="article-content">
 		
 		
-		<h1 id="正在阅读">正在阅读</h1>
-<hr>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book003.jpg" alt="Python核心编程"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book002.jpg" alt="思考，快与慢"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book018.jpg" alt="百年孤独"></p>
-<h1 id="很想阅读">很想阅读</h1>
-<hr>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book006.jpg" alt="深入浅出Node.js"> </p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book008.jpg" alt="Node.js高级编程"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book010.jpg" alt="Java虚拟机规范"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book004.jpg" alt="失控"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book013.jpg" alt="Oracle SQL高级编程"></p>
-<h1 id="最近已读">最近已读</h1>
-<hr>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book001.jpg" alt="淘宝技术这十年"> </p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book012.jpg" alt="深入理解Java虚拟机：JVM高级特性与最佳实践"> </p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book020.jpg" alt="重构：改善既有代码的设计"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book019.jpg" alt="技术元素"> </p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book017.jpg" alt="明智行动的艺术"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book011.jpg" alt="罗马人的故事"></p>
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用不是线程安全的！"><span class="toc-number">1.</span> <span class="toc-text">引用不是线程安全的！</span></a></li></ol>
+		
+		</div>
+		
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html</a></p>
+<p>　　只有当多个线程访问相同的资源，并且它们中的一个或多个线程对资源进行写操作时才会出现竞态条件。多个线程读取相同的资源时竞态条件不会出现。</p>
+<p>　　我们可以通过创建不可变的共享对象来确保线程之间分享的对象不会被其它线程更新，以确保线程安全。例子如下：</p>
+<blockquote>
+<p><code>public class ImmutableValue{</code>  </p>
+<p>　　<code>private int value = 0;</code>  </p>
+<p>　　<code>public ImmutableValue(int value){</code><br>　　　　<code>this.value = value;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public int getValue(){</code><br>　　　　<code>return this.value;</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　注意ImmutableValue实例的value属性是在构造函数中赋值的，并且里面没有setter方法。一旦ImmutableValue实例被创建就不能改变它的value值，它是不可变的。不过，你可以使用 getValue()方法读取它的value值。</p>
+<p>　　如果你需要对ImmutableValue实例执行操作，可以通过返回一个带有操作结果的新实例来实现。下面是一个加法操作的例子：</p>
+<blockquote>
+<p><code>public class ImmutableValue{</code>  </p>
+<p>　　<code>private int value = 0;</code>  </p>
+<p>　　<code>public ImmutableValue(int value){</code><br>　　　　<code>this.value = value;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public int getValue(){</code><br>　　　　<code>return this.value;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public ImmutableValue add(int valueToAdd){</code><br>　　　　<code>return new ImmutableValue(this.value + valueToAdd);</code><br>　　<code>}</code>  </p>
+<p><code>}</code>  </p>
+</blockquote>
+<p>　　注意add()方法返回了一个带有加法操作结果的新ImmutableValue实例，而不是直接对自己的value值进行加法操作。</p>
+<h2 id="引用不是线程安全的！">引用不是线程安全的！</h2>
+<p>　　<br>　　需要记住的是，即使一个对象是线程安全的不可变对象，这个对象的引用也可能不是线程安全的。看下面的例子：</p>
+<blockquote>
+<p><code>public void Calculator{</code><br>　　<code>private ImmutableValue currentValue = null;</code>  </p>
+<p>　　<code>public ImmutableValue getValue(){</code><br>　　　　<code>return currentValue;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void setValue(ImmutableValue newValue){</code><br>　　　　<code>this.currentValue = newValue;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void add(int newValue){</code><br>　　　　<code>this.currentValue = this.currentValue.add(newValue);</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　Calculator类有一个ImmutableValue 实例的引用，注意通过setValue()和add()这两个方法都可能会改变这个引用。所以即使Calculator类在内部使用了不可变的对象，它自己却不是不可变的也就不是线程安全的。换句话说：ImmutableValue类是线程安全的，但是对它的使用却不是，当你尝试使用不可变性来达到线程安全的目标时需要牢记这一点。</p>
+<p>　　为了保证Calculator的线程安全你只需要声明getValue(), setValue()和 add()方法为synchronized的即可。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/java多线程/">java多线程</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/线程安全/">线程安全</a><a href="/tags/不可变性/">不可变性</a>
+  </div>
 
 
 
@@ -120,7 +147,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/book/index.html" data-title="阅历 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/04/21/thread-safety-and-immutability/" data-title="线程安全和不可变性 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -131,10 +158,25 @@
    	       
 	</article>
 	
+<nav class="article-nav clearfix">
+
+<div class="prev">
+<a href="/2014/04/18/thread-safety-and-shared-resources/"  title="线程安全和资源共享">
+ <strong>上一篇：</strong><br/> 
+ <span>线程安全和资源共享
+</span>
+</a>
+</div>
+
+
+
+ 
+</nav>
+
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="a9uokvtmjid7ymze" data-title="http://fantasynew.github.io/book/index.html" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="0choitc09ot0b73t" data-title="http://fantasynew.github.io/2014/04/21/thread-safety-and-immutability/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -152,6 +194,11 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用不是线程安全的！"><span class="toc-number">1.</span> <span class="toc-text">引用不是线程安全的！</span></a></li></ol>
+  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -281,6 +328,8 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
@@ -300,6 +349,66 @@ $(document).ready(function(){
 });
 </script>
 
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
 
 
 
@@ -358,4 +467,4 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </script>
 
   </body>
- </html>
+</html>
