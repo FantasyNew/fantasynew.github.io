@@ -4,7 +4,7 @@
   <subtitle><![CDATA[当你的才华还撑不起你的野心时，你就应该静下心来学习。]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://fantasynew.github.io/"/>
-  <updated>2014-05-04T14:40:07.924Z</updated>
+  <updated>2014-05-14T14:34:44.888Z</updated>
   <id>http://fantasynew.github.io/</id>
   
   <author>
@@ -13,6 +13,101 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Java同步块]]></title>
+    <link href="http://fantasynew.github.io/2014/04/25/java-synchronized-blocks/"/>
+    <id>http://fantasynew.github.io/2014/04/25/java-synchronized-blocks/</id>
+    <published>2014-04-25T14:06:44.000Z</published>
+    <updated>2014-05-14T14:33:14.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/synchronized.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/synchronized.html</a></p>
+<p>　　Java同步块（Java synchronized block）标记一个方法或者代码块是同步的，Java同步块可被用来阻止竞态条件。</p>
+<h2 id="Java_synchronized关键词">Java synchronized关键词</h2>
+<p>　　java里面的同步块用<em>synchronized</em>关键词，一个java中的同步块在一些对象中是同步的。所有的同步在一个对象上面的同步块同时只能有一个线程在它里面执行。所有其它试图进入同步块的线程都会阻塞，直到同步块里面的线程退出这个块。  </p>
+<p>　　<em>synchronized</em>关键词可以被用来标记四种不同类型的块：  </p>
+<blockquote>
+<p>1.实例方法<br>2.静态方法<br>3.实例方法内部的代码块<br>4.静态方法内部的代码块  </p>
+</blockquote>
+<p>　　这些块都可以在不同的对象中同步，你需要哪种类型的同步块取决于具体情况。  </p>
+<h2 id="实例方法的同步">实例方法的同步</h2>
+<p>　　下面是一个同步的实例方法：  </p>
+<blockquote>
+<p><code>public synchronized void add(int value){</code><br>　　<code>this.count += value;</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　注意方法声明里面使用了<em>synchronized</em>关键词，这个告诉java这个方法是同步的。  </p>
+<p>　　在java中一个同步的实例方法在拥有这个方法的实例(对象)中是同步的。这样，每个实例（即该方法所属的实例）自己的同步方法在不同的对象上面是同步的。只有一个线程可以在同步的实例方法内部运。如果有多个实例存在的话，那么一个线程每次可以在一个实例的同步实例方法执行，一个实例一个线程。</p>
+<h2 id="静态方法的同步">静态方法的同步</h2>
+<p>　　静态方法的同步与实例方法一样使用<em>synchronized</em>关键字。下面是java静态方法同步例子：  
+　　</p>
+<blockquote>
+<p><code>public static synchronized void add(int value){</code><br>　　<code>count += value;</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　同样，这里的synchronized关键字告诉java这个方法是同步的。</p>
+<p>　　同步的静态方法是同步在这个静态方法所属类的类对象上面。因为在java虚拟机中每个类只有一个类对象，所以在一个类中只有一个线程可以在其静态同步方法里面执行。</p>
+<p>　　如果静态同步方法位于不同的类中，一个线程可以在每个类的静态同步方法中执行。不管它调用哪个静态同步方法一个线程只能负责一个类。
+　　</p>
+<h2 id="实例方法中的同步块">实例方法中的同步块</h2>
+<p>　　不用同步整个方法，有时候只同步方法中一部分会更好，java方法中的同步块提供了这种可能性。</p>
+<p>　　下面是一段在非同步的方法里面的java同步块代码：</p>
+<blockquote>
+<p><code>public void add(int value){</code><br>　　<code>synchronized(this){</code><br>　　　　<code>this.count += value;</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　这个例子使用java同步块的构造标记一个代码块是同步的，这段代码执行时就和同步方法一样。</p>
+<p>　　注意java同步块构造器用括号把对象包起来。这个例子中使用了”this”代表调用这个add方法的实例。被同步构造器包含到括号里面的对象被称作监控对象。这段代码表明监控对象应该同步，同步实例方法使用它所属的对象作为监控对象。</p>
+<p>　　每次只有一个线程能在同步同一个监控对象的java代码块中执行。</p>
+<p>　　下面的两个例子都同步在它们被调用的实例上面，它们的同步执行效果是相等的：</p>
+<blockquote>
+<p><code>public class MyClass {</code>  </p>
+<p>　　<code>public synchronized void log1(String msg1, String msg2){</code><br>　　　　<code>log.writeln(msg1);</code><br>　　　　<code>log.writeln(msg2);</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void log2(String msg1, String msg2){</code><br>　　　　<code>synchronized(this){</code><br>　　　　　　<code>log.writeln(msg1);</code><br>　　　　　　<code>log.writeln(msg2);</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　在这个示例中每次只有一个线程能够在这两个同步块中的一个里面执行。</p>
+<p>　　如果第二个同步块同步在另一个对象上而不是this，那么一个线程就可以同时在两个方法中执行。</p>
+<h2 id="静态方法中的同步块">静态方法中的同步块</h2>
+<p>　　下面是两个一样的静态方法例子，这两个方法都同步在它们所属的类对象上面：</p>
+<blockquote>
+<p><code>public class MyClass {</code>  </p>
+<p>　　<code>public static synchronized void log1(String msg1, String msg2){</code><br>　　　　<code>log.writeln(msg1);</code><br>　　　　<code>log.writeln(msg2);</code><br>　　<code>}</code>  </p>
+<p>　　<code>public static void log2(String msg1, String msg2){</code><br>　　　　<code>synchronized(MyClass.class){</code><br>　　　　　　<code>log.writeln(msg1);</code><br>　　　　　　<code>log.writeln(msg2);</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　一次只有一个线程可以在这两个方法内部执行。</p>
+<p>　　如果第二个同步方法块被同步在MyClass.class之外的其他对象上面，那么一个线程可以同时在这两个方法里面执行。</p>
+<h2 id="java同步例子">java同步例子</h2>
+<p>　　下面是开启了两个线程并且让它们都调用同一个Counter实例的add方法，每次只有一个线程可以调用同一实例的add方法，因为方法在它所属的实例上面是同步的。</p>
+<blockquote>
+<p><code>public class Counter{</code>  </p>
+<p>　　<code>long count = 0;</code>  </p>
+<p>　　<code>public synchronized void add(long value){</code><br>　　　　<code>this.count += value;</code><br>　　<code>}</code><br><code>}</code>  </p>
+<p><code>public class CounterThread extends Thread{</code>  </p>
+<p>　　<code>protected Counter counter = null;</code>  </p>
+<p>　　<code>public CounterThread(Counter counter){</code><br>　　　　<code>this.counter = counter;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void run() {</code><br>　　　　<code>for(int i=0; i&lt;10; i++){</code><br>　　　　　　<code>counter.add(i);</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code>  </p>
+<p><code>public class Example {</code>  </p>
+<p>　　<code>public static void main(String[] args){</code><br>　　　　<code>Counter counter = new Counter();</code><br>　　　　<code>Thread  threadA = new CounterThread(counter);</code><br>　　　　<code>Thread  threadB = new CounterThread(counter);</code>  </p>
+<p>　　　　<code>threadA.start();</code><br>　　　　<code>threadB.start();</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　创建两个线程，并且把同一个Counter实例通过它们的构造函数传递给它们。Counter.add()方法在实例上是同步的，因为add方法是被标记为synchronized的实例方法。因此每次只有一个线程可以调用add()方法，另外一个线程在自己执行这个方法之前只能等待第一个线程退出add()方法。</p>
+<p>　　如果两个线程引用的是两个不相关的Counter实例，同时调用add()方法就不会出现问题。这些方法调用了不同的对象，所以它们在不同的对象上(拥有方法的对象)也是同步的，所以调用不会被锁住。下面是示例：</p>
+<blockquote>
+<p><code>public class Example {</code>  </p>
+<p>　　<code>public static void main(String[] args){</code><br>　　　　<code>Counter counterA = new Counter();</code><br>　　　　<code>Counter counterB = new Counter();</code><br>　　　　<code>Thread  threadA = new CounterThread(counterA);</code><br>　　　　<code>Thread  threadB = new CounterThread(counterB);</code>  </p>
+<p>　　　　<code>threadA.start();</code><br>　　　　<code>threadB.start();</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　注意这两个线程threadA和threadB不再引用同一个Counter实例，counterA和counterB的add方法都同步在自己所属的实例上面。对counterA的add()方法的调用不会锁住对counterB的add()方法的调用。</p>
+<h2 id="java并发工具">java并发工具</h2>
+<p>　　同步机制是java第一个被多个线程共享访问的对象的同步机制，同步机制还不是很先进，所以java 5提供了一整套<a href="http://tutorials.jenkov.com/java-util-concurrent/index.html" target="_blank">并发工具类</a>来帮助开发者实现比你用synchronized方法得到的更细化的同步控制。</p>
+]]></content>
+    
+    
+      <category term="java" scheme="http://fantasynew.github.io/tags/java/"/>
+    
+      <category term="多线程" scheme="http://fantasynew.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+      <category term="同步块" scheme="http://fantasynew.github.io/tags/%E5%90%8C%E6%AD%A5%E5%9D%97/"/>
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[线程安全和不可变性]]></title>

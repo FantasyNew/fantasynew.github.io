@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://fantasynew.github.io/2014/04/25/java-synchronized-blocks/</loc>
+    <lastmod>2014-04-25T14:06:44.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://fantasynew.github.io/2014/04/21/thread-safety-and-immutability/</loc>
     <lastmod>2014-04-21T14:06:44.000Z</lastmod>
   </url>
