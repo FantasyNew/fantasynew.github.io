@@ -4,7 +4,7 @@
   <subtitle><![CDATA[当你的才华还撑不起你的野心时，你就应该静下心来学习。]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://fantasynew.github.io/"/>
-  <updated>2014-05-14T14:34:44.888Z</updated>
+  <updated>2014-05-15T14:22:27.946Z</updated>
   <id>http://fantasynew.github.io/</id>
   
   <author>
@@ -15,9 +15,164 @@
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[死锁]]></title>
+    <link href="http://fantasynew.github.io/2014/05/01/10.deadlock/"/>
+    <id>http://fantasynew.github.io/2014/05/01/10.deadlock/</id>
+    <published>2014-05-01T14:06:44.000Z</published>
+    <updated>2014-05-15T14:08:02.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/deadlock.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/deadlock.html</a></p>
+<h2 id="线程死锁">线程死锁</h2>
+<p>　　死锁是两个或多个线程阻塞的等待获取其它死锁线程拥有的锁。死锁发生在多个线程同时但以不同顺序获取请求同一组锁的情况下。</p>
+<p>　　比如，如果线程1锁住了A并且尝试锁住B，而线程2已经锁住B并且尝试锁住A，就会出现死锁。线程1永远也得不到B，线程2永远也得不到A。并且，它们谁都不知道发生了这种意外。它们会一直阻塞在自己对象上A和B，这种情况就是死锁。</p>
+<p>　　情况说明如下：</p>
+<blockquote>
+<p><code>Thread 1  locks A, waits for B</code><br><code>Thread 2  locks B, waits for A</code></p>
+</blockquote>
+<p>　　下面是一个在不同实例上面调用同步方法的TreeNode类的例子：</p>
+<blockquote>
+<p><code>public class TreeNode {</code></p>
+<p>　　<code>TreeNode parent   = null;</code><br>　　<code>List children = new ArrayList();</code>  </p>
+<p>　　<code>public synchronized void addChild(TreeNode child){</code><br>　　　　<code>if(!this.children.contains(child)) {</code><br>　　　　　　<code>this.children.add(child);</code><br>　　　　　　<code>child.setParentOnly(this);</code><br>　　　　<code>}</code><br>　　<code>}</code></p>
+<p>　　<code>public synchronized void addChildOnly(TreeNode child){</code><br>　　　　<code>if(!this.children.contains(child){</code><br>　　　　　　<code>this.children.add(child);</code><br>　　　　<code>}</code><br>　　<code>}</code>  </p>
+<p>　　<code>public synchronized void setParent(TreeNode parent){</code><br>　　　　<code>this.parent = parent;</code><br>　　　　<code>parent.addChildOnly(this);</code><br>　　<code>}</code>  </p>
+<p>　　<code>public synchronized void setParentOnly(TreeNode parent){</code><br>　　　　<code>this.parent = parent;</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　如果在同一个parent和child实例上面，线程1调用parent.addChild(child)方法的同时另一个线程2调用child.setParent(parent)方法，就会出现死锁。下面的伪代码演示了这一点：</p>
+<blockquote>
+<p><code>Thread 1: parent.addChild(child); //locks parent</code><br>　　　　　<code>--child.setParentOnly(parent);</code></p>
+<p><code>Thread 2: child.setParent(parent); //locks child</code><br>　　　　　<code>--parent.addChildOnly()</code></p>
+</blockquote>
+<p>　　首先线程1调用parent.addChild(child)，因为addChild()是同步的线程1就锁住了parent对象防止其它线程使用。</p>
+<p>　　然后线程2调用child.setParent(parent)，因为setParent()是同步的线程2就锁住了child对象防止其它线程使用。</p>
+<p>　　现在child和parent对象被两个不同的线程锁住了。接下来线程1尝试调用child.setParentOnly()方法，但是child对象被线程2锁住了，所以调用方法被阻塞了。线程2也尝试调用parent.addChildOnly()但是parent对象被线程1锁住了，导致线程2阻塞在方法调用上。现在两个线程都被阻塞等待获取另一个线程持有的锁。</p>
+<p>　　注意：这两个线程必须像上面描述的那样同时并且在同一个parent 和child实例中调用parent.addChild(child)和child.setParent(parent)方法才能出现死锁情况。上面的代码可能在很长一段时间内正常执行直到突然发生死锁。</p>
+<p>　　这些线程需要<strong>同时</strong>获得锁。比如，如果线程1比线程2稍微提前一点，然后锁住了A和B两个对象，那么线程2在尝试锁住B的时候就阻塞了，也就不会出现死锁了。既然线程调度通常都是不可预测的，所以没有办法预知<strong>何时</strong>会产生死锁，我们只知道它<strong>可能会</strong>出现。</p>
+<h2 id="更复杂的死锁">更复杂的死锁</h2>
+<p>　　死锁还可以包含超过两个线程，这让它更难被检测出来。下面是四个线程死锁的例子：  </p>
+<blockquote>
+<p><code>Thread 1  locks A, waits for B</code><br><code>Thread 2  locks B, waits for C</code><br><code>Thread 3  locks C, waits for D</code><br><code>Thread 4  locks D, waits for A</code>  </p>
+</blockquote>
+<p>　　线程1等待线程2，线程2等待线程3，线程3等待线程4，线程4等待线程1。</p>
+<h2 id="数据库死锁">数据库死锁</h2>
+<p>　　更加复杂的死锁场景是在数据库事务处理中。一个数据库事务处理可能由多条SQL更新请求组成。当一条记录在事务中被更新时，这条事务就会被锁住防止其它事务更新，直到第一个事务完成。同一事务中的每次更新请求都会锁住一些数据库中的记录。</p>
+<p>　　当多个事务同时需要对相同的记录做更新操作时，就会有出现死锁的风险。比如：</p>
+<blockquote>
+<p><code>Transaction 1, request 1, locks record 1 for update</code><br><code>Transaction 2, request 1, locks record 2 for update</code><br><code>Transaction 1, request 2, tries to lock record 2 for update.</code><br><code>Transaction 2, request 2, tries to lock record 1 for update.</code>  </p>
+</blockquote>
+<p>　　既然锁发生在不同的请求中，而且给定事务一开始并不知道自己需要哪些锁，所以很难发现并预防数据库事务出现死锁。</p>
+]]></content>
+    
+    
+      <category term="java" scheme="http://fantasynew.github.io/tags/java/"/>
+    
+      <category term="多线程" scheme="http://fantasynew.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+      <category term="死锁" scheme="http://fantasynew.github.io/tags/%E6%AD%BB%E9%94%81/"/>
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[线程通信]]></title>
+    <link href="http://fantasynew.github.io/2014/04/29/09.thread-signaling/"/>
+    <id>http://fantasynew.github.io/2014/04/29/09.thread-signaling/</id>
+    <published>2014-04-29T14:06:44.000Z</published>
+    <updated>2014-05-15T14:04:48.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-signaling.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-signaling.html</a></p>
+<p>　　线程通信的目的是让线程之间互相发送信号，另外线程通信可以使线程等待其它线程的信号。例如，线程B可以等待线程A的信号来表明待处理的数据已经准备好了。
+　　</p>
+<h2 id="通过共享对象通信">通过共享对象通信</h2>
+<p>　　线程之间传递信号的简单方式是在一些共享对象变量里面设置信号值。线程A 可以在共享块里面设置boolean成员变量hasDataToProcess 为true，而线程B也可以在共享块里面读取hasDataToProcess成员变量的值。下面这个简单例子实现了一个持有这种信号的对象，并提供了方法来设置和查看方法：</p>
+<blockquote>
+<p><code>public class MySignal{</code>  </p>
+<p>　　<code>protected boolean hasDataToProcess = false;</code>  </p>
+<p>　　<code>public synchronized boolean hasDataToProcess(){</code><br>　　　　<code>return this.hasDataToProcess;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public synchronized void setHasDataToProcess(boolean hasData){</code><br>　　　　<code>this.hasDataToProcess = hasData;</code><br>　　<code>}</code>  </p>
+<p><code>}</code>  </p>
+</blockquote>
+<p>　　线程A和B必须引用同一个共享的MySignal 实例来保证进行通信。如果线程A和B引用了不同的MySignal实例，它们就不会发现其它线程的信号。要处理的数据可能位于与MySignal实例分开存放的共享缓存区中。</p>
+<h2 id="忙等待">忙等待</h2>
+<p>　　准备处理数据的线程B等待数据变为可用，换句话说，它在等待线程A引起hasDataToProcess()返回true的信号。下面是线程B等待信号时运行在一个循环里面：  </p>
+<blockquote>
+<p><code>protected MySignal sharedSignal = ...</code>  </p>
+<p><code>...</code>  </p>
+<p><code>while(!sharedSignal.hasDataToProcess()){</code><br>　　<code>//do nothing... busy waiting</code><br><code>}</code>   </p>
+</blockquote>
+<p>　　注意while循环一直保持执行直到hasDataToProcess()返回true，这被称作忙等待，线程在等待的时候不是空闲的。
+　　</p>
+<h2 id="wait(),_notify()和notifyAll()">wait(), notify()和notifyAll()</h2>
+<p>　　忙等待没有有效利用执行等待线程的计算机CPU，除非平均等待时间非常小。否则，如果等待线程可以进入睡眠状态或者非运行状态直到它得到一直在等待的信号更明智。</p>
+<p>　　java有一个内建的等待机制来允许线程等待信号时变成非运行状态。java.lang.Object类定义了三个方法 wait(), notify()和notifyAll()来实现这个机制。</p>
+<p>　　一个线程调用任何对象上面的wait()方法就会变成非运行状态，直到另一个线程调用同一对象的notify()方法。为了调用wait()或者notify()方法线程首先必须获得那个对象的锁。换句话说，线程必须在同步块里面调用wait()或者notify()方法。这是MySignal的修改版本——使用wait()和notify()方法的MyWaitNotify。</p>
+<blockquote>
+<p><code>public class MonitorObject{</code><br><code>}</code>  </p>
+<p><code>public class MyWaitNotify{</code>  </p>
+<p>　　<code>MonitorObject myMonitorObject = new MonitorObject();</code>  </p>
+<p>　　<code>public void doWait(){</code><br>　　　　<code>synchronized(myMonitorObject){</code><br>　　　　　　<code>try{</code><br>　　　　　　　　<code>myMonitorObject.wait();</code><br>　　　　　　<code>} catch(InterruptedException e){...}</code><br>　　　　<code>}</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void doNotify(){</code><br>　　　　<code>synchronized(myMonitorObject){</code><br>　　　　　　<code>myMonitorObject.notify();</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code>   </p>
+</blockquote>
+<p>　　等待线程会调用doWait()方法，唤醒线程会调用doNotify()方法。当一个线程调用一个对象的notify()方法，这个对象上面等待的一个线程会被唤醒并且允许执行，还有一个notifyAll()方法用来唤醒所给对象的所有线程。</p>
+<p>　　正如你所看到的那样，不管是等待线程还是唤醒线程都在同步块里面调用wait()和notify()方法。这是强制性的！一个线程如果没有持有被调方法所属对象的锁就不能调用其wait()、notify()和notifyAll()方法。否则，会抛出IllegalMonitorStateException异常。</p>
+<p>　　但是，这怎么可能？等待线程在同步块里面执行的时候不少一直持有监控对象(myMonitorObject)的锁吗？等待线程不会阻塞唤醒线程进入到doNotify()的同步方法吗？答案是不。一旦一个线程调用了wait()方法它就和释放它持有监控对象的锁。这就允许其他线程来调用wait()和notify()方法，既然这些方法必须从共享块里面调用。</p>
+<p>　　一个线程被唤醒之后不能退出wait()方法调用，直到这个线程调用notify()并且退出它的同步块。换句话说：被唤醒的线程在能退出wait()方法调用之前必须重新获得监控对象的锁，因为wait调用被嵌套在同步块里面。如果使用notifyAll()方法唤醒多个线程，每次只有一个被唤醒的线程能够能够退出wait()方法，因为每个线程在退出wait()方法之前必须获得监控对象的锁。</p>
+<h2 id="丢失的信号(Missed_Signals)">丢失的信号(Missed Signals)</h2>
+<p>　　notify()和notifyAll()不会保存调用它们的方法，以防当它们被调用时没有线程在等待状态。这样通知信号就会丢失。所以如果一个线程在调用wait()方法之前调用了notify()方法，等待线程就会丢失信号。这可能是也可能不是个问题，但是在某些情况下这可能导致等待线程永远等待下去，永远不会被激活，因为唤醒它的信号丢失了。</p>
+<p>　　为避免信号丢失，必须把它们保存在信号类里。在MyWaitNotify示例里唤醒信号被保存在MyWaitNotify实例的成员变量里。下面是MyWaitNotify的修改版本：</p>
+<blockquote>
+<p><code>public class MyWaitNotify2{</code>  </p>
+<p>　　<code>MonitorObject myMonitorObject = new MonitorObject();</code><br>　　<code>boolean wasSignalled = false;</code>  </p>
+<p>　　<code>public void doWait(){</code><br>　　　　<code>synchronized(myMonitorObject){</code><br>　　　　　　<code>if(!wasSignalled){</code><br>　　　　　　　　<code>try{</code><br>　　　　　　　　　　<code>myMonitorObject.wait();</code><br>　　　　　　　　<code>} catch(InterruptedException e){...}</code><br>　　　　　　<code>}</code><br>　　　　　　<code>//clear signal and continue running.</code><br>　　　　　　<code>wasSignalled = false;</code><br>　　　　<code>}</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void doNotify(){</code><br>　　　　<code>synchronized(myMonitorObject){</code><br>　　　　　　<code>wasSignalled = true;</code><br>　　　　　　<code>myMonitorObject.notify();</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　注意doNotify()方法现在调用notify()方法之前先设置wasSignalled变量为true。同时，注意doWait()方法现在在调用wait()方法之前要先检查wasSignalled变量。实际上如果在上一个doWait()方法调用和当前的doWait()方法调用之间没有收到信号就会只调用wait()方法。</p>
+<h2 id="假唤醒(Spurious_Wakeups)">假唤醒(Spurious Wakeups)</h2>
+<p>　　由于一些匪夷所思的原因有时候可能出现一些线程在notify()和notifyAll()没被调用的情况下就被唤醒。这就是所谓的假唤醒，无缘无故的被唤醒。</p>
+<p>　　如果MyWaitNofity2类的doWait()方法出现了假唤醒，即使没有收到适当信号等待线程也可能继续执行！这可能在你的应用程序中引起严重问题。</p>
+<p>　　为了预防假唤醒的出现，在while循环里面检查信号成员变量而不是if语句中。这样的一个while循环也称作自旋锁。被唤醒的线程会自旋直到自旋锁(while循环)里面的条件变为false。下面是修改版的MyWaitNotify2示例来展示这段代码:</p>
+<blockquote>
+<p><code>public class MyWaitNotify3{</code></p>
+<p>　　<code>MonitorObject myMonitorObject = new MonitorObject();</code><br>　　<code>boolean wasSignalled = false;</code>  </p>
+<p>　　<code>public void doWait(){</code><br>　　　　<code>synchronized(myMonitorObject){</code><br>　　　　　　<code>while(!wasSignalled){</code><br>　　　　　　　　<code>try{</code><br>　　　　　　　　　　<code>myMonitorObject.wait();</code><br>　　　　　　　　<code>} catch(InterruptedException e){...}</code><br>　　　　　　<code>}</code><br>　　　　　　<code>//clear signal and continue running.</code><br>　　　　　　<code>wasSignalled = false;</code><br>　　　　<code>}</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void doNotify(){</code><br>　　　　<code>synchronized(myMonitorObject){</code><br>　　　　　　<code>wasSignalled = true;</code><br>　　　　　　<code>myMonitorObject.notify();</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　注意wait()方法的调用现在放在while循环里面而不是if语句中。如果等待线程还没有收到信号就被唤醒，wasSignalled成员会一直为false，这样while循环就会再次执行使被唤醒的线程回到等待状态。</p>
+<h2 id="多个线程等待相同的信号">多个线程等待相同的信号</h2>
+<p>　　如果你有多个线程在等待并且被notifyAll()唤醒，但是只有其中一个被允许执行 的情况下，while循环也是一个不错的解决方式。每次只有一个线程可以获得监控对象的锁，意味着只有一个线程可以退出wait()调用并清除wasSignalled标志(把wasSignalled设为false)。一旦这个线程退出doWait()方法的同步块，其他线程才能退出wait()调用并在while循环里检查wasSignalled成员变量。但是，这个标志已经被第一个被唤醒的线程清除了，所以其余被唤醒线程只能回到等待状态直到下一个信号到来。</p>
+<h2 id="不要在字符串常量或全局对象中调用wait()">不要在字符串常量或全局对象中调用wait()</h2>
+<p>　　本文早期版本有一个使用字符串常量(“”)作为监控对象的MyWaitNotify示例类。下面是这个示例的代码：</p>
+<blockquote>
+<p><code>public class MyWaitNotify{</code>  </p>
+<p>　　<code>String myMonitorObject = &quot;&quot;;</code><br>　　<code>boolean wasSignalled = false;</code>  </p>
+<p>　　<code>public void doWait(){</code><br>　　　　<code>synchronized(myMonitorObject){</code><br>　　　　　　<code>while(!wasSignalled){</code><br>　　　　　　　　<code>try{</code><br>　　　　　　　　　　<code>myMonitorObject.wait();</code><br>　　　　　　　　<code>} catch(InterruptedException e){...}</code><br>　　　　　　<code>}</code><br>　　　　　　<code>//clear signal and continue running.</code><br>　　　　　　<code>wasSignalled = false;</code><br>　　　　<code>}</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void doNotify(){</code><br>　　　　<code>synchronized(myMonitorObject){</code><br>　　　　　　<code>wasSignalled = true;</code><br>　　　　　　<code>myMonitorObject.notify();</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　在空字符串或者其他字符串常量上面调用wait()和notify()方法产生的问题是，JVM或编译器内部将字符串常量转化为同一个对象。这意味着即使你有两个不同的MyWaitNotify实例，它们都引用了相同的空字符串实例。也就意味着在第一个MyWaitNotify实例上面调用doWait()的线程有可能被第二个MyWaitNotify实例的doNotify()调用唤醒。</p>
+<p>　　这种情况概述在下面的图示中：</p>
+<p><img src="http://fantasyace-photo.qiniudn.com/blog/img-blog001.png" alt=""></p>
+<p>　　注意，即使4个线程在同一个共享字符串实例上调用wait()和notify()方法，来自doWait()和doNotify()调用的信号都单独存储在两个MyWaitNotify实例中。MyWaitNotify 1上的doNotify()调用可能唤醒在MyWaitNotify 2上面等待的线程，但是这个信号只存储在MyWaitNotify 1上面。</p>
+<p>　　开始这似乎不是一个大问题。毕竟，如果doNotify()在第二个MyWaitNotify实例上面被调用真正发生的也不过是线程A和B被错误的唤起。这个被唤起的线程(A或者B)会在while循环里检查信号，并且回到等待状态因为doNotify()方法没有在它们等待的第一个MyWaitNotify实例中被调用。这情况相当于激起了一个假唤醒，线程A或B在没有得到信号的情况下被唤醒。但是代码可以处理这个情况，所以线程回到等待状态。</p>
+<p>　　问题在于，因为doNotify()调用只调用了notify()方法而不是notifyAll()，即使有4个线程在等待同一个字符串实例(空字符串)但是只有一个线程被唤醒。所以如果A和B线程中的一个被唤醒而信号只是用来唤醒C或D的，被唤醒的线程(A或B)会检查信号，看到没有接受到信号，然后回到等待状态。而C和D都没被唤醒来检查它们实际收到的信号，所以信号丢失了。这种情况相当于前面所述的信号丢失问题，C和D接到了一个信号但是不能对其作出回应。</p>
+<p>　　如果doNotify()方法调用notifyAll()而不是notify()，所有的等待线程都被唤醒并且按顺序检查信号。线程A和B会回到等待状态，但是C和D中的一个会注意到这个信号并且离开doWait()方法调用。C和D中的另一个会回到等待状态因为发现信号的线程在退出doWait()方法时清除了信号。</p>
+<p>　　然后你可能会想法使用notifyAll()来代替notify()，但是这在性能考虑上面却是个坏主意。当只有一个线程可以响应信号的时候没有理由把所有等待线程都唤醒。</p>
+<p>　　所以：在wait()/notify()机制中不要使用全局对象、字符串常量等等，应该使用构造函数独特的唯一对象。例如，每一个MyWaitNotify3 (前面部分的例子) 实例都用自己的MonitorObject实例而不是用空字符串来调用wait()和notify()方法。</p>
+]]></content>
+    
+    
+      <category term="java" scheme="http://fantasynew.github.io/tags/java/"/>
+    
+      <category term="多线程" scheme="http://fantasynew.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+      <category term="线程通信" scheme="http://fantasynew.github.io/tags/%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1/"/>
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[Java同步块]]></title>
-    <link href="http://fantasynew.github.io/2014/04/25/java-synchronized-blocks/"/>
-    <id>http://fantasynew.github.io/2014/04/25/java-synchronized-blocks/</id>
+    <link href="http://fantasynew.github.io/2014/04/25/08.java-synchronized-blocks/"/>
+    <id>http://fantasynew.github.io/2014/04/25/08.java-synchronized-blocks/</id>
     <published>2014-04-25T14:06:44.000Z</published>
     <updated>2014-05-14T14:33:14.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/synchronized.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/synchronized.html</a></p>
@@ -111,8 +266,8 @@
   
   <entry>
     <title><![CDATA[线程安全和不可变性]]></title>
-    <link href="http://fantasynew.github.io/2014/04/21/thread-safety-and-immutability/"/>
-    <id>http://fantasynew.github.io/2014/04/21/thread-safety-and-immutability/</id>
+    <link href="http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/"/>
+    <id>http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/</id>
     <published>2014-04-21T14:06:44.000Z</published>
     <updated>2014-05-04T14:40:01.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html</a></p>
@@ -162,8 +317,8 @@
   
   <entry>
     <title><![CDATA[线程安全和资源共享]]></title>
-    <link href="http://fantasynew.github.io/2014/04/18/thread-safety-and-shared-resources/"/>
-    <id>http://fantasynew.github.io/2014/04/18/thread-safety-and-shared-resources/</id>
+    <link href="http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/"/>
+    <id>http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/</id>
     <published>2014-04-18T14:06:44.000Z</published>
     <updated>2014-05-04T14:07:46.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety.html</a></p>
@@ -235,8 +390,8 @@
   
   <entry>
     <title><![CDATA[竞态条件与临界区]]></title>
-    <link href="http://fantasynew.github.io/2014/04/15/race-conditions-and-critical-sections/"/>
-    <id>http://fantasynew.github.io/2014/04/15/race-conditions-and-critical-sections/</id>
+    <link href="http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/"/>
+    <id>http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/</id>
     <published>2014-04-15T14:06:44.000Z</published>
     <updated>2014-04-26T10:43:13.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html</a></p>
@@ -274,8 +429,8 @@
   
   <entry>
     <title><![CDATA[创建和启动java线程]]></title>
-    <link href="http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/"/>
-    <id>http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/</id>
+    <link href="http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/"/>
+    <id>http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/</id>
     <published>2014-04-13T14:06:44.000Z</published>
     <updated>2014-04-26T10:42:49.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html</a></p>
@@ -381,8 +536,8 @@
   
   <entry>
     <title><![CDATA[多线程的代价]]></title>
-    <link href="http://fantasynew.github.io/2014/04/11/costs-of-multithreading/"/>
-    <id>http://fantasynew.github.io/2014/04/11/costs-of-multithreading/</id>
+    <link href="http://fantasynew.github.io/2014/04/11/03.costs-of-multithreading/"/>
+    <id>http://fantasynew.github.io/2014/04/11/03.costs-of-multithreading/</id>
     <published>2014-04-11T14:06:44.000Z</published>
     <updated>2014-04-26T10:41:23.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
@@ -417,8 +572,8 @@
   
   <entry>
     <title><![CDATA[多线程的优点]]></title>
-    <link href="http://fantasynew.github.io/2014/04/09/multithreading-benefits/"/>
-    <id>http://fantasynew.github.io/2014/04/09/multithreading-benefits/</id>
+    <link href="http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/"/>
+    <id>http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/</id>
     <published>2014-04-09T14:06:44.000Z</published>
     <updated>2014-04-26T10:42:24.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
@@ -477,10 +632,10 @@
   
   <entry>
     <title><![CDATA[Java并发介绍]]></title>
-    <link href="http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/"/>
-    <id>http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/</id>
+    <link href="http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/"/>
+    <id>http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/</id>
     <published>2014-04-07T14:06:44.000Z</published>
-    <updated>2014-04-26T10:41:42.000Z</updated>
+    <updated>2014-05-15T14:22:19.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
 <h2 id="引子">引子</h2>
 <p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  <a id="more"></a></p>
@@ -495,11 +650,16 @@
 　　</p>
 <h3 id="Java并发">Java并发</h3>
 <ul>
-<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/09/multithreading-benefits/">多线程的优点</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/11/costs-of-multithreading/">多线程的代价</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/">创建和启动java线程</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/15/race-conditions-and-critical-sections/">竞态条件与临界区</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/">java并发介绍</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/">多线程的优点</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/11/03.costs-of-multithreading/">多线程的代价</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/">创建和启动java线程</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/">竞态条件与临界区</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/">线程安全和资源共享</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/">线程安全和不可变性</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/25/08.java-synchronized-blocks/">Java同步块</a></li>
+<li><a href="http://fantasynew.github.io/2014/04/29/09.thread-signaling/">线程通信</a></li>
+<li><a href="http://fantasynew.github.io/2014/05/01/10.deadlock/">死锁</a></li>
 </ul>
 ]]></content>
     <summary type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>

@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>Hello World | Fantasy Ace&#39;s blog</title>
+    <title>竞态条件与临界区 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" itemprop="description" content="hello world">
+    <meta name="description" itemprop="description" content="在两个线程竞争同一资源的情况下，资源访问的顺序非常重要的，被称作存在竞态条件。导致竞态条件出现的代码区域被称作临界区。">
     
     
     
@@ -74,14 +74,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/04/01/hello-world/" title="Hello World" itemprop="url">Hello World</a>
+      <a href="/2014/04/15/05.race-conditions-and-critical-sections/" title="竞态条件与临界区" itemprop="url">竞态条件与临界区</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-01T14:06:44.000Z" itemprop="datePublished">发表于4月 1 2014</time>
+    <time datetime="2014-04-15T14:06:44.000Z" itemprop="datePublished">发表于4月 15 2014</time>
     
   </p>
 </header>
@@ -91,20 +91,42 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#竞态条件与临界区"><span class="toc-number">1.</span> <span class="toc-text">竞态条件与临界区</span></a></li></ol>
 		
 		</div>
 		
-		<p>Welcome to <a href="http://hexo.io" target="_blank">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs" target="_blank">documentation</a> to learn how to use.</p>
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html</a></p>
+<p>　　在一个应用程序中同时运行多个线程本身不会引起问题，问题出现在多个线程访问相同资源的时候，比如同一内存（变量，数组或者对象），系统（数据库，网络服务等等）或者文件。事实上，问题只出现在一个或者多个线程对这些资源进行写操作的时候。只要这些资源没有变化，多个线程对同一资源进行读操作是安全的。</p>
+<p>　　下面是被多个线程同时执行时可能会失败的代码示例：
+　　</p>
+<blockquote>
+<p><code>public class Counter {</code><br>　　<code>protected long count = 0;</code><br>　　<code>public void add(long value){</code><br>　　　　<code>this.count = this.count + value;</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　想象如果两个线程A和B在同一个Counter实例中执行这个add方法，我们无法知道操作系统什么时候在这两个线程之间进行切换。java虚拟机不会把这段代码作为单指令执行，而是按照下面的顺序执行：</p>
+<blockquote>
+<p><code>把this.count从内存中读取到寄存器</code><br><code>将寄存器中的值加1</code><br><code>把寄存器中的值写到内存中</code>  </p>
+</blockquote>
+<p>　　观察如果线程A和B混合执行会发生什么：</p>
+<blockquote>
+<p><code>this.count = 0;</code><br><code>A: 把this.count从内存中读取到寄存器(0)</code><br><code>B: 把this.count从内存中读取到寄存器(0)</code><br><code>B: 将寄存器中的值加2</code><br><code>B：把寄存器中的值2写到内存中，this.count的值是2</code><br><code>A：将寄存器中的值加3</code><br><code>A：把寄存器中的值3写到内存中，this.count的值是3</code>  </p>
+</blockquote>
+<p>　　这两个线程把数值2和3加到了counter上面，所以两个线程混合执行完成之后预期值应该是5。然而，由于两个线程的执行是交错的，这两个线程从内存中读取的都是0，接着它们分别加它们自己的值2和3并写回到内存中。取代5留在this.count的值会是最后一个线程写入的值。在上面的例子中是线程A，但是也可能是线程B，没有适当的线程同步机制我们没办法知道线程是如何交错执行的。</p>
+<h2 id="竞态条件与临界区">竞态条件与临界区</h2>
+<p>　　在两个线程竞争同一资源的情况下，资源访问的顺序非常重要的，被称作存在竞态条件。导致竞态条件出现的代码区域被称作临界区。在前一个例子中方法add()就是一个临界区，它导致了竞态条件。临界区里适当的线程同步可以避免竞态条件的发生。　</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/杂乱/">杂乱</a>
+  <a class="article-category-link" href="/categories/java多线程/">java多线程</a>
 </div>
 
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/竞态条件/">竞态条件</a><a href="/tags/临界区/">临界区</a>
+  </div>
 
 
 
@@ -113,7 +135,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/2014/04/01/hello-world/" data-title="Hello World | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/" data-title="竞态条件与临界区 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -126,14 +148,22 @@
 	
 <nav class="article-nav clearfix">
 
+<div class="prev">
+<a href="/2014/04/13/04.creating-and-starting-threads/"  title="创建和启动java线程">
+ <strong>上一篇：</strong><br/> 
+ <span>创建和启动java线程
+</span>
+</a>
+</div>
+
 
 
  
  <div class="next" >
- <a href="/2014/04/07/01.introduction-to-java-concurrency/" title="Java并发介绍">
+ <a href="/2014/04/18/06.thread-safety-and-shared-resources/" title="线程安全和资源共享">
   <strong>下一篇：</strong><br/>
   <span>
-  Java并发介绍</span>
+  线程安全和资源共享</span>
 </a>
 </div>
 
@@ -142,7 +172,7 @@
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="jl4krx9ek70emkrn" data-title="http://fantasynew.github.io/2014/04/01/hello-world/" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="5y2p14pjqadoqotv" data-title="http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -163,7 +193,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#竞态条件与临界区"><span class="toc-number">1.</span> <span class="toc-text">竞态条件与临界区</span></a></li></ol>
   </div>
 
 <div id="asidepart">

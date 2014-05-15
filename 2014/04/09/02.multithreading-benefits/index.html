@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>Java并发介绍 | Fantasy Ace&#39;s blog</title>
+    <title>多线程的优点 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" itemprop="description" content="过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。">
+    <meta name="description" itemprop="description" content="尽管有许多挑战，多线程仍然被使用的原因是它有几个优点，这些优点是：1、更好的资源利用率；2、在某些情况下程序设计的更简单；3、程序响应很快。">
     
     
     
@@ -74,14 +74,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/04/07/introduction-to-java-concurrency/" title="Java并发介绍" itemprop="url">Java并发介绍</a>
+      <a href="/2014/04/09/02.multithreading-benefits/" title="多线程的优点" itemprop="url">多线程的优点</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-07T14:06:44.000Z" itemprop="datePublished">发表于4月 7 2014</time>
+    <time datetime="2014-04-09T14:06:44.000Z" itemprop="datePublished">发表于4月 9 2014</time>
     
   </p>
 </header>
@@ -91,30 +91,51 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-number">1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java的多线程和并发"><span class="toc-number">2.</span> <span class="toc-text">Java的多线程和并发</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java并发"><span class="toc-number">2.1.</span> <span class="toc-text">Java并发</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更好的资源利用率"><span class="toc-number">2.</span> <span class="toc-text">更好的资源利用率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更简单的程序设计"><span class="toc-number">3.</span> <span class="toc-text">更简单的程序设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#程序响应更快"><span class="toc-number">4.</span> <span class="toc-text">程序响应更快</span></a></li></ol>
 		
 		</div>
 		
-		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
-<h2 id="引子">引子</h2>
-<p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  <a id="more"></a></p>
-<p>　　多任务处理技术给软件开发人员带来了新的挑战。程序不能被假设占用所有的CPU可用时间、所有的内存和其它资源。一个“表现良好”的程序应该在不用这些资源的时候对其释放，以保证其它程序的使用。  </p>
-<p>　　再后来出现了多线程技术，使得你可以在一个程序内部并行执行多个线程。一个线程的执行可以被认为是一个CPU在执行该程序。当你在一个程序内部执行多个线程时，就好像有多个CPU在同时执行该程序。  </p>
-<p>　　多线程比多任务处理更具挑战性，这些线程运行在一个程序里因此会对相同的内存块进行并发读写操作，这可能导致一些在单线程程序里没出现过的错误。这些错误之所以没出现在单CPU的机器中是因为两个线程永远都不会真正意义上“并发”执行。但是伴随着现代多核CPU计算机的出现，也就意味着不同线程可以在不同CPU内核中得到真正意义上的并行执行。  </p>
-<p>　　如果一个线程对一个内存块进行读取的时候，另一个线程对它进行写操作，进行第一个线程读出的值应该是哪个？写操作之前的旧值？第二个线程写入的新值？还是这两个值之间的混合值？如果两个线程同时对同一内存块进行写操作，当它们写操作完成之后内存块里的值应该是哪个？第一个线程写入的值？第二个线程写入的值？还是这两个值之间的混合值？没有适当的防护措施任何输出结果都是可能的，这种行为甚至都不可预测，输出结果可以随时改变。  </p>
-<h2 id="Java的多线程和并发">Java的多线程和并发</h2>
-<p>　　Java是最先支持多线程开发的编程语言之一，java一开始就提供了多线程开发的功能。因此，java开发者们经常会碰到上面提到的那些问题。这就是我写这篇java并发系列的原因，作为自己的笔记，希望其它java开发人员都可从中受益。  </p>
-<p>　　这个博客系列主要是关心java的多线程开发，但是多线程中出现的一些问题与多任务处理和分布式系统中出现的问题存在类似，因此这个博客系列会将多任务处理和分布式系统作为参考，所以叫法上称为“并发性”而不是“多线程”。  </p>
-<p>　　这个博客系列仍在继续更新中，只要有时间写我就会把新文章更新出来。下表是已经更新的文章：
-　　</p>
-<h3 id="Java并发">Java并发</h3>
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
+<h2 id="简介">简介</h2>
+<p>　　尽管有许多挑战，多线程仍然被使用的原因是它有几个优点，这些优点是：</p>
+<blockquote>
 <ul>
-<li><a href="http://fantasynew.github.io/2014/04/21/introduction-to-java-concurrency/">java并发介绍</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/09/multithreading-benefits/">多线程的优点</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/11/costs-of-multithreading/">多线程的代价</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/">创建和启动java线程</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/15/race-conditions-and-critical-sections/">竞态条件与临界区</a></li>
+<li>更好的资源利用率。 </li>
+<li>在某些情况下程序设计的更简单。</li>
+<li>程序响应很快。</li>
 </ul>
+</blockquote>
+<h2 id="更好的资源利用率">更好的资源利用率</h2>
+<p>　　想象一个从本地文件系统中读取和处理文件的应用程序。假设从硬盘读取一个文件需要5秒，处理它需要2秒。处理两个文件则需要:</p>
+<blockquote>
+<p>　　<code>5秒读取文件A</code><br>　　<code>2秒处理文件A</code><br>　　<code>5秒读取文件B</code><br>　　<code>2秒处理文件B</code>  </p>
+<hr>
+<p>　　<code>总共14秒</code></p>
+</blockquote>
+<p>　　当从硬盘中读取文件时，大部分的CPU时间花费在等待硬盘读取数据上面了。这段时间里CPU处于绝对空闲状态，它可以做一些其他事情。通过改变操作的顺序，CPU可以得到更有效地利用。看下面的顺序：
+　　</p>
+<blockquote>
+<p>　　<code>5秒读取文件A</code><br>　　<code>5秒钟读取文件B + 2秒钟处理文件A</code><br>　　<code>2秒处理文件B</code>  </p>
+<hr>
+<p>　　<code>总共12秒</code>  </p>
+</blockquote>
+<p>　　CPU等待第一个文件的读取，接着开始读取第二个文件，当读取第二个文件的过程中CPU处理第一个文件。记住，在等待磁盘读取文件的时候CPU处于绝对空闲状态。</p>
+<p>　　一般而言，CPU可以在等待IO的过程中做其他事情。不必非得磁盘的IO，还可以是网络IO，或者是用户的输入。网络和硬盘的IO通常都比CPU和内存的IO慢很多。　　</p>
+<h2 id="更简单的程序设计">更简单的程序设计</h2>
+<p>　　在单线程应用程序中如果你想编程实现上面提到的读取和处理功能，你必须跟踪每个文件的读取和处理状态。相反，你可以启动两个线程，每个线程负责一个文件的读取和处理。每个线程在等待硬盘读取它所需要的文件过程中都会堵塞，等待过程中其他线程可以使用CPU来处理他们已经读取过来的文件。导致的结果是硬盘一直处在忙碌状态，不断的读取不同的文件到内存中，这样就使硬盘和CPU都得到了有效利用。这也很好设计，因为每个线程只需要跟踪一个文件。  
+　　</p>
+<h2 id="程序响应更快">程序响应更快</h2>
+<p>　　把单线程应用程序替换成多线程应用程序的另一个常见原因是想获得响应更快的应用程序。想象一个服务器应用在一些端口监听传入的请求。当一个请求到达后，它处理这个请求然后回去继续监听。这个服务器的循环流程概述如下：</p>
+<blockquote>
+<p><code>while(server is active){</code><br>　　<code>listen for request</code><br>　　<code>hand request to worker thread</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　如果一个请求需要花费很长的时间来处理，在这段时间内新的客户端就无法发送请求给服务器。只有在服务器监听的时候请求才能被接收到。  </p>
+<p>　　另一个设计方法是监听线程把请求传递给响应线程，然后立刻返回到监听状态。响应线程负责处理请求并给客户端发送一个回复。这个设计概述如下：  </p>
+<blockquote>
+<p><code>while(server is active){</code><br>　　<code>listen for request</code><br>　　<code>hand request to worker thread</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　这个方式下，服务器线程可以很快回到监听状态，因此更多的客户端可以发送请求到服务器，这个服务也变得响应更快。  </p>
+<p>　　桌面应用程序同样如此，如果你点击一个按钮就开启一个耗时的任务，并且执行这个任务的线程同时负责刷新窗口和按钮，那么在这个任务执行过程中这个应用程序会显示无响应的。相反，这个任务可以交给一个响应线程来处理，当响应线程在处理这个任务的时候，窗口线程可以自由响应其他的用户请求。当响应线程结束的时候它会通知窗口线程，窗口线程就会根据任务的结果来更新应用程序窗口。用户的角度看这种具有响应线程的程序会显得响应速度很快。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -127,7 +148,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/并发/">并发</a>
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/资源利用率/">资源利用率</a>
   </div>
 
 
@@ -137,7 +158,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/" data-title="Java并发介绍 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/" data-title="多线程的优点 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -151,9 +172,9 @@
 <nav class="article-nav clearfix">
 
 <div class="prev">
-<a href="/2014/04/01/hello-world/"  title="Hello World">
+<a href="/2014/04/07/01.introduction-to-java-concurrency/"  title="Java并发介绍">
  <strong>上一篇：</strong><br/> 
- <span>Hello World
+ <span>Java并发介绍
 </span>
 </a>
 </div>
@@ -162,10 +183,10 @@
 
  
  <div class="next" >
- <a href="/2014/04/09/multithreading-benefits/" title="多线程的优点">
+ <a href="/2014/04/11/03.costs-of-multithreading/" title="多线程的代价">
   <strong>下一篇：</strong><br/>
   <span>
-  多线程的优点</span>
+  多线程的代价</span>
 </a>
 </div>
 
@@ -174,7 +195,7 @@
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="pq2ffw7ksapm3iso" data-title="http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="bjfyn1363iujmnii" data-title="http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -195,7 +216,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-number">1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java的多线程和并发"><span class="toc-number">2.</span> <span class="toc-text">Java的多线程和并发</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java并发"><span class="toc-number">2.1.</span> <span class="toc-text">Java并发</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更好的资源利用率"><span class="toc-number">2.</span> <span class="toc-text">更好的资源利用率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更简单的程序设计"><span class="toc-number">3.</span> <span class="toc-text">更简单的程序设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#程序响应更快"><span class="toc-number">4.</span> <span class="toc-text">程序响应更快</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -207,7 +228,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 	<p class="asidetitle">分类</p>
 		<ul>
 		
-			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>8</sup></a></li>
+			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>10</sup></a></li>
 		
 			<li><a href="/categories/杂乱/" title="杂乱">杂乱<sup>1</sup></a></li>
 		
@@ -224,7 +245,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 		
 			<li><a href="/tags/Thread类/" title="Thread类">Thread类<sup>1</sup></a></li>
 		
-			<li><a href="/tags/java/" title="java">java<sup>8</sup></a></li>
+			<li><a href="/tags/java/" title="java">java<sup>10</sup></a></li>
 		
 			<li><a href="/tags/上下文切换/" title="上下文切换">上下文切换<sup>1</sup></a></li>
 		
@@ -234,13 +255,17 @@ var duoshuoQuery = {short_name:"fantasynew"};
 		
 			<li><a href="/tags/同步块/" title="同步块">同步块<sup>1</sup></a></li>
 		
-			<li><a href="/tags/多线程/" title="多线程">多线程<sup>8</sup></a></li>
+			<li><a href="/tags/多线程/" title="多线程">多线程<sup>10</sup></a></li>
 		
 			<li><a href="/tags/并发/" title="并发">并发<sup>1</sup></a></li>
+		
+			<li><a href="/tags/死锁/" title="死锁">死锁<sup>1</sup></a></li>
 		
 			<li><a href="/tags/竞态条件/" title="竞态条件">竞态条件<sup>1</sup></a></li>
 		
 			<li><a href="/tags/线程安全/" title="线程安全">线程安全<sup>2</sup></a></li>
+		
+			<li><a href="/tags/线程通信/" title="线程通信">线程通信<sup>1</sup></a></li>
 		
 			<li><a href="/tags/资源共享/" title="资源共享">资源共享<sup>1</sup></a></li>
 		

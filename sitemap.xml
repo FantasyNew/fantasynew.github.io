@@ -2,17 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://fantasynew.github.io/2014/04/25/java-synchronized-blocks/</loc>
+    <loc>http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/</loc>
+    <lastmod>2014-04-07T14:06:44.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://fantasynew.github.io/2014/05/01/10.deadlock/</loc>
+    <lastmod>2014-05-01T14:06:44.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://fantasynew.github.io/2014/04/29/09.thread-signaling/</loc>
+    <lastmod>2014-04-29T14:06:44.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://fantasynew.github.io/2014/04/25/08.java-synchronized-blocks/</loc>
     <lastmod>2014-04-25T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/04/21/thread-safety-and-immutability/</loc>
+    <loc>http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/</loc>
     <lastmod>2014-04-21T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/04/18/thread-safety-and-shared-resources/</loc>
+    <loc>http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/</loc>
     <lastmod>2014-04-18T14:06:44.000Z</lastmod>
   </url>
   
@@ -27,27 +42,22 @@
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/04/15/race-conditions-and-critical-sections/</loc>
+    <loc>http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/</loc>
     <lastmod>2014-04-15T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/</loc>
+    <loc>http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/</loc>
     <lastmod>2014-04-13T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/04/09/multithreading-benefits/</loc>
+    <loc>http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/</loc>
     <lastmod>2014-04-09T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/04/07/introduction-to-java-concurrency/</loc>
-    <lastmod>2014-04-07T14:06:44.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://fantasynew.github.io/2014/04/11/costs-of-multithreading/</loc>
+    <loc>http://fantasynew.github.io/2014/04/11/03.costs-of-multithreading/</loc>
     <lastmod>2014-04-11T14:06:44.000Z</lastmod>
   </url>
   

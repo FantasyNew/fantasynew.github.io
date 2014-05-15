@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>线程安全和资源共享 | Fantasy Ace&#39;s blog</title>
+    <title>线程安全和不可变性 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" itemprop="description" content="代码被多个线程同时调用还很安全被称作线程安全的。一段线程安全的代码不会存在竞态条件，竞态条件只存在于多个线程同时更新共享资源的情况下，所以了解java线程运行时都共享哪些资源是非常重要的。">
+    <meta name="description" itemprop="description" content="我们可以通过创建不可变的共享对象来确保线程之间分享的对象不会被其它线程更新，以确保线程安全。">
     
     
     
@@ -74,14 +74,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/04/18/thread-safety-and-shared-resources/" title="线程安全和资源共享" itemprop="url">线程安全和资源共享</a>
+      <a href="/2014/04/21/07.thread-safety-and-immutability/" title="线程安全和不可变性" itemprop="url">线程安全和不可变性</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-18T14:06:44.000Z" itemprop="datePublished">发表于4月 18 2014</time>
+    <time datetime="2014-04-21T14:06:44.000Z" itemprop="datePublished">发表于4月 21 2014</time>
     
   </p>
 </header>
@@ -91,62 +91,40 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#局部变量"><span class="toc-number">1.</span> <span class="toc-text">局部变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#局部对象引用"><span class="toc-number">2.</span> <span class="toc-text">局部对象引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对象成员"><span class="toc-number">3.</span> <span class="toc-text">对象成员</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程控制逃逸规则"><span class="toc-number">4.</span> <span class="toc-text">线程控制逃逸规则</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用不是线程安全的！"><span class="toc-number">1.</span> <span class="toc-text">引用不是线程安全的！</span></a></li></ol>
 		
 		</div>
 		
-		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety.html</a></p>
-<p>　　代码被多个线程同时调用还很安全被称作线程安全的。一段线程安全的代码不会存在竞态条件，竞态条件只存在于多个线程同时更新共享资源的情况下，所以了解java线程运行时都共享哪些资源是非常重要的。</p>
-<h2 id="局部变量">局部变量</h2>
-<p>　　局部变量保存在每个线程自己的栈中，也就意味着局部变量不会在线程之间共享，同时意味着所有基本类型的局部变量都是线程安全的。下面是一个线程安全的基本类型局部变量的例子：</p>
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html</a></p>
+<p>　　只有当多个线程访问相同的资源，并且它们中的一个或多个线程对资源进行写操作时才会出现竞态条件。多个线程读取相同的资源时竞态条件不会出现。</p>
+<p>　　我们可以通过创建不可变的共享对象来确保线程之间分享的对象不会被其它线程更新，以确保线程安全。例子如下：</p>
 <blockquote>
-<p><code>public void someMethod(){</code><br>　　<code>long threadSafeInt = 0;</code><br>　　<code>threadSafeInt++;</code><br><code>}</code>   </p>
+<p><code>public class ImmutableValue{</code>  </p>
+<p>　　<code>private int value = 0;</code>  </p>
+<p>　　<code>public ImmutableValue(int value){</code><br>　　　　<code>this.value = value;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public int getValue(){</code><br>　　　　<code>return this.value;</code><br>　　<code>}</code><br><code>}</code>  </p>
 </blockquote>
-<h2 id="局部对象引用">局部对象引用</h2>
-<p>　　<br>　　局部对象引用有一点不同，引用本身不会共享，但是被引用的对象不是保存在每个线程的局部栈中，所有的对象都保存在共享堆中。如果一个方法创建的局部对象并没有在其他方法被引用，那它是线程安全的。实际上你还可以把它传给另一个方法或者对象只要这些方法和对象不让其他线程获取到传过来的对象即可。下面是一个线程安全的局部对象例子：</p>
+<p>　　注意ImmutableValue实例的value属性是在构造函数中赋值的，并且里面没有setter方法。一旦ImmutableValue实例被创建就不能改变它的value值，它是不可变的。不过，你可以使用 getValue()方法读取它的value值。</p>
+<p>　　如果你需要对ImmutableValue实例执行操作，可以通过返回一个带有操作结果的新实例来实现。下面是一个加法操作的例子：</p>
 <blockquote>
-<p><code>public void someMethod(){</code><br>　　<code>LocalObject localObject = new LocalObject();</code><br>　　<code>localObject.callMethod();</code><br>　　<code>method2(localObject);</code><br><code>}</code>  </p>
-<p><code>public void method2(LocalObject localObject){</code><br>　　<code>localObject.setValue(&quot;value&quot;);</code><br><code>}</code>  </p>
+<p><code>public class ImmutableValue{</code>  </p>
+<p>　　<code>private int value = 0;</code>  </p>
+<p>　　<code>public ImmutableValue(int value){</code><br>　　　　<code>this.value = value;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public int getValue(){</code><br>　　　　<code>return this.value;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public ImmutableValue add(int valueToAdd){</code><br>　　　　<code>return new ImmutableValue(this.value + valueToAdd);</code><br>　　<code>}</code>  </p>
+<p><code>}</code>  </p>
 </blockquote>
-<p>　　这个例子中的LocalObject实例没有被返回也没有传递给可以从外部访问someMethod()方法的其他对象。每个执行someMethod()方法的线程都会创建自己的LocalObject实例并分配给localObject引用，所以这里LocalObject用法是线程安全的。实际上someMethod()整个方法都是线程安全。即使LocalObject实例被当作参数传递给同一类或者其他类中的其他方法，它也是线程安全的。但是唯一例外情况是一个把LocalObject 当作参数调用的方法，用允许其他线程访问它的方式保存LocalObject 实例。</p>
-<h2 id="对象成员">对象成员</h2>
-<p>　　对象成员与对象一起存储在堆里面，所以如果两个线程调用同一对象实例的一个方法并且这个方法修改对象的成员这个方法就不是线程安全的。下面是一个非线程安全的方法示例：</p>
+<p>　　注意add()方法返回了一个带有加法操作结果的新ImmutableValue实例，而不是直接对自己的value值进行加法操作。</p>
+<h2 id="引用不是线程安全的！">引用不是线程安全的！</h2>
+<p>　　<br>　　需要记住的是，即使一个对象是线程安全的不可变对象，这个对象的引用也可能不是线程安全的。看下面的例子：</p>
 <blockquote>
-<p><code>public class NotThreadSafe{</code><br>　　<code>StringBuilder builder = new StringBuilder();</code>    </p>
-<p>　　<code>public add(String text){</code><br>　　　　<code>this.builder.append(text);</code><br>　　<code>}</code><br><code>}</code>   </p>
+<p><code>public void Calculator{</code><br>　　<code>private ImmutableValue currentValue = null;</code>  </p>
+<p>　　<code>public ImmutableValue getValue(){</code><br>　　　　<code>return currentValue;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void setValue(ImmutableValue newValue){</code><br>　　　　<code>this.currentValue = newValue;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void add(int newValue){</code><br>　　　　<code>this.currentValue = this.currentValue.add(newValue);</code><br>　　<code>}</code><br><code>}</code>  </p>
 </blockquote>
-<p>　　如果两个线程同时调用同一个NotThreadSafe实例的add()方法就会引起竞态条件。比如：</p>
-<blockquote>
-<p><code>NotThreadSafe sharedInstance = new NotThreadSafe();</code>  </p>
-<p><code>new Thread(new MyRunnable(sharedInstance)).start();</code><br><code>new Thread(new MyRunnable(sharedInstance)).start();</code>  </p>
-<p><code>public class MyRunnable implements Runnable{</code><br>　　<code>NotThreadSafe instance = null;</code>  </p>
-<p>　　<code>public MyRunnable(NotThreadSafe instance){</code><br>　　　　<code>this.instance = instance;</code><br>　　<code>}</code>  </p>
-<p>　　<code>public void run(){</code><br>　　　　<code>this.instance.add(&quot;some text&quot;);</code><br>　　<code>}</code><br><code>}</code>  </p>
-</blockquote>
-<p>　　注意这两个MyRunnable实例共享了同一个NotThreadSafe实例，所以当它们调用NotThreadSafe实例的add()方法时会引起竞态条件。  </p>
-<p>　　然而如果两个线程在不同的实例上面同时调用add()方法并不会引起静态条件。下面是稍微修改之后的例子：</p>
-<blockquote>
-<p><code>new Thread(new MyRunnable(new NotThreadSafe())).start();</code><br><code>new Thread(new MyRunnable(new NotThreadSafe())).start();</code>  </p>
-</blockquote>
-<p>　　现在这两个线程都有自己的NotThreadSafe实例，所以它们对add方法的调用并不会妨碍对方，这段代码没有竞态条件。所以即使一个对象不是线程安全的，仍可以找到一个方式来消除竞态条件。　</p>
-<h2 id="线程控制逃逸规则">线程控制逃逸规则</h2>
-<p>　　当需要判断你的代码访问某些资源是否是线程安全的时候你可以用线程控制逃逸规则：</p>
-<blockquote>
-<p><code>如果一个资源在一个线程的控制下被创建、使用和销毁并且永远不会逃脱线程的控制，则该资源的使用是线程安全的。</code>  </p>
-</blockquote>
-<p>　　资源可以是任何共享资源像对象、数组、文件、数据库连接、socket等等。java语言中不需要你明确的销毁对象，所以“被销毁”意味着对象的引用丢失了或者被置为null。  </p>
-<p>　　即使对象的使用是线程安全的，如果这个对象包含共享资源（比如文件或者数据库连接）你的整个应用程序也不会是线程安全的。比如，如果线程1和线程2都创建了自己的数据库连接，连接1和连接2，每个连接自己本身的使用是线程安全的。但是这两个数据库连接指向的数据库使用时可能不是线程安全的。比如如果两个线程执行如下代码：
-　　</p>
-<blockquote>
-<p><code>校验记录X是否存在，如果不存在插入一个记录X。</code>  </p>
-</blockquote>
-<p>　　如果两个线程同时执行这个代码，而且它们校验的记录X碰巧是同一个记录，就会存在这两个线程最终都插入记录X的风险。比如：
-　　
-　　</p>
-<blockquote>
-<p><code>线程1检查记录X是否存在，结果是否。</code><br><code>线程2检查记录X是否存在，结果是否。</code><br><code>线程1插入记录X。</code><br><code>线程2插入记录X。</code>  </p>
-</blockquote>
-<p>　　同样的问题也会发生在操作文件或者其它共享资源的线程上面。因此，区分一个线程控制的是资源本身，还是仅仅是资源的引用非常重要。</p>
+<p>　　Calculator类有一个ImmutableValue 实例的引用，注意通过setValue()和add()这两个方法都可能会改变这个引用。所以即使Calculator类在内部使用了不可变的对象，它自己却不是不可变的也就不是线程安全的。换句话说：ImmutableValue类是线程安全的，但是对它的使用却不是，当你尝试使用不可变性来达到线程安全的目标时需要牢记这一点。</p>
+<p>　　为了保证Calculator的线程安全你只需要声明getValue(), setValue()和 add()方法为synchronized的即可。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -159,7 +137,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/线程安全/">线程安全</a><a href="/tags/资源共享/">资源共享</a>
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/线程安全/">线程安全</a><a href="/tags/不可变性/">不可变性</a>
   </div>
 
 
@@ -169,7 +147,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/2014/04/18/thread-safety-and-shared-resources/" data-title="线程安全和资源共享 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/" data-title="线程安全和不可变性 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -183,9 +161,9 @@
 <nav class="article-nav clearfix">
 
 <div class="prev">
-<a href="/2014/04/15/race-conditions-and-critical-sections/"  title="竞态条件与临界区">
+<a href="/2014/04/18/06.thread-safety-and-shared-resources/"  title="线程安全和资源共享">
  <strong>上一篇：</strong><br/> 
- <span>竞态条件与临界区
+ <span>线程安全和资源共享
 </span>
 </a>
 </div>
@@ -194,10 +172,10 @@
 
  
  <div class="next" >
- <a href="/2014/04/21/thread-safety-and-immutability/" title="线程安全和不可变性">
+ <a href="/2014/04/25/08.java-synchronized-blocks/" title="Java同步块">
   <strong>下一篇：</strong><br/>
   <span>
-  线程安全和不可变性</span>
+  Java同步块</span>
 </a>
 </div>
 
@@ -206,7 +184,7 @@
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="61dd5dssd8qlnvds" data-title="http://fantasynew.github.io/2014/04/18/thread-safety-and-shared-resources/" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="sjzssg9w17k7y4nw" data-title="http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -227,7 +205,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#局部变量"><span class="toc-number">1.</span> <span class="toc-text">局部变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#局部对象引用"><span class="toc-number">2.</span> <span class="toc-text">局部对象引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对象成员"><span class="toc-number">3.</span> <span class="toc-text">对象成员</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程控制逃逸规则"><span class="toc-number">4.</span> <span class="toc-text">线程控制逃逸规则</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用不是线程安全的！"><span class="toc-number">1.</span> <span class="toc-text">引用不是线程安全的！</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -239,7 +217,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 	<p class="asidetitle">分类</p>
 		<ul>
 		
-			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>8</sup></a></li>
+			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>10</sup></a></li>
 		
 			<li><a href="/categories/杂乱/" title="杂乱">杂乱<sup>1</sup></a></li>
 		
@@ -256,7 +234,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 		
 			<li><a href="/tags/Thread类/" title="Thread类">Thread类<sup>1</sup></a></li>
 		
-			<li><a href="/tags/java/" title="java">java<sup>8</sup></a></li>
+			<li><a href="/tags/java/" title="java">java<sup>10</sup></a></li>
 		
 			<li><a href="/tags/上下文切换/" title="上下文切换">上下文切换<sup>1</sup></a></li>
 		
@@ -266,13 +244,17 @@ var duoshuoQuery = {short_name:"fantasynew"};
 		
 			<li><a href="/tags/同步块/" title="同步块">同步块<sup>1</sup></a></li>
 		
-			<li><a href="/tags/多线程/" title="多线程">多线程<sup>8</sup></a></li>
+			<li><a href="/tags/多线程/" title="多线程">多线程<sup>10</sup></a></li>
 		
 			<li><a href="/tags/并发/" title="并发">并发<sup>1</sup></a></li>
+		
+			<li><a href="/tags/死锁/" title="死锁">死锁<sup>1</sup></a></li>
 		
 			<li><a href="/tags/竞态条件/" title="竞态条件">竞态条件<sup>1</sup></a></li>
 		
 			<li><a href="/tags/线程安全/" title="线程安全">线程安全<sup>2</sup></a></li>
+		
+			<li><a href="/tags/线程通信/" title="线程通信">线程通信<sup>1</sup></a></li>
 		
 			<li><a href="/tags/资源共享/" title="资源共享">资源共享<sup>1</sup></a></li>
 		

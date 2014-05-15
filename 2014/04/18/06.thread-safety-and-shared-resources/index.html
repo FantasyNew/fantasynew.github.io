@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>创建和启动java线程 | Fantasy Ace&#39;s blog</title>
+    <title>线程安全和资源共享 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" itemprop="description" content="创建java线程的方法有两种：1、创建一个Thread子类并重写它的run()方法；2、创建一个实现了java.lang.Runnable接口的类。">
+    <meta name="description" itemprop="description" content="代码被多个线程同时调用还很安全被称作线程安全的。一段线程安全的代码不会存在竞态条件，竞态条件只存在于多个线程同时更新共享资源的情况下，所以了解java线程运行时都共享哪些资源是非常重要的。">
     
     
     
@@ -74,14 +74,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/04/13/creating-and-starting-threads/" title="创建和启动java线程" itemprop="url">创建和启动java线程</a>
+      <a href="/2014/04/18/06.thread-safety-and-shared-resources/" title="线程安全和资源共享" itemprop="url">线程安全和资源共享</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-13T14:06:44.000Z" itemprop="datePublished">发表于4月 13 2014</time>
+    <time datetime="2014-04-18T14:06:44.000Z" itemprop="datePublished">发表于4月 18 2014</time>
     
   </p>
 </header>
@@ -91,96 +91,62 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建启动线程"><span class="toc-number">1.</span> <span class="toc-text">创建启动线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread子类"><span class="toc-number">2.</span> <span class="toc-text">Thread子类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现Runnable接口"><span class="toc-number">3.</span> <span class="toc-text">实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择创建子类还是实现Runnable接口"><span class="toc-number">4.</span> <span class="toc-text">选择创建子类还是实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见错误：调用run()方法而不是start()方法"><span class="toc-number">5.</span> <span class="toc-text">常见错误：调用run()方法而不是start()方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程名"><span class="toc-number">6.</span> <span class="toc-text">线程名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java线程实例"><span class="toc-number">7.</span> <span class="toc-text">java线程实例</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#局部变量"><span class="toc-number">1.</span> <span class="toc-text">局部变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#局部对象引用"><span class="toc-number">2.</span> <span class="toc-text">局部对象引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对象成员"><span class="toc-number">3.</span> <span class="toc-text">对象成员</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程控制逃逸规则"><span class="toc-number">4.</span> <span class="toc-text">线程控制逃逸规则</span></a></li></ol>
 		
 		</div>
 		
-		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html</a></p>
-<p>　　java线程对象与其他java对象一样，所有的线程都继承java.lang.Thread类，或者java.lang.Thread的子类。除了作为对象，java线程还可以执行代码。</p>
-<h2 id="创建启动线程">创建启动线程</h2>
-<p>　　在java中可以用如下方式创建一个线程：
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety.html</a></p>
+<p>　　代码被多个线程同时调用还很安全被称作线程安全的。一段线程安全的代码不会存在竞态条件，竞态条件只存在于多个线程同时更新共享资源的情况下，所以了解java线程运行时都共享哪些资源是非常重要的。</p>
+<h2 id="局部变量">局部变量</h2>
+<p>　　局部变量保存在每个线程自己的栈中，也就意味着局部变量不会在线程之间共享，同时意味着所有基本类型的局部变量都是线程安全的。下面是一个线程安全的基本类型局部变量的例子：</p>
+<blockquote>
+<p><code>public void someMethod(){</code><br>　　<code>long threadSafeInt = 0;</code><br>　　<code>threadSafeInt++;</code><br><code>}</code>   </p>
+</blockquote>
+<h2 id="局部对象引用">局部对象引用</h2>
+<p>　　<br>　　局部对象引用有一点不同，引用本身不会共享，但是被引用的对象不是保存在每个线程的局部栈中，所有的对象都保存在共享堆中。如果一个方法创建的局部对象并没有在其他方法被引用，那它是线程安全的。实际上你还可以把它传给另一个方法或者对象只要这些方法和对象不让其他线程获取到传过来的对象即可。下面是一个线程安全的局部对象例子：</p>
+<blockquote>
+<p><code>public void someMethod(){</code><br>　　<code>LocalObject localObject = new LocalObject();</code><br>　　<code>localObject.callMethod();</code><br>　　<code>method2(localObject);</code><br><code>}</code>  </p>
+<p><code>public void method2(LocalObject localObject){</code><br>　　<code>localObject.setValue(&quot;value&quot;);</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　这个例子中的LocalObject实例没有被返回也没有传递给可以从外部访问someMethod()方法的其他对象。每个执行someMethod()方法的线程都会创建自己的LocalObject实例并分配给localObject引用，所以这里LocalObject用法是线程安全的。实际上someMethod()整个方法都是线程安全。即使LocalObject实例被当作参数传递给同一类或者其他类中的其他方法，它也是线程安全的。但是唯一例外情况是一个把LocalObject 当作参数调用的方法，用允许其他线程访问它的方式保存LocalObject 实例。</p>
+<h2 id="对象成员">对象成员</h2>
+<p>　　对象成员与对象一起存储在堆里面，所以如果两个线程调用同一对象实例的一个方法并且这个方法修改对象的成员这个方法就不是线程安全的。下面是一个非线程安全的方法示例：</p>
+<blockquote>
+<p><code>public class NotThreadSafe{</code><br>　　<code>StringBuilder builder = new StringBuilder();</code>    </p>
+<p>　　<code>public add(String text){</code><br>　　　　<code>this.builder.append(text);</code><br>　　<code>}</code><br><code>}</code>   </p>
+</blockquote>
+<p>　　如果两个线程同时调用同一个NotThreadSafe实例的add()方法就会引起竞态条件。比如：</p>
+<blockquote>
+<p><code>NotThreadSafe sharedInstance = new NotThreadSafe();</code>  </p>
+<p><code>new Thread(new MyRunnable(sharedInstance)).start();</code><br><code>new Thread(new MyRunnable(sharedInstance)).start();</code>  </p>
+<p><code>public class MyRunnable implements Runnable{</code><br>　　<code>NotThreadSafe instance = null;</code>  </p>
+<p>　　<code>public MyRunnable(NotThreadSafe instance){</code><br>　　　　<code>this.instance = instance;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void run(){</code><br>　　　　<code>this.instance.add(&quot;some text&quot;);</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　注意这两个MyRunnable实例共享了同一个NotThreadSafe实例，所以当它们调用NotThreadSafe实例的add()方法时会引起竞态条件。  </p>
+<p>　　然而如果两个线程在不同的实例上面同时调用add()方法并不会引起静态条件。下面是稍微修改之后的例子：</p>
+<blockquote>
+<p><code>new Thread(new MyRunnable(new NotThreadSafe())).start();</code><br><code>new Thread(new MyRunnable(new NotThreadSafe())).start();</code>  </p>
+</blockquote>
+<p>　　现在这两个线程都有自己的NotThreadSafe实例，所以它们对add方法的调用并不会妨碍对方，这段代码没有竞态条件。所以即使一个对象不是线程安全的，仍可以找到一个方式来消除竞态条件。　</p>
+<h2 id="线程控制逃逸规则">线程控制逃逸规则</h2>
+<p>　　当需要判断你的代码访问某些资源是否是线程安全的时候你可以用线程控制逃逸规则：</p>
+<blockquote>
+<p><code>如果一个资源在一个线程的控制下被创建、使用和销毁并且永远不会逃脱线程的控制，则该资源的使用是线程安全的。</code>  </p>
+</blockquote>
+<p>　　资源可以是任何共享资源像对象、数组、文件、数据库连接、socket等等。java语言中不需要你明确的销毁对象，所以“被销毁”意味着对象的引用丢失了或者被置为null。  </p>
+<p>　　即使对象的使用是线程安全的，如果这个对象包含共享资源（比如文件或者数据库连接）你的整个应用程序也不会是线程安全的。比如，如果线程1和线程2都创建了自己的数据库连接，连接1和连接2，每个连接自己本身的使用是线程安全的。但是这两个数据库连接指向的数据库使用时可能不是线程安全的。比如如果两个线程执行如下代码：
 　　</p>
 <blockquote>
-<p><code>Thread thread = new Thread();</code>　　</p>
+<p><code>校验记录X是否存在，如果不存在插入一个记录X。</code>  </p>
 </blockquote>
-<p>　　可以通过调用它的start()方法来启动这个线程，像这样：
+<p>　　如果两个线程同时执行这个代码，而且它们校验的记录X碰巧是同一个记录，就会存在这两个线程最终都插入记录X的风险。比如：
+　　
 　　</p>
 <blockquote>
-<p><code>thread.start();</code>　　</p>
+<p><code>线程1检查记录X是否存在，结果是否。</code><br><code>线程2检查记录X是否存在，结果是否。</code><br><code>线程1插入记录X。</code><br><code>线程2插入记录X。</code>  </p>
 </blockquote>
-<p>　　这个例子并没有指定线程执行任何代码，调用完成之后它就会停止。  </p>
-<p>　　有两种方式来指定线程执行代码。第一种是创建一个Thread 子类并且重写它的run()方法，第二种创建类时实现Runnable接口，下面会介绍这两种方法。</p>
-<h2 id="Thread子类">Thread子类</h2>
-<p>　　第一种指定线程执行代码的方式是创建一个Thread子类并重写它的run()方法,run()方法就是你的线程调用start()后执行的方法。例子如下：  </p>
-<blockquote>
-<p><code>public class MyThread extends Thread {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;MyThread running&quot;);</code><br>　　<code>}</code><br><code>}</code>  </p>
-</blockquote>
-<p>　　你可以这样创建和启动上面的线程：</p>
-<blockquote>
-<p><code>MyThread myThread = new MyThread();</code><br><code>myTread.start();</code></p>
-</blockquote>
-<p>　　start()请求会在线程开始之后立刻返回，它不会等待run()方法执行完，run()方法就好像被另一个CPU执行一样。当run()方法执行时它会打印出文本“MyThread running”。</p>
-<p>　　你还可以按照下面的方法创建一个Thread的匿名子类：
-　　</p>
-<blockquote>
-<p><code>Thread thread = new Thread(){</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;Thread Running&quot;);</code><br>　　<code>}</code><br><code>}</code><br><code>thread.start();</code> </p>
-</blockquote>
-<p>　　一旦run()方法被这个新线程执行的时候这个例子就会打印出“Thread running”。</p>
-<h2 id="实现Runnable接口">实现Runnable接口</h2>
-<p>　　第二种指定线程执行代码的方式是创建一个实现了java.lang.Runnable接口的类。Runnable对象会被一个线程执行。  </p>
-<p>　　下面是java实现Runnable接口的例子：
-　　</p>
-<blockquote>
-<p><code>public class MyRunnable implements Runnable {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;MyRunnable running&quot;);</code><br>　　<code>}</code><br><code>}</code>  　</p>
-</blockquote>
-<p>　　为了让run()方法被一个线程执行，需要把MyRunnable的实例对象传到Thread类的构造函数中。例子如下：
-　　</p>
-<blockquote>
-<p><code>Thread thread = new Thread(new MyRunnable());</code><br><code>myTread.start();</code></p>
-</blockquote>
-<p>　　这个线程开始时他会调用MyRunnable实例对象的run()方法而不是执行它自己的run()方法。上例会打印出“MyRunnable running”。</p>
-<p>　　同样，你也可以这样创建一个实现Runnable接口的匿名类：
-　　</p>
-<blockquote>
-<p><code>Runnable myRunnable = new Runnable(){</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;Runnable running&quot;);</code><br>　　<code>}</code><br><code>}</code><br><code>Thread thread = new Thread(myRunnable);</code><br><code>thread.start();</code>　　</p>
-</blockquote>
-<h2 id="选择创建子类还是实现Runnable接口">选择创建子类还是实现Runnable接口</h2>
-<p>　　这两种方式哪个好没有明确的答案，两种方式都能正常工作。就我个人而言，我喜欢实现Runnable接口，然后把它交给一个线程实例处理。因为实现Runnable接口的线程在线程池中很容易管理，当线程池中的线程有空闲时线程池很容易排列Runnable实例。这对于子类Thread 有一点点困难。</p>
-<p>　　有时候你可能需要同时实现Runnable接口并且创建Thread子类。比如，创建一个Thread 子类运行多个实现Runnable接口的类，这常被用来实现一个线程池。
-　　</p>
-<h2 id="常见错误：调用run()方法而不是start()方法">常见错误：调用run()方法而不是start()方法</h2>
-<p>　　当创建和启动一个线程时常犯的错误是直接调用Thread的run()方法而不是start()方法，像这样：
-　　</p>
-<blockquote>
-<p><code>Thread thread = new Thread(new MyRunnable());</code><br><code>thread.run();  //should be start();</code></p>
-</blockquote>
-<p>　　起初你可能不会注意到任何异常因为run()方法按照你所期望的那样被执行了。然而它不是被你刚刚创建的新线程执行的，run()方法反而是被创建新线程的线程所执行的。换句话说，是被执行了上面两行代码的线程执行的。为了让新创建的线程执行MyRunnable 实例的run()方法，你必须调用新线程的start()方法。
-　　</p>
-<h2 id="线程名">线程名</h2>
-<p>　　创建一个线程时你可以给它一个名称，线程名可以帮助你区别其它的线程。比如，如果多个线程都用System.out输出信息，可以很方便查出是哪个线程输出的信息。例子如下：
-　　</p>
-<blockquote>
-<p><code>Thread thread = new Thread(&quot;New Thread&quot;) {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;run by: &quot; + getname());</code><br>　　<code>}</code><br><code>}</code><br><code>thread.start();</code><br><code>System.out.println(thread.getName());</code>  </p>
-</blockquote>
-<p>　　注意字符串”New Thread”作为参数传给线程的构造函数，这个字符串就是线程名。这个线程名可以通过线程的getName()方法获得。使用实现Runnable 接口方式时你也可以给线程传递一个名称。例子如下：
-　　</p>
-<blockquote>
-<p><code>MyRunnable runnable = new MyRunnable();</code><br><code>Thread thread = new Thread(runnable, &quot;New Thread&quot;);</code><br><code>thread.start();</code><br><code>System.out.println(thread.getName());</code> 　　</p>
-</blockquote>
-<p>　　不过请注意，既然MyRunnable类不是Thread的子类，它没有使用执行它的线程的getName()方法的权限。当前正在执行的线程引用可以使用下面的方式获得</p>
-<blockquote>
-<p><code>Thread.currentThread();</code>  </p>
-</blockquote>
-<p>　　获取当前正在执行线程名称的代码可以这样写：</p>
-<blockquote>
-<p><code>String threadName = Thread.currentThread().getName();</code></p>
-</blockquote>
-<h2 id="java线程实例">java线程实例</h2>
-<p>　　这里有一个小例子。首先它打印出执行main()方法的线程的名称，这个线程是被JVM分配的。接着它开始10个线程并给它们一个数字作为线程名，每个线程都会打印出它们的名称并结束执行。</p>
-<blockquote>
-<p><code>public class ThreadExample {</code><br>　　<code>public static void main(String[] args){</code><br>　　　　<code>System.out.println(Thread.currentThread().getName());</code><br>　　　　<code>for(int i=0; i&lt;10; i++){</code><br>　　　　　　<code>new Thread(&quot;&quot; + i){</code><br>　　　　　　　　<code>public void run(){</code><br>　　　　　　　　　　<code>System.out.println(&quot;Thread: &quot; + getName() + &quot; running&quot;);</code><br>　　　　　　　　<code>}</code><br>　　　　　　<code>}.start();</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code></p>
-</blockquote>
-<p>　　注意虽然这些线程是按照一定顺序(1、2、3…)启动的，它们可不会按照该顺序执行，也就是线程1可能不会作为第一个把自己名称输出到System.out的线程。因为这些线程原则上是并行执行的而不是顺序执行，JVM和/或操作系统决定线程的执行顺序，打印的顺序和开始的顺序并不一定是一致的。　</p>
+<p>　　同样的问题也会发生在操作文件或者其它共享资源的线程上面。因此，区分一个线程控制的是资源本身，还是仅仅是资源的引用非常重要。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -193,7 +159,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/Thread类/">Thread类</a><a href="/tags/Runnable接口/">Runnable接口</a>
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/线程安全/">线程安全</a><a href="/tags/资源共享/">资源共享</a>
   </div>
 
 
@@ -203,7 +169,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/" data-title="创建和启动java线程 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/" data-title="线程安全和资源共享 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -217,9 +183,9 @@
 <nav class="article-nav clearfix">
 
 <div class="prev">
-<a href="/2014/04/11/costs-of-multithreading/"  title="多线程的代价">
+<a href="/2014/04/15/05.race-conditions-and-critical-sections/"  title="竞态条件与临界区">
  <strong>上一篇：</strong><br/> 
- <span>多线程的代价
+ <span>竞态条件与临界区
 </span>
 </a>
 </div>
@@ -228,10 +194,10 @@
 
  
  <div class="next" >
- <a href="/2014/04/15/race-conditions-and-critical-sections/" title="竞态条件与临界区">
+ <a href="/2014/04/21/07.thread-safety-and-immutability/" title="线程安全和不可变性">
   <strong>下一篇：</strong><br/>
   <span>
-  竞态条件与临界区</span>
+  线程安全和不可变性</span>
 </a>
 </div>
 
@@ -240,7 +206,7 @@
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="b03xsnaoss5mhpwf" data-title="http://fantasynew.github.io/2014/04/13/creating-and-starting-threads/" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="vrqlvqnw5tazgtkf" data-title="http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -261,7 +227,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建启动线程"><span class="toc-number">1.</span> <span class="toc-text">创建启动线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread子类"><span class="toc-number">2.</span> <span class="toc-text">Thread子类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现Runnable接口"><span class="toc-number">3.</span> <span class="toc-text">实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择创建子类还是实现Runnable接口"><span class="toc-number">4.</span> <span class="toc-text">选择创建子类还是实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见错误：调用run()方法而不是start()方法"><span class="toc-number">5.</span> <span class="toc-text">常见错误：调用run()方法而不是start()方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程名"><span class="toc-number">6.</span> <span class="toc-text">线程名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java线程实例"><span class="toc-number">7.</span> <span class="toc-text">java线程实例</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#局部变量"><span class="toc-number">1.</span> <span class="toc-text">局部变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#局部对象引用"><span class="toc-number">2.</span> <span class="toc-text">局部对象引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对象成员"><span class="toc-number">3.</span> <span class="toc-text">对象成员</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程控制逃逸规则"><span class="toc-number">4.</span> <span class="toc-text">线程控制逃逸规则</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -273,7 +239,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 	<p class="asidetitle">分类</p>
 		<ul>
 		
-			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>8</sup></a></li>
+			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>10</sup></a></li>
 		
 			<li><a href="/categories/杂乱/" title="杂乱">杂乱<sup>1</sup></a></li>
 		
@@ -290,7 +256,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 		
 			<li><a href="/tags/Thread类/" title="Thread类">Thread类<sup>1</sup></a></li>
 		
-			<li><a href="/tags/java/" title="java">java<sup>8</sup></a></li>
+			<li><a href="/tags/java/" title="java">java<sup>10</sup></a></li>
 		
 			<li><a href="/tags/上下文切换/" title="上下文切换">上下文切换<sup>1</sup></a></li>
 		
@@ -300,13 +266,17 @@ var duoshuoQuery = {short_name:"fantasynew"};
 		
 			<li><a href="/tags/同步块/" title="同步块">同步块<sup>1</sup></a></li>
 		
-			<li><a href="/tags/多线程/" title="多线程">多线程<sup>8</sup></a></li>
+			<li><a href="/tags/多线程/" title="多线程">多线程<sup>10</sup></a></li>
 		
 			<li><a href="/tags/并发/" title="并发">并发<sup>1</sup></a></li>
+		
+			<li><a href="/tags/死锁/" title="死锁">死锁<sup>1</sup></a></li>
 		
 			<li><a href="/tags/竞态条件/" title="竞态条件">竞态条件<sup>1</sup></a></li>
 		
 			<li><a href="/tags/线程安全/" title="线程安全">线程安全<sup>2</sup></a></li>
+		
+			<li><a href="/tags/线程通信/" title="线程通信">线程通信<sup>1</sup></a></li>
 		
 			<li><a href="/tags/资源共享/" title="资源共享">资源共享<sup>1</sup></a></li>
 		

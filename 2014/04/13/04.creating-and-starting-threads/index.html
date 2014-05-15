@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>多线程的优点 | Fantasy Ace&#39;s blog</title>
+    <title>创建和启动java线程 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" itemprop="description" content="尽管有许多挑战，多线程仍然被使用的原因是它有几个优点，这些优点是：1、更好的资源利用率；2、在某些情况下程序设计的更简单；3、程序响应很快。">
+    <meta name="description" itemprop="description" content="创建java线程的方法有两种：1、创建一个Thread子类并重写它的run()方法；2、创建一个实现了java.lang.Runnable接口的类。">
     
     
     
@@ -74,14 +74,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/04/09/multithreading-benefits/" title="多线程的优点" itemprop="url">多线程的优点</a>
+      <a href="/2014/04/13/04.creating-and-starting-threads/" title="创建和启动java线程" itemprop="url">创建和启动java线程</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-09T14:06:44.000Z" itemprop="datePublished">发表于4月 9 2014</time>
+    <time datetime="2014-04-13T14:06:44.000Z" itemprop="datePublished">发表于4月 13 2014</time>
     
   </p>
 </header>
@@ -91,51 +91,96 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更好的资源利用率"><span class="toc-number">2.</span> <span class="toc-text">更好的资源利用率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更简单的程序设计"><span class="toc-number">3.</span> <span class="toc-text">更简单的程序设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#程序响应更快"><span class="toc-number">4.</span> <span class="toc-text">程序响应更快</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建启动线程"><span class="toc-number">1.</span> <span class="toc-text">创建启动线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread子类"><span class="toc-number">2.</span> <span class="toc-text">Thread子类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现Runnable接口"><span class="toc-number">3.</span> <span class="toc-text">实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择创建子类还是实现Runnable接口"><span class="toc-number">4.</span> <span class="toc-text">选择创建子类还是实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见错误：调用run()方法而不是start()方法"><span class="toc-number">5.</span> <span class="toc-text">常见错误：调用run()方法而不是start()方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程名"><span class="toc-number">6.</span> <span class="toc-text">线程名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java线程实例"><span class="toc-number">7.</span> <span class="toc-text">java线程实例</span></a></li></ol>
 		
 		</div>
 		
-		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
-<h2 id="简介">简介</h2>
-<p>　　尽管有许多挑战，多线程仍然被使用的原因是它有几个优点，这些优点是：</p>
-<blockquote>
-<ul>
-<li>更好的资源利用率。 </li>
-<li>在某些情况下程序设计的更简单。</li>
-<li>程序响应很快。</li>
-</ul>
-</blockquote>
-<h2 id="更好的资源利用率">更好的资源利用率</h2>
-<p>　　想象一个从本地文件系统中读取和处理文件的应用程序。假设从硬盘读取一个文件需要5秒，处理它需要2秒。处理两个文件则需要:</p>
-<blockquote>
-<p>　　<code>5秒读取文件A</code><br>　　<code>2秒处理文件A</code><br>　　<code>5秒读取文件B</code><br>　　<code>2秒处理文件B</code>  </p>
-<hr>
-<p>　　<code>总共14秒</code></p>
-</blockquote>
-<p>　　当从硬盘中读取文件时，大部分的CPU时间花费在等待硬盘读取数据上面了。这段时间里CPU处于绝对空闲状态，它可以做一些其他事情。通过改变操作的顺序，CPU可以得到更有效地利用。看下面的顺序：
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html</a></p>
+<p>　　java线程对象与其他java对象一样，所有的线程都继承java.lang.Thread类，或者java.lang.Thread的子类。除了作为对象，java线程还可以执行代码。</p>
+<h2 id="创建启动线程">创建启动线程</h2>
+<p>　　在java中可以用如下方式创建一个线程：
 　　</p>
 <blockquote>
-<p>　　<code>5秒读取文件A</code><br>　　<code>5秒钟读取文件B + 2秒钟处理文件A</code><br>　　<code>2秒处理文件B</code>  </p>
-<hr>
-<p>　　<code>总共12秒</code>  </p>
+<p><code>Thread thread = new Thread();</code>　　</p>
 </blockquote>
-<p>　　CPU等待第一个文件的读取，接着开始读取第二个文件，当读取第二个文件的过程中CPU处理第一个文件。记住，在等待磁盘读取文件的时候CPU处于绝对空闲状态。</p>
-<p>　　一般而言，CPU可以在等待IO的过程中做其他事情。不必非得磁盘的IO，还可以是网络IO，或者是用户的输入。网络和硬盘的IO通常都比CPU和内存的IO慢很多。　　</p>
-<h2 id="更简单的程序设计">更简单的程序设计</h2>
-<p>　　在单线程应用程序中如果你想编程实现上面提到的读取和处理功能，你必须跟踪每个文件的读取和处理状态。相反，你可以启动两个线程，每个线程负责一个文件的读取和处理。每个线程在等待硬盘读取它所需要的文件过程中都会堵塞，等待过程中其他线程可以使用CPU来处理他们已经读取过来的文件。导致的结果是硬盘一直处在忙碌状态，不断的读取不同的文件到内存中，这样就使硬盘和CPU都得到了有效利用。这也很好设计，因为每个线程只需要跟踪一个文件。  
+<p>　　可以通过调用它的start()方法来启动这个线程，像这样：
 　　</p>
-<h2 id="程序响应更快">程序响应更快</h2>
-<p>　　把单线程应用程序替换成多线程应用程序的另一个常见原因是想获得响应更快的应用程序。想象一个服务器应用在一些端口监听传入的请求。当一个请求到达后，它处理这个请求然后回去继续监听。这个服务器的循环流程概述如下：</p>
 <blockquote>
-<p><code>while(server is active){</code><br>　　<code>listen for request</code><br>　　<code>hand request to worker thread</code><br><code>}</code>  </p>
+<p><code>thread.start();</code>　　</p>
 </blockquote>
-<p>　　如果一个请求需要花费很长的时间来处理，在这段时间内新的客户端就无法发送请求给服务器。只有在服务器监听的时候请求才能被接收到。  </p>
-<p>　　另一个设计方法是监听线程把请求传递给响应线程，然后立刻返回到监听状态。响应线程负责处理请求并给客户端发送一个回复。这个设计概述如下：  </p>
+<p>　　这个例子并没有指定线程执行任何代码，调用完成之后它就会停止。  </p>
+<p>　　有两种方式来指定线程执行代码。第一种是创建一个Thread 子类并且重写它的run()方法，第二种创建类时实现Runnable接口，下面会介绍这两种方法。</p>
+<h2 id="Thread子类">Thread子类</h2>
+<p>　　第一种指定线程执行代码的方式是创建一个Thread子类并重写它的run()方法,run()方法就是你的线程调用start()后执行的方法。例子如下：  </p>
 <blockquote>
-<p><code>while(server is active){</code><br>　　<code>listen for request</code><br>　　<code>hand request to worker thread</code><br><code>}</code>  </p>
+<p><code>public class MyThread extends Thread {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;MyThread running&quot;);</code><br>　　<code>}</code><br><code>}</code>  </p>
 </blockquote>
-<p>　　这个方式下，服务器线程可以很快回到监听状态，因此更多的客户端可以发送请求到服务器，这个服务也变得响应更快。  </p>
-<p>　　桌面应用程序同样如此，如果你点击一个按钮就开启一个耗时的任务，并且执行这个任务的线程同时负责刷新窗口和按钮，那么在这个任务执行过程中这个应用程序会显示无响应的。相反，这个任务可以交给一个响应线程来处理，当响应线程在处理这个任务的时候，窗口线程可以自由响应其他的用户请求。当响应线程结束的时候它会通知窗口线程，窗口线程就会根据任务的结果来更新应用程序窗口。用户的角度看这种具有响应线程的程序会显得响应速度很快。</p>
+<p>　　你可以这样创建和启动上面的线程：</p>
+<blockquote>
+<p><code>MyThread myThread = new MyThread();</code><br><code>myTread.start();</code></p>
+</blockquote>
+<p>　　start()请求会在线程开始之后立刻返回，它不会等待run()方法执行完，run()方法就好像被另一个CPU执行一样。当run()方法执行时它会打印出文本“MyThread running”。</p>
+<p>　　你还可以按照下面的方法创建一个Thread的匿名子类：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(){</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;Thread Running&quot;);</code><br>　　<code>}</code><br><code>}</code><br><code>thread.start();</code> </p>
+</blockquote>
+<p>　　一旦run()方法被这个新线程执行的时候这个例子就会打印出“Thread running”。</p>
+<h2 id="实现Runnable接口">实现Runnable接口</h2>
+<p>　　第二种指定线程执行代码的方式是创建一个实现了java.lang.Runnable接口的类。Runnable对象会被一个线程执行。  </p>
+<p>　　下面是java实现Runnable接口的例子：
+　　</p>
+<blockquote>
+<p><code>public class MyRunnable implements Runnable {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;MyRunnable running&quot;);</code><br>　　<code>}</code><br><code>}</code>  　</p>
+</blockquote>
+<p>　　为了让run()方法被一个线程执行，需要把MyRunnable的实例对象传到Thread类的构造函数中。例子如下：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(new MyRunnable());</code><br><code>myTread.start();</code></p>
+</blockquote>
+<p>　　这个线程开始时他会调用MyRunnable实例对象的run()方法而不是执行它自己的run()方法。上例会打印出“MyRunnable running”。</p>
+<p>　　同样，你也可以这样创建一个实现Runnable接口的匿名类：
+　　</p>
+<blockquote>
+<p><code>Runnable myRunnable = new Runnable(){</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;Runnable running&quot;);</code><br>　　<code>}</code><br><code>}</code><br><code>Thread thread = new Thread(myRunnable);</code><br><code>thread.start();</code>　　</p>
+</blockquote>
+<h2 id="选择创建子类还是实现Runnable接口">选择创建子类还是实现Runnable接口</h2>
+<p>　　这两种方式哪个好没有明确的答案，两种方式都能正常工作。就我个人而言，我喜欢实现Runnable接口，然后把它交给一个线程实例处理。因为实现Runnable接口的线程在线程池中很容易管理，当线程池中的线程有空闲时线程池很容易排列Runnable实例。这对于子类Thread 有一点点困难。</p>
+<p>　　有时候你可能需要同时实现Runnable接口并且创建Thread子类。比如，创建一个Thread 子类运行多个实现Runnable接口的类，这常被用来实现一个线程池。
+　　</p>
+<h2 id="常见错误：调用run()方法而不是start()方法">常见错误：调用run()方法而不是start()方法</h2>
+<p>　　当创建和启动一个线程时常犯的错误是直接调用Thread的run()方法而不是start()方法，像这样：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(new MyRunnable());</code><br><code>thread.run();  //should be start();</code></p>
+</blockquote>
+<p>　　起初你可能不会注意到任何异常因为run()方法按照你所期望的那样被执行了。然而它不是被你刚刚创建的新线程执行的，run()方法反而是被创建新线程的线程所执行的。换句话说，是被执行了上面两行代码的线程执行的。为了让新创建的线程执行MyRunnable 实例的run()方法，你必须调用新线程的start()方法。
+　　</p>
+<h2 id="线程名">线程名</h2>
+<p>　　创建一个线程时你可以给它一个名称，线程名可以帮助你区别其它的线程。比如，如果多个线程都用System.out输出信息，可以很方便查出是哪个线程输出的信息。例子如下：
+　　</p>
+<blockquote>
+<p><code>Thread thread = new Thread(&quot;New Thread&quot;) {</code><br>　　<code>public void run(){</code><br>　　　　<code>System.out.println(&quot;run by: &quot; + getname());</code><br>　　<code>}</code><br><code>}</code><br><code>thread.start();</code><br><code>System.out.println(thread.getName());</code>  </p>
+</blockquote>
+<p>　　注意字符串”New Thread”作为参数传给线程的构造函数，这个字符串就是线程名。这个线程名可以通过线程的getName()方法获得。使用实现Runnable 接口方式时你也可以给线程传递一个名称。例子如下：
+　　</p>
+<blockquote>
+<p><code>MyRunnable runnable = new MyRunnable();</code><br><code>Thread thread = new Thread(runnable, &quot;New Thread&quot;);</code><br><code>thread.start();</code><br><code>System.out.println(thread.getName());</code> 　　</p>
+</blockquote>
+<p>　　不过请注意，既然MyRunnable类不是Thread的子类，它没有使用执行它的线程的getName()方法的权限。当前正在执行的线程引用可以使用下面的方式获得</p>
+<blockquote>
+<p><code>Thread.currentThread();</code>  </p>
+</blockquote>
+<p>　　获取当前正在执行线程名称的代码可以这样写：</p>
+<blockquote>
+<p><code>String threadName = Thread.currentThread().getName();</code></p>
+</blockquote>
+<h2 id="java线程实例">java线程实例</h2>
+<p>　　这里有一个小例子。首先它打印出执行main()方法的线程的名称，这个线程是被JVM分配的。接着它开始10个线程并给它们一个数字作为线程名，每个线程都会打印出它们的名称并结束执行。</p>
+<blockquote>
+<p><code>public class ThreadExample {</code><br>　　<code>public static void main(String[] args){</code><br>　　　　<code>System.out.println(Thread.currentThread().getName());</code><br>　　　　<code>for(int i=0; i&lt;10; i++){</code><br>　　　　　　<code>new Thread(&quot;&quot; + i){</code><br>　　　　　　　　<code>public void run(){</code><br>　　　　　　　　　　<code>System.out.println(&quot;Thread: &quot; + getName() + &quot; running&quot;);</code><br>　　　　　　　　<code>}</code><br>　　　　　　<code>}.start();</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code></p>
+</blockquote>
+<p>　　注意虽然这些线程是按照一定顺序(1、2、3…)启动的，它们可不会按照该顺序执行，也就是线程1可能不会作为第一个把自己名称输出到System.out的线程。因为这些线程原则上是并行执行的而不是顺序执行，JVM和/或操作系统决定线程的执行顺序，打印的顺序和开始的顺序并不一定是一致的。　</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -148,7 +193,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/资源利用率/">资源利用率</a>
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/Thread类/">Thread类</a><a href="/tags/Runnable接口/">Runnable接口</a>
   </div>
 
 
@@ -158,7 +203,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/2014/04/09/multithreading-benefits/" data-title="多线程的优点 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/" data-title="创建和启动java线程 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -172,9 +217,9 @@
 <nav class="article-nav clearfix">
 
 <div class="prev">
-<a href="/2014/04/07/introduction-to-java-concurrency/"  title="Java并发介绍">
+<a href="/2014/04/11/03.costs-of-multithreading/"  title="多线程的代价">
  <strong>上一篇：</strong><br/> 
- <span>Java并发介绍
+ <span>多线程的代价
 </span>
 </a>
 </div>
@@ -183,10 +228,10 @@
 
  
  <div class="next" >
- <a href="/2014/04/11/costs-of-multithreading/" title="多线程的代价">
+ <a href="/2014/04/15/05.race-conditions-and-critical-sections/" title="竞态条件与临界区">
   <strong>下一篇：</strong><br/>
   <span>
-  多线程的代价</span>
+  竞态条件与临界区</span>
 </a>
 </div>
 
@@ -195,7 +240,7 @@
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="ndfofsvq0k8i7zwi" data-title="http://fantasynew.github.io/2014/04/09/multithreading-benefits/" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="a7c10x8sb33f4ol0" data-title="http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -216,7 +261,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更好的资源利用率"><span class="toc-number">2.</span> <span class="toc-text">更好的资源利用率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更简单的程序设计"><span class="toc-number">3.</span> <span class="toc-text">更简单的程序设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#程序响应更快"><span class="toc-number">4.</span> <span class="toc-text">程序响应更快</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建启动线程"><span class="toc-number">1.</span> <span class="toc-text">创建启动线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread子类"><span class="toc-number">2.</span> <span class="toc-text">Thread子类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现Runnable接口"><span class="toc-number">3.</span> <span class="toc-text">实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择创建子类还是实现Runnable接口"><span class="toc-number">4.</span> <span class="toc-text">选择创建子类还是实现Runnable接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见错误：调用run()方法而不是start()方法"><span class="toc-number">5.</span> <span class="toc-text">常见错误：调用run()方法而不是start()方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程名"><span class="toc-number">6.</span> <span class="toc-text">线程名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java线程实例"><span class="toc-number">7.</span> <span class="toc-text">java线程实例</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -228,7 +273,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 	<p class="asidetitle">分类</p>
 		<ul>
 		
-			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>8</sup></a></li>
+			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>10</sup></a></li>
 		
 			<li><a href="/categories/杂乱/" title="杂乱">杂乱<sup>1</sup></a></li>
 		
@@ -245,7 +290,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 		
 			<li><a href="/tags/Thread类/" title="Thread类">Thread类<sup>1</sup></a></li>
 		
-			<li><a href="/tags/java/" title="java">java<sup>8</sup></a></li>
+			<li><a href="/tags/java/" title="java">java<sup>10</sup></a></li>
 		
 			<li><a href="/tags/上下文切换/" title="上下文切换">上下文切换<sup>1</sup></a></li>
 		
@@ -255,13 +300,17 @@ var duoshuoQuery = {short_name:"fantasynew"};
 		
 			<li><a href="/tags/同步块/" title="同步块">同步块<sup>1</sup></a></li>
 		
-			<li><a href="/tags/多线程/" title="多线程">多线程<sup>8</sup></a></li>
+			<li><a href="/tags/多线程/" title="多线程">多线程<sup>10</sup></a></li>
 		
 			<li><a href="/tags/并发/" title="并发">并发<sup>1</sup></a></li>
+		
+			<li><a href="/tags/死锁/" title="死锁">死锁<sup>1</sup></a></li>
 		
 			<li><a href="/tags/竞态条件/" title="竞态条件">竞态条件<sup>1</sup></a></li>
 		
 			<li><a href="/tags/线程安全/" title="线程安全">线程安全<sup>2</sup></a></li>
+		
+			<li><a href="/tags/线程通信/" title="线程通信">线程通信<sup>1</sup></a></li>
 		
 			<li><a href="/tags/资源共享/" title="资源共享">资源共享<sup>1</sup></a></li>
 		
