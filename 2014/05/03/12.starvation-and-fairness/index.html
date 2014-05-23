@@ -91,26 +91,26 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java中引起饥饿的原因"><span class="toc-number">1.</span> <span class="toc-text">Java中引起饥饿的原因</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#高优先级的线程吞下了低优先级线程的所有CPU时间"><span class="toc-number">1.1.</span> <span class="toc-text">高优先级的线程吞下了低优先级线程的所有CPU时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程无限期的阻塞在等待进入一个同步块上面"><span class="toc-number">1.2.</span> <span class="toc-text">线程无限期的阻塞在等待进入一个同步块上面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程无限期的等待一个对象（调用了对象的wait()方法）"><span class="toc-number">1.3.</span> <span class="toc-text">线程无限期的等待一个对象（调用了对象的wait()方法）</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#在java中实现公平"><span class="toc-number">2.</span> <span class="toc-text">在java中实现公平</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用锁代替同步块"><span class="toc-number">2.1.</span> <span class="toc-text">使用锁代替同步块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#公平锁"><span class="toc-number">2.2.</span> <span class="toc-text">公平锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#性能考虑"><span class="toc-number">2.3.</span> <span class="toc-text">性能考虑</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java中引起饥饿的原因"><span class="toc-number">1.</span> <span class="toc-text">Java中引起饥饿的原因</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#高优先级的线程吞下了低优先级线程的所有CPU时间"><span class="toc-number">1.1.</span> <span class="toc-text">高优先级的线程吞下了低优先级线程的所有CPU时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程无限期的阻塞在等待进入一个同步块上面"><span class="toc-number">1.2.</span> <span class="toc-text">线程无限期的阻塞在等待进入一个同步块上面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程无限期的等待一个对象（调用了对象的wait()方法）"><span class="toc-number">1.3.</span> <span class="toc-text">线程无限期的等待一个对象（调用了对象的wait()方法）</span></a></li></ol><li class="toc-item toc-level-1"><a class="toc-link" href="#在java中实现公平"><span class="toc-number">2.</span> <span class="toc-text">在java中实现公平</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用锁代替同步块"><span class="toc-number">2.1.</span> <span class="toc-text">使用锁代替同步块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#公平锁"><span class="toc-number">2.2.</span> <span class="toc-text">公平锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能考虑"><span class="toc-number">2.3.</span> <span class="toc-text">性能考虑</span></a></li></ol>
 		
 		</div>
 		
 		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html</a></p>
 <p>如果一个线程因为其它线程一直占用而没有获得CPU时间，就称为“饥饿”。线程被“饿死”是因为其它线程一直占用CPU时间而它没有。饥饿的解决方案被称作“公平”，所有的线程都被授予相同的执行机会。</p>
-<h2 id="Java中引起饥饿的原因">Java中引起饥饿的原因</h2>
+<h1 id="Java中引起饥饿的原因">Java中引起饥饿的原因</h1>
 <p>下面是导致java线程饥饿的三个常见原因：</p>
 <ol>
 <li>高优先级的线程吞下了低优先级线程的所有CPU时间。</li>
 <li>线程无限期的阻塞在等待进入一个同步块上面，因为其它线程不断的请求进入该同步块。</li>
 <li>线程无限期的等待一个对象（调用了对象的wait()方法），因为其它线程不断的被唤醒。</li>
 </ol>
-<h3 id="高优先级的线程吞下了低优先级线程的所有CPU时间">高优先级的线程吞下了低优先级线程的所有CPU时间</h3>
+<h2 id="高优先级的线程吞下了低优先级线程的所有CPU时间">高优先级的线程吞下了低优先级线程的所有CPU时间</h2>
 <p>　　你可以为每个线程设置线程优先级，线程的优先级越高所获得的CPU时间越多。你可以设置线程的优先级在1到10之间，这些优先级数值所表示的含义跟你的应用程序所在的操作系统有关。对大多数应用程序来说最好保持其优先级不变。</p>
-<h3 id="线程无限期的阻塞在等待进入一个同步块上面">线程无限期的阻塞在等待进入一个同步块上面</h3>
+<h2 id="线程无限期的阻塞在等待进入一个同步块上面">线程无限期的阻塞在等待进入一个同步块上面</h2>
 <p>　　java同步代码块是引起饥饿的另一个原因，java同步代码块不保证被允许进入的等待线程进入同步块的顺序。这意味着存在理论上的风险，一个线程被永远阻塞进入代码块，因为其它线程不断地在它之前获得授权，这就是“饥饿”问题，一个线程“饿死”的原因是其它线程不断的获取CPU时间。</p>
-<h3 id="线程无限期的等待一个对象（调用了对象的wait()方法）">线程无限期的等待一个对象（调用了对象的wait()方法）</h3>
+<h2 id="线程无限期的等待一个对象（调用了对象的wait()方法）">线程无限期的等待一个对象（调用了对象的wait()方法）</h2>
 <p>　　notify()方法并不保证哪个线程会被唤醒如果多个线程调用了与它同属一个对象的wait()方法。任何线程都会被唤醒，所以就会出现一个线程因为其它等待线程不断被唤醒而永远等待一个特定对象的风险。</p>
-<h2 id="在java中实现公平">在java中实现公平</h2>
+<h1 id="在java中实现公平">在java中实现公平</h1>
 <p>　　尽管在java中不能保证实现100%的公平，我们仍然可以通过同步结构在线程之间提高公平性。</p>
 <p>　　首先学习下一个简单的同步代码块：</p>
 <blockquote>
@@ -119,7 +119,7 @@
 <p><code>}</code>  </p>
 </blockquote>
 <p>　　如果多个线程调用doSynchronized()方法，它们中的一些会被阻塞直到第一个线程获得授权并离开这个方法。如果多个线程阻塞等待访问代码，我们无法保证下一个获得授权的线程是哪个。</p>
-<h3 id="使用锁代替同步块">使用锁代替同步块</h3>
+<h2 id="使用锁代替同步块">使用锁代替同步块</h2>
 <p>　　为了提高等待线程的公平性，首先我们修改代码块使用锁来代替同步块：</p>
 <blockquote>
 <p><code>public class Synchronizer{</code><br>　　<code>Lock lock = new Lock();</code>  </p>
@@ -137,7 +137,7 @@
 <p>　　如果你回顾一下doSynchronized()方法，你会看到lock()和unlock()方法之间的注释，说明了在这两个调用之间的代码会花费很长时间来执行。让我们来进一步假设这段代码的执行时间比进入lock()方法并因为锁被锁住了而调用wait()等待的时间要长很多。这意味着大部分的时间都花费在等待进入锁并进入临界区的lock()方法里面的wait()调用上面，而不是阻塞在尝试进入lock()方法上面。</p>
 <p>　　前面说过如果有多个线程等待进入的情况下，同步块并不确定哪个线程会被授予访问权限。同样，当notify()方法被调用时，wait()方法也不保证哪个线程会被唤醒。所以，在保证同步性方面这个版本的Lock类与doSynchronized()的同步版本并没有什么不同。但是我们可以改变这种情况。</p>
 <p>　　当前版本的Lcok类调用了自己的wait()方法，如果每个线程在单独的对象上面调用wait()方法，那样每个对象上面只有一个线程调用了wait()，Lock类就可以通过决定调用哪个对象上面的notify()方法，来有效地选择唤醒哪个线程。</p>
-<h3 id="公平锁">公平锁</h3>
+<h2 id="公平锁">公平锁</h2>
 <p>　　下面演示了之前的Lock类改变成一个公平锁叫做FairLock。你会发现这个实现与之前的Lock类中的同步和wait()/noftify()稍有不同。</p>
 <p>　　我如何从之前的Lock类来到现在这个FairLock类的设计涉及到了几个增量式步骤，之前每一步解决的问题：嵌套监控锁定，游离条件和信号丢失。为了不使本文过长这些讨论从本文去掉了，不过每一步都会在本系列下面的文章中进行介绍。重要的是现在每个调用lock()的线程都进行了排序，并且只有队列中第一个线程被允许锁住FairLock实例，如果它没被锁住的话。所有其它线程都只能等待直到它们到达队列的顶部。</p>
 <blockquote>
@@ -156,7 +156,7 @@
 <p>　　注意在相同的同步块中锁的状态依旧被检查和设置来防止游离条件的发生。</p>
 <p>　　同时还要注意，QueueObject实际上只是一个信号，<code>doWait()</code>和<code>doNotify()</code>方法在<code>QueueObject</code>内部保存信号。这样做是为了防止线程调用<code>queueObject.doWait()</code>之前被另一个调用unlock()方法进而调用<code>queueObject.doNotify()</code>的线程打断而引起的信号丢失。<code>queueObject.doWait()</code>调用被放在 <code>synchronized(this)</code>块外面来避免嵌套监控锁定，这样没有线程在<code>lock()</code>方法里面的<code>synchronized(this)</code>里执行时其它线程就可以调用unclock()。</p>
 <p>　　最后，注意<code>queueObject.doWait()</code>是在一个<code>try - catch</code>块里面被调用的。如果抛出了一个InterruptedException异常，线程会离开lock()方法，我们应该在队列里面把它去掉。</p>
-<h3 id="性能考虑">性能考虑</h3>
+<h2 id="性能考虑">性能考虑</h2>
 <p>　　如果你比较一下<em>Lock</em>和<em>FairLock</em>类，你会发现<em>FairLock</em>类的lock()和unlock()里面的东西更多。这些多出来的代码会导致<em>FairLock</em>的同步机制比<em>Lock</em>有一点慢。这对你的应用程序的影响有多大取决于在<em>FairLock</em>创建的临界区里面的代码执行的时间有多长。执行的时间越长，同步器的额外开销越小。这当然也和这段代码被调用的频繁程度有关系。</p>
   
 	</div>
@@ -209,7 +209,7 @@
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="wpnftg63uuceoe8h" data-title="http://fantasynew.github.io/2014/05/03/12.starvation-and-fairness/" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="f8au2vedql1qmp4x" data-title="http://fantasynew.github.io/2014/05/03/12.starvation-and-fairness/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -230,7 +230,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java中引起饥饿的原因"><span class="toc-number">1.</span> <span class="toc-text">Java中引起饥饿的原因</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#高优先级的线程吞下了低优先级线程的所有CPU时间"><span class="toc-number">1.1.</span> <span class="toc-text">高优先级的线程吞下了低优先级线程的所有CPU时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程无限期的阻塞在等待进入一个同步块上面"><span class="toc-number">1.2.</span> <span class="toc-text">线程无限期的阻塞在等待进入一个同步块上面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程无限期的等待一个对象（调用了对象的wait()方法）"><span class="toc-number">1.3.</span> <span class="toc-text">线程无限期的等待一个对象（调用了对象的wait()方法）</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#在java中实现公平"><span class="toc-number">2.</span> <span class="toc-text">在java中实现公平</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用锁代替同步块"><span class="toc-number">2.1.</span> <span class="toc-text">使用锁代替同步块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#公平锁"><span class="toc-number">2.2.</span> <span class="toc-text">公平锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#性能考虑"><span class="toc-number">2.3.</span> <span class="toc-text">性能考虑</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java中引起饥饿的原因"><span class="toc-number">1.</span> <span class="toc-text">Java中引起饥饿的原因</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#高优先级的线程吞下了低优先级线程的所有CPU时间"><span class="toc-number">1.1.</span> <span class="toc-text">高优先级的线程吞下了低优先级线程的所有CPU时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程无限期的阻塞在等待进入一个同步块上面"><span class="toc-number">1.2.</span> <span class="toc-text">线程无限期的阻塞在等待进入一个同步块上面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程无限期的等待一个对象（调用了对象的wait()方法）"><span class="toc-number">1.3.</span> <span class="toc-text">线程无限期的等待一个对象（调用了对象的wait()方法）</span></a></li></ol><li class="toc-item toc-level-1"><a class="toc-link" href="#在java中实现公平"><span class="toc-number">2.</span> <span class="toc-text">在java中实现公平</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用锁代替同步块"><span class="toc-number">2.1.</span> <span class="toc-text">使用锁代替同步块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#公平锁"><span class="toc-number">2.2.</span> <span class="toc-text">公平锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能考虑"><span class="toc-number">2.3.</span> <span class="toc-text">性能考虑</span></a></li></ol>
   </div>
 
 <div id="asidepart">
