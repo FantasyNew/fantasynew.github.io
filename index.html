@@ -73,6 +73,34 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
+    <a href="/2014/05/03/12.starvation-and-fairness/" title="饥饿与公平" itemprop="url">
+  
+    <h1 itemprop="name">饥饿与公平</h1>
+    
+     
+      <p itemprop="description" >如果一个线程因为其它线程一直占用而没有获得CPU时间，就称为“饥饿”。线程被“饿死”是因为其它线程一直占用CPU时间而它没有。饥饿的解决方案被称作“公平”，所有的线程都被授予相同的执行机会。</p>
+      
+    
+    <time datetime="2014-05-03T14:06:44.000Z" itemprop="datePublished">5月 3 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/05/02/11.deadlock-prevention/" title="死锁预防" itemprop="url">
+  
+    <h1 itemprop="name">死锁预防</h1>
+    
+     
+      <p itemprop="description" >在某些情况下预防死锁是可能的。在本文中会介绍三个预防死锁的技术：加锁顺序，加锁时限，死锁检测。</p>
+      
+    
+    <time datetime="2014-05-02T14:06:44.000Z" itemprop="datePublished">5月 2 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
     <a href="/2014/05/01/10.deadlock/" title="死锁" itemprop="url">
   
     <h1 itemprop="name">死锁</h1>
@@ -141,34 +169,6 @@
   </a>
 </section>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/04/15/05.race-conditions-and-critical-sections/" title="竞态条件与临界区" itemprop="url">
-  
-    <h1 itemprop="name">竞态条件与临界区</h1>
-    
-     
-      <p itemprop="description" >在两个线程竞争同一资源的情况下，资源访问的顺序非常重要的，被称作存在竞态条件。导致竞态条件出现的代码区域被称作临界区。</p>
-      
-    
-    <time datetime="2014-04-15T14:06:44.000Z" itemprop="datePublished">4月 15 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/04/13/04.creating-and-starting-threads/" title="创建和启动java线程" itemprop="url">
-  
-    <h1 itemprop="name">创建和启动java线程</h1>
-    
-     
-      <p itemprop="description" >创建java线程的方法有两种：1、创建一个Thread子类并重写它的run()方法；2、创建一个实现了java.lang.Runnable接口的类。</p>
-      
-    
-    <time datetime="2014-04-13T14:06:44.000Z" itemprop="datePublished">4月 13 2014</time>
-  </a>
-</section>
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" href="/page/2/">Next<span></span></a>
@@ -186,7 +186,7 @@
 	<p class="asidetitle">分类</p>
 		<ul>
 		
-			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>10</sup></a></li>
+			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>12</sup></a></li>
 		
 			<li><a href="/categories/杂乱/" title="杂乱">杂乱<sup>1</sup></a></li>
 		
@@ -199,11 +199,15 @@
 	<p class="asidetitle">标签</p>
 		<ul class="clearfix">
 		
+			<li><a href="/tags/Detection/" title="Detection">Detection<sup>1</sup></a></li>
+		
 			<li><a href="/tags/Runnable接口/" title="Runnable接口">Runnable接口<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Thread类/" title="Thread类">Thread类<sup>1</sup></a></li>
 		
-			<li><a href="/tags/java/" title="java">java<sup>10</sup></a></li>
+			<li><a href="/tags/Timeout/" title="Timeout">Timeout<sup>1</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>12</sup></a></li>
 		
 			<li><a href="/tags/上下文切换/" title="上下文切换">上下文切换<sup>1</sup></a></li>
 		
@@ -211,13 +215,17 @@
 		
 			<li><a href="/tags/临界区/" title="临界区">临界区<sup>1</sup></a></li>
 		
+			<li><a href="/tags/公平/" title="公平">公平<sup>1</sup></a></li>
+		
 			<li><a href="/tags/同步块/" title="同步块">同步块<sup>1</sup></a></li>
 		
-			<li><a href="/tags/多线程/" title="多线程">多线程<sup>10</sup></a></li>
+			<li><a href="/tags/多线程/" title="多线程">多线程<sup>12</sup></a></li>
 		
 			<li><a href="/tags/并发/" title="并发">并发<sup>1</sup></a></li>
 		
 			<li><a href="/tags/死锁/" title="死锁">死锁<sup>1</sup></a></li>
+		
+			<li><a href="/tags/死锁预防/" title="死锁预防">死锁预防<sup>1</sup></a></li>
 		
 			<li><a href="/tags/竞态条件/" title="竞态条件">竞态条件<sup>1</sup></a></li>
 		

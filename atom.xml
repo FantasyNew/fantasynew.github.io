@@ -4,7 +4,7 @@
   <subtitle><![CDATA[当你的才华还撑不起你的野心时，你就应该静下心来学习。]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://fantasynew.github.io/"/>
-  <updated>2014-05-15T14:22:27.946Z</updated>
+  <updated>2014-05-23T13:37:57.603Z</updated>
   <id>http://fantasynew.github.io/</id>
   
   <author>
@@ -13,6 +13,157 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[饥饿与公平]]></title>
+    <link href="http://fantasynew.github.io/2014/05/03/12.starvation-and-fairness/"/>
+    <id>http://fantasynew.github.io/2014/05/03/12.starvation-and-fairness/</id>
+    <published>2014-05-03T14:06:44.000Z</published>
+    <updated>2014-05-23T13:37:28.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html</a></p>
+<p>如果一个线程因为其它线程一直占用而没有获得CPU时间，就称为“饥饿”。线程被“饿死”是因为其它线程一直占用CPU时间而它没有。饥饿的解决方案被称作“公平”，所有的线程都被授予相同的执行机会。</p>
+<h2 id="Java中引起饥饿的原因">Java中引起饥饿的原因</h2>
+<p>下面是导致java线程饥饿的三个常见原因：</p>
+<ol>
+<li>高优先级的线程吞下了低优先级线程的所有CPU时间。</li>
+<li>线程无限期的阻塞在等待进入一个同步块上面，因为其它线程不断的请求进入该同步块。</li>
+<li>线程无限期的等待一个对象（调用了对象的wait()方法），因为其它线程不断的被唤醒。</li>
+</ol>
+<h3 id="高优先级的线程吞下了低优先级线程的所有CPU时间">高优先级的线程吞下了低优先级线程的所有CPU时间</h3>
+<p>　　你可以为每个线程设置线程优先级，线程的优先级越高所获得的CPU时间越多。你可以设置线程的优先级在1到10之间，这些优先级数值所表示的含义跟你的应用程序所在的操作系统有关。对大多数应用程序来说最好保持其优先级不变。</p>
+<h3 id="线程无限期的阻塞在等待进入一个同步块上面">线程无限期的阻塞在等待进入一个同步块上面</h3>
+<p>　　java同步代码块是引起饥饿的另一个原因，java同步代码块不保证被允许进入的等待线程进入同步块的顺序。这意味着存在理论上的风险，一个线程被永远阻塞进入代码块，因为其它线程不断地在它之前获得授权，这就是“饥饿”问题，一个线程“饿死”的原因是其它线程不断的获取CPU时间。</p>
+<h3 id="线程无限期的等待一个对象（调用了对象的wait()方法）">线程无限期的等待一个对象（调用了对象的wait()方法）</h3>
+<p>　　notify()方法并不保证哪个线程会被唤醒如果多个线程调用了与它同属一个对象的wait()方法。任何线程都会被唤醒，所以就会出现一个线程因为其它等待线程不断被唤醒而永远等待一个特定对象的风险。</p>
+<h2 id="在java中实现公平">在java中实现公平</h2>
+<p>　　尽管在java中不能保证实现100%的公平，我们仍然可以通过同步结构在线程之间提高公平性。</p>
+<p>　　首先学习下一个简单的同步代码块：</p>
+<blockquote>
+<p><code>public class Synchronizer{</code>  </p>
+<p>　　<code>public synchronized void doSynchronized(){</code><br>　　　　<code>//do a lot of work which takes a long time</code><br>　　<code>}</code>  </p>
+<p><code>}</code>  </p>
+</blockquote>
+<p>　　如果多个线程调用doSynchronized()方法，它们中的一些会被阻塞直到第一个线程获得授权并离开这个方法。如果多个线程阻塞等待访问代码，我们无法保证下一个获得授权的线程是哪个。</p>
+<h3 id="使用锁代替同步块">使用锁代替同步块</h3>
+<p>　　为了提高等待线程的公平性，首先我们修改代码块使用锁来代替同步块：</p>
+<blockquote>
+<p><code>public class Synchronizer{</code><br>　　<code>Lock lock = new Lock();</code>  </p>
+<p>　　<code>public void doSynchronized() throws InterruptedException{</code><br>　　　　<code>this.lock.lock();</code><br>　　　　<code>//critical section, do a lot of work which takes a long time</code><br>　　　　<code>this.lock.unlock();</code><br>　　<code>}</code>  </p>
+<p><code>}</code>  </p>
+</blockquote>
+<p>　　注意doSynchronized()上面不再加synchronized声明。相反，关键部分用lock.lock()和lock.unlock()来替代。</p>
+<p>　　一个Lock类的简单实现应该像下面这样：</p>
+<blockquote>
+<p><code>public class Lock{</code><br>　　<code>private boolean isLocked      = false;</code><br>　　<code>private Thread  lockingThread = null;</code>  </p>
+<p>　　<code>public synchronized void lock() throws InterruptedException{</code><br>　　　　<code>while(isLocked){</code><br>　　　　　　<code>wait();</code><br>　　　　<code>}</code><br>　　　　<code>isLocked      = true;</code><br>　　　　<code>lockingThread = Thread.currentThread();</code><br>　　<code>}</code>  </p>
+<p>　　<code>public synchronized void unlock(){</code><br>　　　　<code>if(this.lockingThread != Thread.currentThread()){</code><br>　　　　　　<code>throw new IllegalMonitorStateException(</code><br>　　　　　　　　<code>&quot;Calling thread has not locked this lock&quot;);</code><br>　　　　　<code>}</code><br>　　　　　<code>isLocked      = false;</code><br>　　　　　<code>lockingThread = null;</code><br>　　　　　<code>notify();</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　如果你注意下上面的Synchronizer类和这个Lock实现你会发现，如果多个线程同时调用lock()方法，它们会阻塞在lock()方法访问上。另外如果锁被锁住了，线程会阻塞在while(isLocked)循环里面的wait()方法调用上。需要记住的是，一个线程调用wait()方法会释放掉Lock实例上面的同步锁，这样等待进入lock()的线程现在可以进入lock()方法了。结果是多个线程最后都会调用lock()方法里面的wait()方法。</p>
+<p>　　如果你回顾一下doSynchronized()方法，你会看到lock()和unlock()方法之间的注释，说明了在这两个调用之间的代码会花费很长时间来执行。让我们来进一步假设这段代码的执行时间比进入lock()方法并因为锁被锁住了而调用wait()等待的时间要长很多。这意味着大部分的时间都花费在等待进入锁并进入临界区的lock()方法里面的wait()调用上面，而不是阻塞在尝试进入lock()方法上面。</p>
+<p>　　前面说过如果有多个线程等待进入的情况下，同步块并不确定哪个线程会被授予访问权限。同样，当notify()方法被调用时，wait()方法也不保证哪个线程会被唤醒。所以，在保证同步性方面这个版本的Lock类与doSynchronized()的同步版本并没有什么不同。但是我们可以改变这种情况。</p>
+<p>　　当前版本的Lcok类调用了自己的wait()方法，如果每个线程在单独的对象上面调用wait()方法，那样每个对象上面只有一个线程调用了wait()，Lock类就可以通过决定调用哪个对象上面的notify()方法，来有效地选择唤醒哪个线程。</p>
+<h3 id="公平锁">公平锁</h3>
+<p>　　下面演示了之前的Lock类改变成一个公平锁叫做FairLock。你会发现这个实现与之前的Lock类中的同步和wait()/noftify()稍有不同。</p>
+<p>　　我如何从之前的Lock类来到现在这个FairLock类的设计涉及到了几个增量式步骤，之前每一步解决的问题：嵌套监控锁定，游离条件和信号丢失。为了不使本文过长这些讨论从本文去掉了，不过每一步都会在本系列下面的文章中进行介绍。重要的是现在每个调用lock()的线程都进行了排序，并且只有队列中第一个线程被允许锁住FairLock实例，如果它没被锁住的话。所有其它线程都只能等待直到它们到达队列的顶部。</p>
+<blockquote>
+<p><code>public class FairLock {</code><br>　　<code>private boolean          isLocked      = false;</code><br>　　<code>private Thread            lockingThread  = null;</code><br>　　<code>private List&lt;QueueObjectwaitingThreads = new ArrayList&lt;QueueObject&gt;();</code></p>
+<p>　　<code>public void lock() throws InterruptedException{</code><br>　　　　<code>QueueObject queueObject          = new QueueObject();</code><br>　　　　<code>boolean    isLockedForThisThread = true;</code><br>　　　　<code>synchronized(this){</code><br>　　　　　　<code>waitingThreads.add(queueObject);</code><br>　　　　<code>}</code>  </p>
+<p>　　　　<code>while(isLockedForThisThread){</code><br>　　　　　　<code>synchronized(this){</code><br>　　　　　　　　<code>isLockedForThisThread =</code><br>　　　　　　　　 　　<code>isLocked || waitingThreads.get(0) != queueObject;</code><br>　　　　　　　　<code>if(!isLockedForThisThread){</code><br>　　　　　　　　　　<code>isLocked = true;</code><br>　　　　　　　　　　<code>waitingThreads.remove(queueObject);</code><br>　　　　　　　　　　<code>lockingThread = Thread.currentThread();</code><br>　　　　　　　　　　<code>return;</code><br>　　　　　　　　<code>}</code><br>　　　　　　<code>}</code><br>　　　　　　<code>try{</code><br>　　　　　　　　<code>queueObject.doWait();</code><br>　　　　　　<code>}catch(InterruptedException e){</code><br>　　　　　　　　<code>synchronized(this) { waitingThreads.remove(queueObject); }</code><br>　　　　　　　　<code>throw e;</code><br>　　　　　　<code>}</code><br>　　　　<code>}</code><br>　　<code>}</code>  </p>
+<p>　　<code>public synchronized void unlock(){</code><br>　　　　<code>if(this.lockingThread != Thread.currentThread()){</code><br>　　　　　　<code>throw new IllegalMonitorStateException(</code><br>　　　　　　　　<code>&quot;Calling thread has not locked this lock&quot;);</code><br>　　　　<code>}</code><br>　　　　<code>isLocked      = false;</code><br>　　　　<code>lockingThread = null;</code><br>　　　　<code>if(waitingThreads.size() 0){</code><br>　　　　　　<code>waitingThreads.get(0).doNotify();</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code></p>
+<p><code>public class QueueObject {</code>  </p>
+<p>　　<code>private boolean isNotified = false;</code>  </p>
+<p>　　<code>public synchronized void doWait() throws InterruptedException {</code><br>　　　　<code>while(!isNotified){</code><br>　　　　　　<code>this.wait();</code><br>　　　　<code>}</code><br>　　　　<code>this.isNotified = false;</code><br>　　<code>}</code>  </p>
+<p>　　<code>public synchronized void doNotify() {</code><br>　　　　<code>this.isNotified = true;</code><br>　　　　<code>this.notify();</code><br>　　<code>}</code>  </p>
+<p>　　<code>public boolean equals(Object o) {</code><br>　　　　<code>return this == o;</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　首先你可能会注意到lock()方法不再声明synchronized，而是只把需要同步的代码放到synchronized代码块里面。</p>
+<p>　　FairLock新创建了一个QueueObject 实例并用它来为调用lock()的线程排序。调用unlock()的线程会获取队列顶部的QueueObject 并且调用它的doNotify()方法来唤醒在该对象上面等待的线程。按照这种方法，每次只有一个等待线程被唤醒，而不是所有的等待线程，这部分决定了FairLock的公平性。</p>
+<p>　　注意在相同的同步块中锁的状态依旧被检查和设置来防止游离条件的发生。</p>
+<p>　　同时还要注意，QueueObject实际上只是一个信号，<code>doWait()</code>和<code>doNotify()</code>方法在<code>QueueObject</code>内部保存信号。这样做是为了防止线程调用<code>queueObject.doWait()</code>之前被另一个调用unlock()方法进而调用<code>queueObject.doNotify()</code>的线程打断而引起的信号丢失。<code>queueObject.doWait()</code>调用被放在 <code>synchronized(this)</code>块外面来避免嵌套监控锁定，这样没有线程在<code>lock()</code>方法里面的<code>synchronized(this)</code>里执行时其它线程就可以调用unclock()。</p>
+<p>　　最后，注意<code>queueObject.doWait()</code>是在一个<code>try - catch</code>块里面被调用的。如果抛出了一个InterruptedException异常，线程会离开lock()方法，我们应该在队列里面把它去掉。</p>
+<h3 id="性能考虑">性能考虑</h3>
+<p>　　如果你比较一下<em>Lock</em>和<em>FairLock</em>类，你会发现<em>FairLock</em>类的lock()和unlock()里面的东西更多。这些多出来的代码会导致<em>FairLock</em>的同步机制比<em>Lock</em>有一点慢。这对你的应用程序的影响有多大取决于在<em>FairLock</em>创建的临界区里面的代码执行的时间有多长。执行的时间越长，同步器的额外开销越小。这当然也和这段代码被调用的频繁程度有关系。</p>
+]]></content>
+    
+    
+      <category term="java" scheme="http://fantasynew.github.io/tags/java/"/>
+    
+      <category term="多线程" scheme="http://fantasynew.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+      <category term="饥饿" scheme="http://fantasynew.github.io/tags/%E9%A5%A5%E9%A5%BF/"/>
+    
+      <category term="公平" scheme="http://fantasynew.github.io/tags/%E5%85%AC%E5%B9%B3/"/>
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[死锁预防]]></title>
+    <link href="http://fantasynew.github.io/2014/05/02/11.deadlock-prevention/"/>
+    <id>http://fantasynew.github.io/2014/05/02/11.deadlock-prevention/</id>
+    <published>2014-05-02T14:06:44.000Z</published>
+    <updated>2014-05-23T13:34:39.000Z</updated>
+    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html</a></p>
+<p>在某些情况下预防死锁是可能的。在本文中我会介绍三个预防死锁的技术：</p>
+<ol>
+<li>Lock Ordering 加锁顺序</li>
+<li>Lock Timeout 加锁时限</li>
+<li>Deadlock Detection 死锁检测</li>
+</ol>
+<h2 id="加锁顺序">加锁顺序</h2>
+<p>　　当多个线程需要相同的锁但是以不同的顺序获得它们的情况下，死锁很容易发生。</p>
+<p>　　如果你能确保所有的线程都按照相同的顺序获得锁，死锁就不会发生。看下面的例子：</p>
+<blockquote>
+<p><code>Thread 1:</code>  </p>
+<p><code>lock A</code><br><code>lock B</code>  </p>
+<p><code>Thread 2:</code></p>
+<p><code>wait for A</code><br><code>lock C (when A locked)</code>  </p>
+<p><code>Thread 3:</code>  </p>
+<p><code>wait for A</code><br><code>wait for B</code><br><code>wait for C</code>  </p>
+</blockquote>
+<p>　　如果一个线程，比如线程3需要多个锁，它必须按照明确的顺序获得它们。在获得前面的锁之前它不能获得序列后面的锁。</p>
+<p>　　例如，在获得锁A之前线程2和3都不能获得锁C。因为线程1持有锁A，线程2和3必须等待知道锁A被释放。然后它们必须先成功获取锁A，然后才能尝试去获取锁B和C。</p>
+<p>　　加锁顺序是一个简单但非常有效的死锁预防机制。但是，这种方式只适用在你事先知道所有可能会用到的锁的情况下，一般并非如此。</p>
+<h2 id="加锁时限">加锁时限</h2>
+<p>　　另一个死锁预防机制是在尝试加锁的时候设置一个时限，意味着一个在尝试获得锁的过程中，如果超过了设定时限线程就会放弃。如果一个线程在给定时限内没有成功获取所有必须的锁，它就会回退，释放调所有已获得的锁，等待一段随机时间之后重试。这段等待随机时间给了其它线程获取相同锁来达到获取所有锁的机会，这样保证了应用程序能够继续运行。</p>
+<p>　　下面是两个线程尝试以不同顺序获取两个相同锁的例子，发生超时后回退并重试请求：</p>
+<blockquote>
+<p><code>Thread 1 locks A</code><br><code>Thread 2 locks B</code>  </p>
+<p><code>Thread 1 attempts to lock B but is blocked</code><br><code>Thread 2 attempts to lock A but is blocked</code>  </p>
+<p><code>Thread 1&#39;s lock attempt on B times out</code><br><code>Thread 1 backs up and releases A as well</code><br><code>Thread 1 waits randomly (e.g. 257 millis) before retrying.</code>  </p>
+<p><code>Thread 2&#39;s lock attempt on A times out</code><br><code>Thread 2 backs up and releases B as well</code><br><code>Thread 2 waits randomly (e.g. 43 millis) before retrying.</code>  </p>
+</blockquote>
+<p>　　在上面的例子中线程2比线程1早200毫秒来请求锁并因此成功的获得两个锁。这时线程1会尝试获取锁A并进入等待状态。当线程2结束时，线程1也可以获得两个锁（除非线程2或者其它线程又获得了锁）。</p>
+<p>　　需要记住的是，因为存在锁的超时， 我们不能认为线程进入死锁状态。也可能是由于控制着锁（导致其它线程超时）的线程需要很长时间来完成自己的任务。</p>
+<p>　　另外，如果有足够多的线程竞争相同的资源，就算有超时和回退机制，还是有一些线程同时一次又一次的尝试请求这些资源的风险。如果只有两个线程，并且重新尝试请求的间隔在0到500毫秒，这种情况可能不会发生，但是如果有10个或者20个线程时情况就不同了。因为这种情况下两个线程碰巧等待相同的时间来重试（或者非常接近以至于出现问题）的概率就特别高了。</p>
+<p>　　加锁时限机制的问题是在java同步块中不能设置超时时间。你需要创建一个自定义锁类或者使用java 5中java.util.concurrency里面的并发结构。写一个自定义锁类并不能难，不过这不在本文讨论范围之内。java并发系列的后面文章会覆盖自定义锁。</p>
+<h2 id="死锁检测">死锁检测</h2>
+<p>　　死锁检测是一个重要的死锁预防机制主要用来解决按顺序加锁和加锁时限不能解决的问题。</p>
+<p>　　每当线程<strong>获得</strong>锁时它会在线程和锁的数据结构(map，graph等等)里记下来。此外，当线程<strong>请求</strong>锁时也会在数据结构里记下来。</p>
+<p>　　当一个线程请求一个锁但是请求被拒绝，这个线程可以遍历锁的关系图来检查是否发生了死锁。举个例子，如果线程A请求锁7但是锁7被线程B持有，那么线程A可以检查看线程B是否在请求线程A持有的一些锁。如果线程B在请求A持有的锁，就会发生死锁(线程A获得了锁1请求锁7，而线程B获得了锁7请求锁1)。</p>
+<p>　　当然死锁场景可能比两个线程持有对方需要的锁的情况更加复杂。线程A可能等待线程B，线程B等待线程C，线程C等待线程D，线程D等待线程A。为了让线程A检查是否出现了死锁，必须递归检查线程B请求的所有锁。从线程B请求的锁，线程A会找到线程C，然后找到线程D，然后发现线程D在请求线程A持有的锁。这样线程A就知道出现了死锁。</p>
+<p>　　下面是被四个线程(A、B、C、D)持有和请求锁的图。这样的数据接口可以被用来检查死锁。</p>
+<p>　　　　　　　　　　　　　　　　<img src="http://fantasyace-photo.qiniudn.com/blog/img-blog002-deadlock-detection-graph.png" alt="mahua"></p>
+<p>　　那么线程检查到死锁时会怎么做呢？</p>
+<p>　　一个可能的行为是释放所有锁，回退，等待一个随机时间之后重试。这类似于简单的锁超时机制，不一样的是线程在明确知道死锁发生时才进行回退操作，而不仅仅因为自己的锁请求超时了。然而，如果有大量的线程竞争同一个锁即使回退并等待它们还是会重复发生死锁。</p>
+<p>　　一个更好的方案是给线程确定并分配一个优先级，这样只有一个(或者一些)线程回退，其它线程继续持有自己需要的锁并像没发生死锁似的继续运行。如果分给线程的优先级是固定的，同一批线程总是会被给更高的优先级。为了防止这种情况你应该在发生死锁时随机分配优先级。</p>
+]]></content>
+    
+    
+      <category term="java" scheme="http://fantasynew.github.io/tags/java/"/>
+    
+      <category term="多线程" scheme="http://fantasynew.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+      <category term="死锁预防" scheme="http://fantasynew.github.io/tags/%E6%AD%BB%E9%94%81%E9%A2%84%E9%98%B2/"/>
+    
+      <category term="Timeout" scheme="http://fantasynew.github.io/tags/Timeout/"/>
+    
+      <category term="Detection" scheme="http://fantasynew.github.io/tags/Detection/"/>
+    
+      <category term="java多线程" scheme="http://fantasynew.github.io/categories/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[死锁]]></title>

@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>Java并发介绍 | Fantasy Ace&#39;s blog</title>
+    <title>死锁预防 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" itemprop="description" content="过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。">
+    <meta name="description" itemprop="description" content="在某些情况下预防死锁是可能的。在本文中会介绍三个预防死锁的技术：加锁顺序，加锁时限，死锁检测。">
     
     
     
@@ -74,14 +74,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/04/07/01.introduction-to-java-concurrency/" title="Java并发介绍" itemprop="url">Java并发介绍</a>
+      <a href="/2014/05/02/11.deadlock-prevention/" title="死锁预防" itemprop="url">死锁预防</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-07T14:06:44.000Z" itemprop="datePublished">发表于4月 7 2014</time>
+    <time datetime="2014-05-02T14:06:44.000Z" itemprop="datePublished">发表于5月 2 2014</time>
     
   </p>
 </header>
@@ -91,35 +91,54 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-number">1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java的多线程和并发"><span class="toc-number">2.</span> <span class="toc-text">Java的多线程和并发</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java并发"><span class="toc-number">2.1.</span> <span class="toc-text">Java并发</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#加锁顺序"><span class="toc-number">1.</span> <span class="toc-text">加锁顺序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加锁时限"><span class="toc-number">2.</span> <span class="toc-text">加锁时限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#死锁检测"><span class="toc-number">3.</span> <span class="toc-text">死锁检测</span></a></li></ol>
 		
 		</div>
 		
-		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
-<h2 id="引子">引子</h2>
-<p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  <a id="more"></a></p>
-<p>　　多任务处理技术给软件开发人员带来了新的挑战。程序不能被假设占用所有的CPU可用时间、所有的内存和其它资源。一个“表现良好”的程序应该在不用这些资源的时候对其释放，以保证其它程序的使用。  </p>
-<p>　　再后来出现了多线程技术，使得你可以在一个程序内部并行执行多个线程。一个线程的执行可以被认为是一个CPU在执行该程序。当你在一个程序内部执行多个线程时，就好像有多个CPU在同时执行该程序。  </p>
-<p>　　多线程比多任务处理更具挑战性，这些线程运行在一个程序里因此会对相同的内存块进行并发读写操作，这可能导致一些在单线程程序里没出现过的错误。这些错误之所以没出现在单CPU的机器中是因为两个线程永远都不会真正意义上“并发”执行。但是伴随着现代多核CPU计算机的出现，也就意味着不同线程可以在不同CPU内核中得到真正意义上的并行执行。  </p>
-<p>　　如果一个线程对一个内存块进行读取的时候，另一个线程对它进行写操作，进行第一个线程读出的值应该是哪个？写操作之前的旧值？第二个线程写入的新值？还是这两个值之间的混合值？如果两个线程同时对同一内存块进行写操作，当它们写操作完成之后内存块里的值应该是哪个？第一个线程写入的值？第二个线程写入的值？还是这两个值之间的混合值？没有适当的防护措施任何输出结果都是可能的，这种行为甚至都不可预测，输出结果可以随时改变。  </p>
-<h2 id="Java的多线程和并发">Java的多线程和并发</h2>
-<p>　　Java是最先支持多线程开发的编程语言之一，java一开始就提供了多线程开发的功能。因此，java开发者们经常会碰到上面提到的那些问题。这就是我写这篇java并发系列的原因，作为自己的笔记，希望其它java开发人员都可从中受益。  </p>
-<p>　　这个博客系列主要是关心java的多线程开发，但是多线程中出现的一些问题与多任务处理和分布式系统中出现的问题存在类似，因此这个博客系列会将多任务处理和分布式系统作为参考，所以叫法上称为“并发性”而不是“多线程”。  </p>
-<p>　　这个博客系列仍在继续更新中，只要有时间写我就会把新文章更新出来。下表是已经更新的文章：
-　　</p>
-<h3 id="Java并发">Java并发</h3>
-<ul>
-<li><a href="http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/">java并发介绍</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/">多线程的优点</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/11/03.costs-of-multithreading/">多线程的代价</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/">创建和启动java线程</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/">竞态条件与临界区</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/">线程安全和资源共享</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/">线程安全和不可变性</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/25/08.java-synchronized-blocks/">Java同步块</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/29/09.thread-signaling/">线程通信</a></li>
-<li><a href="http://fantasynew.github.io/2014/05/01/10.deadlock/">死锁</a></li>
-</ul>
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html</a></p>
+<p>在某些情况下预防死锁是可能的。在本文中我会介绍三个预防死锁的技术：</p>
+<ol>
+<li>Lock Ordering 加锁顺序</li>
+<li>Lock Timeout 加锁时限</li>
+<li>Deadlock Detection 死锁检测</li>
+</ol>
+<h2 id="加锁顺序">加锁顺序</h2>
+<p>　　当多个线程需要相同的锁但是以不同的顺序获得它们的情况下，死锁很容易发生。</p>
+<p>　　如果你能确保所有的线程都按照相同的顺序获得锁，死锁就不会发生。看下面的例子：</p>
+<blockquote>
+<p><code>Thread 1:</code>  </p>
+<p><code>lock A</code><br><code>lock B</code>  </p>
+<p><code>Thread 2:</code></p>
+<p><code>wait for A</code><br><code>lock C (when A locked)</code>  </p>
+<p><code>Thread 3:</code>  </p>
+<p><code>wait for A</code><br><code>wait for B</code><br><code>wait for C</code>  </p>
+</blockquote>
+<p>　　如果一个线程，比如线程3需要多个锁，它必须按照明确的顺序获得它们。在获得前面的锁之前它不能获得序列后面的锁。</p>
+<p>　　例如，在获得锁A之前线程2和3都不能获得锁C。因为线程1持有锁A，线程2和3必须等待知道锁A被释放。然后它们必须先成功获取锁A，然后才能尝试去获取锁B和C。</p>
+<p>　　加锁顺序是一个简单但非常有效的死锁预防机制。但是，这种方式只适用在你事先知道所有可能会用到的锁的情况下，一般并非如此。</p>
+<h2 id="加锁时限">加锁时限</h2>
+<p>　　另一个死锁预防机制是在尝试加锁的时候设置一个时限，意味着一个在尝试获得锁的过程中，如果超过了设定时限线程就会放弃。如果一个线程在给定时限内没有成功获取所有必须的锁，它就会回退，释放调所有已获得的锁，等待一段随机时间之后重试。这段等待随机时间给了其它线程获取相同锁来达到获取所有锁的机会，这样保证了应用程序能够继续运行。</p>
+<p>　　下面是两个线程尝试以不同顺序获取两个相同锁的例子，发生超时后回退并重试请求：</p>
+<blockquote>
+<p><code>Thread 1 locks A</code><br><code>Thread 2 locks B</code>  </p>
+<p><code>Thread 1 attempts to lock B but is blocked</code><br><code>Thread 2 attempts to lock A but is blocked</code>  </p>
+<p><code>Thread 1&#39;s lock attempt on B times out</code><br><code>Thread 1 backs up and releases A as well</code><br><code>Thread 1 waits randomly (e.g. 257 millis) before retrying.</code>  </p>
+<p><code>Thread 2&#39;s lock attempt on A times out</code><br><code>Thread 2 backs up and releases B as well</code><br><code>Thread 2 waits randomly (e.g. 43 millis) before retrying.</code>  </p>
+</blockquote>
+<p>　　在上面的例子中线程2比线程1早200毫秒来请求锁并因此成功的获得两个锁。这时线程1会尝试获取锁A并进入等待状态。当线程2结束时，线程1也可以获得两个锁（除非线程2或者其它线程又获得了锁）。</p>
+<p>　　需要记住的是，因为存在锁的超时， 我们不能认为线程进入死锁状态。也可能是由于控制着锁（导致其它线程超时）的线程需要很长时间来完成自己的任务。</p>
+<p>　　另外，如果有足够多的线程竞争相同的资源，就算有超时和回退机制，还是有一些线程同时一次又一次的尝试请求这些资源的风险。如果只有两个线程，并且重新尝试请求的间隔在0到500毫秒，这种情况可能不会发生，但是如果有10个或者20个线程时情况就不同了。因为这种情况下两个线程碰巧等待相同的时间来重试（或者非常接近以至于出现问题）的概率就特别高了。</p>
+<p>　　加锁时限机制的问题是在java同步块中不能设置超时时间。你需要创建一个自定义锁类或者使用java 5中java.util.concurrency里面的并发结构。写一个自定义锁类并不能难，不过这不在本文讨论范围之内。java并发系列的后面文章会覆盖自定义锁。</p>
+<h2 id="死锁检测">死锁检测</h2>
+<p>　　死锁检测是一个重要的死锁预防机制主要用来解决按顺序加锁和加锁时限不能解决的问题。</p>
+<p>　　每当线程<strong>获得</strong>锁时它会在线程和锁的数据结构(map，graph等等)里记下来。此外，当线程<strong>请求</strong>锁时也会在数据结构里记下来。</p>
+<p>　　当一个线程请求一个锁但是请求被拒绝，这个线程可以遍历锁的关系图来检查是否发生了死锁。举个例子，如果线程A请求锁7但是锁7被线程B持有，那么线程A可以检查看线程B是否在请求线程A持有的一些锁。如果线程B在请求A持有的锁，就会发生死锁(线程A获得了锁1请求锁7，而线程B获得了锁7请求锁1)。</p>
+<p>　　当然死锁场景可能比两个线程持有对方需要的锁的情况更加复杂。线程A可能等待线程B，线程B等待线程C，线程C等待线程D，线程D等待线程A。为了让线程A检查是否出现了死锁，必须递归检查线程B请求的所有锁。从线程B请求的锁，线程A会找到线程C，然后找到线程D，然后发现线程D在请求线程A持有的锁。这样线程A就知道出现了死锁。</p>
+<p>　　下面是被四个线程(A、B、C、D)持有和请求锁的图。这样的数据接口可以被用来检查死锁。</p>
+<p>　　　　　　　　　　　　　　　　<img src="http://fantasyace-photo.qiniudn.com/blog/img-blog002-deadlock-detection-graph.png" alt="mahua"></p>
+<p>　　那么线程检查到死锁时会怎么做呢？</p>
+<p>　　一个可能的行为是释放所有锁，回退，等待一个随机时间之后重试。这类似于简单的锁超时机制，不一样的是线程在明确知道死锁发生时才进行回退操作，而不仅仅因为自己的锁请求超时了。然而，如果有大量的线程竞争同一个锁即使回退并等待它们还是会重复发生死锁。</p>
+<p>　　一个更好的方案是给线程确定并分配一个优先级，这样只有一个(或者一些)线程回退，其它线程继续持有自己需要的锁并像没发生死锁似的继续运行。如果分给线程的优先级是固定的，同一批线程总是会被给更高的优先级。为了防止这种情况你应该在发生死锁时随机分配优先级。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -132,7 +151,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/并发/">并发</a>
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/死锁预防/">死锁预防</a><a href="/tags/Timeout/">Timeout</a><a href="/tags/Detection/">Detection</a>
   </div>
 
 
@@ -142,7 +161,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/" data-title="Java并发介绍 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/05/02/11.deadlock-prevention/" data-title="死锁预防 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -156,9 +175,9 @@
 <nav class="article-nav clearfix">
 
 <div class="prev">
-<a href="/2014/04/01/hello-world/"  title="Hello World">
+<a href="/2014/05/01/10.deadlock/"  title="死锁">
  <strong>上一篇：</strong><br/> 
- <span>Hello World
+ <span>死锁
 </span>
 </a>
 </div>
@@ -167,10 +186,10 @@
 
  
  <div class="next" >
- <a href="/2014/04/09/02.multithreading-benefits/" title="多线程的优点">
+ <a href="/2014/05/03/12.starvation-and-fairness/" title="饥饿与公平">
   <strong>下一篇：</strong><br/>
   <span>
-  多线程的优点</span>
+  饥饿与公平</span>
 </a>
 </div>
 
@@ -179,7 +198,7 @@
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="s5qkltcxurehr72b" data-title="http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="5i6dj5x0vft75vv0" data-title="http://fantasynew.github.io/2014/05/02/11.deadlock-prevention/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -200,7 +219,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-number">1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java的多线程和并发"><span class="toc-number">2.</span> <span class="toc-text">Java的多线程和并发</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java并发"><span class="toc-number">2.1.</span> <span class="toc-text">Java并发</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#加锁顺序"><span class="toc-number">1.</span> <span class="toc-text">加锁顺序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加锁时限"><span class="toc-number">2.</span> <span class="toc-text">加锁时限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#死锁检测"><span class="toc-number">3.</span> <span class="toc-text">死锁检测</span></a></li></ol>
   </div>
 
 <div id="asidepart">
