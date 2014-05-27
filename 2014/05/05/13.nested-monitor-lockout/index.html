@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>多线程的优点 | Fantasy Ace&#39;s blog</title>
+    <title>嵌套监控锁定 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy Ace">
     
-    <meta name="description" itemprop="description" content="尽管有许多挑战，多线程仍然被使用的原因是它有几个优点，这些优点是：1、更好的资源利用率；2、在某些情况下程序设计的更简单；3、程序响应很快。">
+    <meta name="description" itemprop="description" content="如果线程1持有锁A并且等待线程2的信号，而线程2需要锁A来给线程1发送信号，这样导致的阻塞被称作嵌套监控锁定。">
     
     
     
@@ -74,14 +74,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/04/09/02.multithreading-benefits/" title="多线程的优点" itemprop="url">多线程的优点</a>
+      <a href="/2014/05/05/13.nested-monitor-lockout/" title="嵌套监控锁定" itemprop="url">嵌套监控锁定</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy Ace">Fantasy Ace</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-09T14:06:44.000Z" itemprop="datePublished">发表于4月 9 2014</time>
+    <time datetime="2014-05-05T14:06:44.000Z" itemprop="datePublished">发表于5月 5 2014</time>
     
   </p>
 </header>
@@ -91,51 +91,54 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更好的资源利用率"><span class="toc-number">2.</span> <span class="toc-text">更好的资源利用率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更简单的程序设计"><span class="toc-number">3.</span> <span class="toc-text">更简单的程序设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#程序响应更快"><span class="toc-number">4.</span> <span class="toc-text">程序响应更快</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#嵌套监控锁定如何产生"><span class="toc-number">1.</span> <span class="toc-text">嵌套监控锁定如何产生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一个更加现实的例子"><span class="toc-number">2.</span> <span class="toc-text">一个更加现实的例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#嵌套监控锁定与死锁比较"><span class="toc-number">3.</span> <span class="toc-text">嵌套监控锁定与死锁比较</span></a></li></ol>
 		
 		</div>
 		
-		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
-<h2 id="简介">简介</h2>
-<p>　　尽管有许多挑战，多线程仍然被使用的原因是它有几个优点，这些优点是：</p>
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/nested-monitor-lockout.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/nested-monitor-lockout.html</a></p>
+<h2 id="嵌套监控锁定如何产生">嵌套监控锁定如何产生</h2>
+<p>　　嵌套监控锁定是类似于死锁的问题，嵌套监控锁定的产生就像这样：</p>
 <blockquote>
-<ul>
-<li>更好的资源利用率。 </li>
-<li>在某些情况下程序设计的更简单。</li>
-<li>程序响应很快。</li>
-</ul>
+<p>线程1获得A的锁<br>线程1获得B的锁(此时还持有A的锁)<br>线程1在继续之前要等待其它线程的信号<br>线程1调用B.wait()来释放B的锁，而不是A。</p>
+<p>线程2需要锁住A和B(按照这个顺序)来给线程1发送它需要的信号。<br>线程2不能锁住A，因为线程1还在持有A上面的锁。<br>线程2会一直阻塞等待线程1释放A上面的锁</p>
+<p>线程1会一直阻塞等待线程2的信号，因此不会释放A上面的锁，而这个锁必须被释放来保证线程2给线程1发送信号，等等。</p>
 </blockquote>
-<h2 id="更好的资源利用率">更好的资源利用率</h2>
-<p>　　想象一个从本地文件系统中读取和处理文件的应用程序。假设从硬盘读取一个文件需要5秒，处理它需要2秒。处理两个文件则需要:</p>
+<p>　　这听起来好像是一个纯理论上的情形，但是看看下面的比较幼稚的Lock实现：</p>
 <blockquote>
-<p>　　<code>5秒读取文件A</code><br>　　<code>2秒处理文件A</code><br>　　<code>5秒读取文件B</code><br>　　<code>2秒处理文件B</code>  </p>
-<hr>
-<p>　　<code>总共14秒</code></p>
+<p><code>//lock implementation with nested monitor lockout problem</code>  </p>
+<p><code>public class Lock{</code><br>　　<code>protected MonitorObject monitorObject = new MonitorObject();</code><br>　　<code>protected boolean isLocked = false;</code>  </p>
+<p>　　<code>public void lock() throws InterruptedException{</code><br>　　　　<code>synchronized(this){</code><br>　　　　　　<code>while(isLocked){</code><br>　　　　　　　　<code>synchronized(this.monitorObject){</code><br>　　　　　　　　　　<code>this.monitorObject.wait();</code><br>　　　　　　　　<code>}</code><br>　　　　　　<code>}</code><br>　　　　　　<code>isLocked = true;</code><br>　　　　<code>}</code><br>　　<code>}</code>  </p>
+<p>　　<code>public void unlock(){</code><br>　　　　<code>synchronized(this){</code><br>　　　　　　<code>this.isLocked = false;</code><br>　　　　　　<code>synchronized(this.monitorObject){</code><br>　　　　　　　　<code>this.monitorObject.notify();</code><br>　　　　　　<code>}</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code></p>
 </blockquote>
-<p>　　当从硬盘中读取文件时，大部分的CPU时间花费在等待硬盘读取数据上面了。这段时间里CPU处于绝对空闲状态，它可以做一些其他事情。通过改变操作的顺序，CPU可以得到更有效地利用。看下面的顺序：
-　　</p>
+<p>　　可以看到<code>lock()</code>方法首先在”this”上面同步，然后在monitorObject成员变量上同步。如果isLocked 是false不会出现问题，线程不会调用<code>monitorObject.wait()</code>。但是如果isLocked 是true的话，调用<code>lock()</code>的线程会阻塞在<code>monitorObject.wait()</code>的调用上。</p>
+<p>　　这里的问题是，<code>monitorObject.wait()</code>的调用只释放了monitorObject 对象的监控锁，而与”this”相关的监控锁没有被释放。换句话说，这个刚刚阻塞等待的线程还持有”this”的同步锁。</p>
+<p>　　当一开始锁住Lock的线程尝试调用unlock()来解锁时，它会阻塞在中尝试进入unlock()方法中的<code>synchronized(this)</code>块上面。它会一直阻塞直到在lock()上面等待的线程离开<code>synchronized(this)</code>块。但是，在unlock()方法中isLocked被设置为false，并且<code>monitorObject.notify()</code>得到执行之后，在lock()方法里面等待的线程才会离开这个块。</p>
+<p>　　简而言之，在lock()方法上面等待的线程需要unlock()调用成功执行来帮助它退出lock()方法和它里面的同步块。但是除非在lock()上面等待的线程离开外面的同步块，其它线程才能够成功执行unlock()方法。</p>
+<p>　　这就导致任何调用lock()和unlock()方法的线程都会阻塞，这就是嵌套监控锁定。</p>
+<h2 id="一个更加现实的例子">一个更加现实的例子</h2>
+<p>　　你可能会说你永远都不会实现前面展示的锁。你或许不会在内部监控对象上面调用wait()和notify()方法，在这里可能是真的。但是还是会出现一些情况下会出现上面的设计。比如，如果你打算在一个Lock里面实现公平，做这些工作时你希望每个线程都在它们自己的队列对象上面调用wait()方法，这样就可以每次唤醒一个线程了。</p>
+<p>　　看看这个公平锁的幼稚实现：</p>
 <blockquote>
-<p>　　<code>5秒读取文件A</code><br>　　<code>5秒钟读取文件B + 2秒钟处理文件A</code><br>　　<code>2秒处理文件B</code>  </p>
-<hr>
-<p>　　<code>总共12秒</code>  </p>
+<p><code>//Fair Lock implementation with nested monitor lockout problem</code>  </p>
+<p><code>public class FairLock {</code><br>　　<code>private boolean           isLocked       = false;</code><br>　　<code>private Thread            lockingThread  = null;</code><br>　　<code>private List&lt;QueueObjectwaitingThreads = new ArrayList&lt;QueueObject&gt;();</code></p>
+<p>　　<code>public void lock() throws InterruptedException{</code><br>　　　　<code>QueueObject queueObject = new QueueObject();</code>  </p>
+<p>　　　　<code>synchronized(this){</code><br>　　　　　　<code>waitingThreads.add(queueObject);</code>  </p>
+<p>　　　　　　<code>while(isLocked || waitingThreads.get(0) != queueObject){</code>  </p>
+<p>　　　　　　　　<code>synchronized(queueObject){</code><br>　　　　　　　　　　<code>try{</code><br>　　　　　　　　　　　　<code>queueObject.wait();</code><br>　　　　　　　　　　<code>}catch(InterruptedException e){</code><br>　　　　　　　　　　　　<code>waitingThreads.remove(queueObject);</code><br>　　　　　　　　　　　　<code>throw e;</code><br>　　　　　　　　　　<code>}</code><br>　　　　　　　　<code>}</code><br>　　　　　　<code>}</code><br>　　　　　　<code>waitingThreads.remove(queueObject);</code><br>　　　　　　<code>isLocked = true;</code><br>　　　　　　<code>lockingThread = Thread.currentThread();</code><br>　　　　<code>}</code><br>　　<code>}</code>  </p>
+<p>　　<code>public synchronized void unlock(){</code><br>　　　　<code>if(this.lockingThread != Thread.currentThread()){</code><br>　　　　　　<code>throw new IllegalMonitorStateException(</code><br>　　　　　　　　<code>&quot;Calling thread has not locked this lock&quot;);</code><br>　　　　<code>}</code><br>　　　　<code>isLocked      = false;</code><br>　　　　<code>lockingThread = null;</code><br>　　　　<code>if(waitingThreads.size() 0){</code><br>　　　　　　<code>QueueObject queueObject = waitingThread.get(0);</code><br>　　　　　　<code>synchronized(queueObject){</code><br>　　　　　　　　<code>queueObject.notify();</code><br>　　　　　　<code>}</code><br>　　　　<code>}</code><br>　　<code>}</code><br><code>}</code>  </p>
+<p><code>public class QueueObject {}</code></p>
 </blockquote>
-<p>　　CPU等待第一个文件的读取，接着开始读取第二个文件，当读取第二个文件的过程中CPU处理第一个文件。记住，在等待磁盘读取文件的时候CPU处于绝对空闲状态。</p>
-<p>　　一般而言，CPU可以在等待IO的过程中做其他事情。不必非得磁盘的IO，还可以是网络IO，或者是用户的输入。网络和硬盘的IO通常都比CPU和内存的IO慢很多。　　</p>
-<h2 id="更简单的程序设计">更简单的程序设计</h2>
-<p>　　在单线程应用程序中如果你想编程实现上面提到的读取和处理功能，你必须跟踪每个文件的读取和处理状态。相反，你可以启动两个线程，每个线程负责一个文件的读取和处理。每个线程在等待硬盘读取它所需要的文件过程中都会堵塞，等待过程中其他线程可以使用CPU来处理他们已经读取过来的文件。导致的结果是硬盘一直处在忙碌状态，不断的读取不同的文件到内存中，这样就使硬盘和CPU都得到了有效利用。这也很好设计，因为每个线程只需要跟踪一个文件。  
-　　</p>
-<h2 id="程序响应更快">程序响应更快</h2>
-<p>　　把单线程应用程序替换成多线程应用程序的另一个常见原因是想获得响应更快的应用程序。想象一个服务器应用在一些端口监听传入的请求。当一个请求到达后，它处理这个请求然后回去继续监听。这个服务器的循环流程概述如下：</p>
+<p>　　匆匆一看可能会觉得这个实现看起来不错，但是请注意lock()方法在两个嵌套同步块里面调用了queueObject.wait()。一个在”this”上面进行同步，嵌套在其内部的是在queueObject局部变量进行同步。当一个线程调用queueObject.wait()它会释放QueueObject实例上面的锁，但是不会释放与”this”相关的锁。</p>
+<p>　　同时注意，unlock()方法被声明为synchronized，这就相当于加了一个synchronized(this)块。这意味着，如果一个线程在lock()里面等待，这个等待线程就会锁住与”this”相关的监控对象。所有调用unlock()的线程都会一直阻塞，等待这个等待线程释放”this”上面的锁。但是这种情况永远都不会发生了，因为这情况只发生在一个线程成功的给等待线程发送信号时，而这个信号只能通过执行unlock()方法来发送。</p>
+<p>　　因此，上面这个公平锁实现会导致嵌套监控锁定，更好的公平锁实现在饥饿与公平一文中进行了介绍。</p>
+<h2 id="嵌套监控锁定与死锁比较">嵌套监控锁定与死锁比较</h2>
+<p>　　嵌套监控锁定与死锁导致的结果非常相似：线程都阻塞在互相等待上面了。</p>
+<p>　　但是这两种情况还不太一样，死锁一文中讲过死锁发生在两个线程按照不同的顺序获得锁。线程1锁住A等待B，线程2锁住B等待A。在死锁预防一文中介绍过，死锁可以通过按照一定的顺序(锁顺序)给锁加锁来预防。然而，一个嵌套监控锁定恰恰发生在两个线程按照<strong>同样的顺序</strong>获得锁的时候。线程1锁住A和B，然后释放B并且等待线程2的信号。线程2需要A和B来给线程1发送信号。所以，一个线程等待信号而另一个线程等待一个锁被释放。</p>
+<p>　　不同点归纳如下：</p>
 <blockquote>
-<p><code>while(server is active){</code><br>　　<code>listen for request</code><br>　　<code>hand request to worker thread</code><br><code>}</code>  </p>
+<p>在死锁中，两个线程互相等待对方释放锁。</p>
+<p>在嵌套监控锁定中，线程1持有锁A并且等待线程2的信号。线程2需要锁A来给线程1发送信号。</p>
 </blockquote>
-<p>　　如果一个请求需要花费很长的时间来处理，在这段时间内新的客户端就无法发送请求给服务器。只有在服务器监听的时候请求才能被接收到。  </p>
-<p>　　另一个设计方法是监听线程把请求传递给响应线程，然后立刻返回到监听状态。响应线程负责处理请求并给客户端发送一个回复。这个设计概述如下：  </p>
-<blockquote>
-<p><code>while(server is active){</code><br>　　<code>listen for request</code><br>　　<code>hand request to worker thread</code><br><code>}</code>  </p>
-</blockquote>
-<p>　　这个方式下，服务器线程可以很快回到监听状态，因此更多的客户端可以发送请求到服务器，这个服务也变得响应更快。  </p>
-<p>　　桌面应用程序同样如此，如果你点击一个按钮就开启一个耗时的任务，并且执行这个任务的线程同时负责刷新窗口和按钮，那么在这个任务执行过程中这个应用程序会显示无响应的。相反，这个任务可以交给一个响应线程来处理，当响应线程在处理这个任务的时候，窗口线程可以自由响应其他的用户请求。当响应线程结束的时候它会通知窗口线程，窗口线程就会根据任务的结果来更新应用程序窗口。用户的角度看这种具有响应线程的程序会显得响应速度很快。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -148,7 +151,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/资源利用率/">资源利用率</a>
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/嵌套监控锁定/">嵌套监控锁定</a><a href="/tags/死锁/">死锁</a>
   </div>
 
 
@@ -158,7 +161,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/" data-title="多线程的优点 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/2014/05/05/13.nested-monitor-lockout/" data-title="嵌套监控锁定 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -172,9 +175,9 @@
 <nav class="article-nav clearfix">
 
 <div class="prev">
-<a href="/2014/04/07/01.introduction-to-java-concurrency/"  title="Java并发介绍">
+<a href="/2014/05/03/12.starvation-and-fairness/"  title="饥饿与公平">
  <strong>上一篇：</strong><br/> 
- <span>Java并发介绍
+ <span>饥饿与公平
 </span>
 </a>
 </div>
@@ -182,20 +185,12 @@
 
 
  
- <div class="next" >
- <a href="/2014/04/11/03.costs-of-multithreading/" title="多线程的代价">
-  <strong>下一篇：</strong><br/>
-  <span>
-  多线程的代价</span>
-</a>
-</div>
-
 </nav>
 
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="tepv7esn1qi9kxlj" data-title="http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="uv9ejshk0bto9089" data-title="http://fantasynew.github.io/2014/05/05/13.nested-monitor-lockout/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -216,7 +211,7 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更好的资源利用率"><span class="toc-number">2.</span> <span class="toc-text">更好的资源利用率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更简单的程序设计"><span class="toc-number">3.</span> <span class="toc-text">更简单的程序设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#程序响应更快"><span class="toc-number">4.</span> <span class="toc-text">程序响应更快</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#嵌套监控锁定如何产生"><span class="toc-number">1.</span> <span class="toc-text">嵌套监控锁定如何产生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一个更加现实的例子"><span class="toc-number">2.</span> <span class="toc-text">一个更加现实的例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#嵌套监控锁定与死锁比较"><span class="toc-number">3.</span> <span class="toc-text">嵌套监控锁定与死锁比较</span></a></li></ol>
   </div>
 
 <div id="asidepart">
