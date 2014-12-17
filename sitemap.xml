@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://fantasynew.github.io/about/index.html</loc>
+    <lastmod>2014-05-31T06:46:20.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://fantasynew.github.io/2014/05/05/13.nested-monitor-lockout/</loc>
     <lastmod>2014-05-05T14:06:44.000Z</lastmod>
   </url>
@@ -49,11 +54,6 @@
   <url>
     <loc>http://fantasynew.github.io/book/index.html</loc>
     <lastmod>2014-04-03T09:07:07.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://fantasynew.github.io/about/index.html</loc>
-    <lastmod>2014-05-31T06:46:20.000Z</lastmod>
   </url>
   
   <url>
