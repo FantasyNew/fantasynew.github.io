@@ -10,19 +10,7 @@
     
     <meta name="author" content="Fantasy">
     
-    <meta name="description" content="正在阅读
-
-
-
-
-很想阅读
-
- 
-
-
-
-
-最近已读">
+    <meta name="description" content="FanTaSy&#39;s Blog">
     
     
     
@@ -140,7 +128,7 @@
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="6yfoxnu1cqo88db8" data-title="http://fantasynew.github.io/book/index.html" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="uf4j3eg4wtzhpgyj" data-title="http://fantasynew.github.io/book/index.html" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -301,8 +289,6 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
-      
-      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
@@ -319,38 +305,6 @@ $(document).ready(function(){
   $(window).scroll(function(){
     o.css("top",Math.max(80,260-$(this).scrollTop()));
   });
-});
-</script>
-
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var ai = $('.article-content>iframe'),
-      ae = $('.article-content>embed'),
-      t  = $('#toc'),
-      h  = $('article h2')
-      ah = $('article h2'),
-      ta = $('#toc.toc-aside'),
-      o  = $('.openaside'),
-      c  = $('.closeaside');
-  if(ai.length>0){
-    ai.wrap('<div class="video-container" />');
-  };
-  if(ae.length>0){
-   ae.wrap('<div class="video-container" />');
-  };
-  if(ah.length==0){
-    t.css('display','none');
-  }else{
-    c.click(function(){
-      ta.css('display', 'block').addClass('fadeIn');
-    });
-    o.click(function(){
-      ta.css('display', 'none');
-    });
-    $(window).scroll(function(){
-      ta.css("top",Math.max(140,320-$(this).scrollTop()));
-    });
-  };
 });
 </script>
 
