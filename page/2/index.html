@@ -10,8 +10,6 @@
     
     <meta name="author" content="Fantasy">
     
-    <meta name="description" content="FanTaSy&#39;s Blog">
-    
     
     
     
@@ -67,7 +65,7 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/:06.thread-safety-and-shared-resources/" title="线程安全和资源共享" itemprop="url">
+    <a href="/06.thread-safety-and-shared-resources/" title="线程安全和资源共享" itemprop="url">
   
     <h1 itemprop="name">线程安全和资源共享</h1>
     
@@ -81,7 +79,7 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/:05.race-conditions-and-critical-sections/" title="竞态条件与临界区" itemprop="url">
+    <a href="/05.race-conditions-and-critical-sections/" title="竞态条件与临界区" itemprop="url">
   
     <h1 itemprop="name">竞态条件与临界区</h1>
     
@@ -95,7 +93,7 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/:04.creating-and-starting-threads/" title="创建和启动java线程" itemprop="url">
+    <a href="/04.creating-and-starting-threads/" title="创建和启动java线程" itemprop="url">
   
     <h1 itemprop="name">创建和启动java线程</h1>
     
@@ -109,7 +107,7 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/:03.costs-of-multithreading/" title="多线程的代价" itemprop="url">
+    <a href="/03.costs-of-multithreading/" title="多线程的代价" itemprop="url">
   
     <h1 itemprop="name">多线程的代价</h1>
     
@@ -123,7 +121,7 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/:02.multithreading-benefits/" title="多线程的优点" itemprop="url">
+    <a href="/02.multithreading-benefits/" title="多线程的优点" itemprop="url">
   
     <h1 itemprop="name">多线程的优点</h1>
     
@@ -137,7 +135,7 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/:01.introduction-to-java-concurrency/" title="Java并发介绍" itemprop="url">
+    <a href="/01.introduction-to-java-concurrency/" title="Java并发介绍" itemprop="url">
   
     <h1 itemprop="name">Java并发介绍</h1>
     
@@ -151,7 +149,7 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/:hello-world/" title="Hello World" itemprop="url">
+    <a href="/hello-world/" title="Hello World" itemprop="url">
   
     <h1 itemprop="name">Hello World</h1>
     
@@ -313,6 +311,8 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
@@ -329,6 +329,38 @@ $(document).ready(function(){
   $(window).scroll(function(){
     o.css("top",Math.max(80,260-$(this).scrollTop()));
   });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
 });
 </script>
 

@@ -5,24 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>阅历 | Fantasy Ace&#39;s blog</title>
+    <title>死锁 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy">
     
-    <meta name="description" content="正在阅读
-
-
-
-
-很想阅读
-
- 
-
-
-
-
-最近已读">
+    <meta name="description" itemprop="description" content="死锁是两个或多个线程阻塞的等待获取其它死锁线程拥有的锁。死锁发生在多个线程同时但以不同顺序获取请求同一组锁的情况下。">
     
     
     
@@ -75,49 +63,86 @@
 </div>
     </header>
     <div id="container">
-      <div id="main" class="photo" itemscope itemprop="blogPost">
+      <div id="main" class="post" itemscope itemprop="blogPost">
 	<article itemprop="articleBody"> 
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/book/index.html" title="阅历" itemprop="url">阅历</a>
+      <a href="/10.deadlock/" title="死锁" itemprop="url">死锁</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://fantasynew.github.io/about" title="Fantasy">Fantasy</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-04-03T09:07:07.000Z" itemprop="datePublished">发表于4月 3 2014</time>
+    <time datetime="2014-05-01T14:06:44.000Z" itemprop="datePublished">发表于5月 1 2014</time>
     
   </p>
 </header>
 	<div class="article-content">
 		
 		
-		<h1 id="正在阅读">正在阅读</h1>
-<hr>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book003.jpg" alt="Python核心编程"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book002.jpg" alt="思考，快与慢"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book018.jpg" alt="百年孤独"></p>
-<h1 id="很想阅读">很想阅读</h1>
-<hr>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book006.jpg" alt="深入浅出Node.js"> </p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book008.jpg" alt="Node.js高级编程"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book010.jpg" alt="Java虚拟机规范"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book004.jpg" alt="失控"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book013.jpg" alt="Oracle SQL高级编程"></p>
-<h1 id="最近已读">最近已读</h1>
-<hr>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book001.jpg" alt="淘宝技术这十年"> </p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book012.jpg" alt="深入理解Java虚拟机：JVM高级特性与最佳实践"> </p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book020.jpg" alt="重构：改善既有代码的设计"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book019.jpg" alt="技术元素"> </p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book017.jpg" alt="明智行动的艺术"></p>
-<p><img src="http://fantasyace-photo.qiniudn.com/img-book011.jpg" alt="罗马人的故事"></p>
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#线程死锁"><span class="toc-number">1.</span> <span class="toc-text">线程死锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更复杂的死锁"><span class="toc-number">2.</span> <span class="toc-text">更复杂的死锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据库死锁"><span class="toc-number">3.</span> <span class="toc-text">数据库死锁</span></a></li></ol>
+		
+		</div>
+		
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/deadlock.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/deadlock.html</a></p>
+<h2 id="线程死锁">线程死锁</h2>
+<p>　　死锁是两个或多个线程阻塞的等待获取其它死锁线程拥有的锁。死锁发生在多个线程同时但以不同顺序获取请求同一组锁的情况下。</p>
+<p>　　比如，如果线程1锁住了A并且尝试锁住B，而线程2已经锁住B并且尝试锁住A，就会出现死锁。线程1永远也得不到B，线程2永远也得不到A。并且，它们谁都不知道发生了这种意外。它们会一直阻塞在自己对象上A和B，这种情况就是死锁。</p>
+<p>　　情况说明如下：</p>
+<blockquote>
+<p><code>Thread 1  locks A, waits for B</code><br><code>Thread 2  locks B, waits for A</code></p>
+</blockquote>
+<p>　　下面是一个在不同实例上面调用同步方法的TreeNode类的例子：</p>
+<blockquote>
+<p><code>public class TreeNode {</code></p>
+<p>　　<code>TreeNode parent   = null;</code><br>　　<code>List children = new ArrayList();</code>  </p>
+<p>　　<code>public synchronized void addChild(TreeNode child){</code><br>　　　　<code>if(!this.children.contains(child)) {</code><br>　　　　　　<code>this.children.add(child);</code><br>　　　　　　<code>child.setParentOnly(this);</code><br>　　　　<code>}</code><br>　　<code>}</code></p>
+<p>　　<code>public synchronized void addChildOnly(TreeNode child){</code><br>　　　　<code>if(!this.children.contains(child){</code><br>　　　　　　<code>this.children.add(child);</code><br>　　　　<code>}</code><br>　　<code>}</code>  </p>
+<p>　　<code>public synchronized void setParent(TreeNode parent){</code><br>　　　　<code>this.parent = parent;</code><br>　　　　<code>parent.addChildOnly(this);</code><br>　　<code>}</code>  </p>
+<p>　　<code>public synchronized void setParentOnly(TreeNode parent){</code><br>　　　　<code>this.parent = parent;</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　如果在同一个parent和child实例上面，线程1调用parent.addChild(child)方法的同时另一个线程2调用child.setParent(parent)方法，就会出现死锁。下面的伪代码演示了这一点：</p>
+<blockquote>
+<p><code>Thread 1: parent.addChild(child); //locks parent</code><br>　　　　　<code>--child.setParentOnly(parent);</code></p>
+<p><code>Thread 2: child.setParent(parent); //locks child</code><br>　　　　　<code>--parent.addChildOnly()</code></p>
+</blockquote>
+<p>　　首先线程1调用parent.addChild(child)，因为addChild()是同步的线程1就锁住了parent对象防止其它线程使用。</p>
+<p>　　然后线程2调用child.setParent(parent)，因为setParent()是同步的线程2就锁住了child对象防止其它线程使用。</p>
+<p>　　现在child和parent对象被两个不同的线程锁住了。接下来线程1尝试调用child.setParentOnly()方法，但是child对象被线程2锁住了，所以调用方法被阻塞了。线程2也尝试调用parent.addChildOnly()但是parent对象被线程1锁住了，导致线程2阻塞在方法调用上。现在两个线程都被阻塞等待获取另一个线程持有的锁。</p>
+<p>　　注意：这两个线程必须像上面描述的那样同时并且在同一个parent 和child实例中调用parent.addChild(child)和child.setParent(parent)方法才能出现死锁情况。上面的代码可能在很长一段时间内正常执行直到突然发生死锁。</p>
+<p>　　这些线程需要<strong>同时</strong>获得锁。比如，如果线程1比线程2稍微提前一点，然后锁住了A和B两个对象，那么线程2在尝试锁住B的时候就阻塞了，也就不会出现死锁了。既然线程调度通常都是不可预测的，所以没有办法预知<strong>何时</strong>会产生死锁，我们只知道它<strong>可能会</strong>出现。</p>
+<h2 id="更复杂的死锁">更复杂的死锁</h2>
+<p>　　死锁还可以包含超过两个线程，这让它更难被检测出来。下面是四个线程死锁的例子：  </p>
+<blockquote>
+<p><code>Thread 1  locks A, waits for B</code><br><code>Thread 2  locks B, waits for C</code><br><code>Thread 3  locks C, waits for D</code><br><code>Thread 4  locks D, waits for A</code>  </p>
+</blockquote>
+<p>　　线程1等待线程2，线程2等待线程3，线程3等待线程4，线程4等待线程1。</p>
+<h2 id="数据库死锁">数据库死锁</h2>
+<p>　　更加复杂的死锁场景是在数据库事务处理中。一个数据库事务处理可能由多条SQL更新请求组成。当一条记录在事务中被更新时，这条事务就会被锁住防止其它事务更新，直到第一个事务完成。同一事务中的每次更新请求都会锁住一些数据库中的记录。</p>
+<p>　　当多个事务同时需要对相同的记录做更新操作时，就会有出现死锁的风险。比如：</p>
+<blockquote>
+<p><code>Transaction 1, request 1, locks record 1 for update</code><br><code>Transaction 2, request 1, locks record 2 for update</code><br><code>Transaction 1, request 2, tries to lock record 2 for update.</code><br><code>Transaction 2, request 2, tries to lock record 1 for update.</code>  </p>
+</blockquote>
+<p>　　既然锁发生在不同的请求中，而且给定事务一开始并不知道自己需要哪些锁，所以很难发现并预防数据库事务出现死锁。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/java多线程/">java多线程</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/死锁/">死锁</a>
+  </div>
 
 
 
@@ -126,7 +151,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://fantasynew.github.io/book/index.html" data-title="阅历 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  <div data-url="http://fantasynew.github.io/10.deadlock/" data-title="死锁 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
   </div>
 
 </div>
@@ -137,10 +162,33 @@
    	       
 	</article>
 	
+<nav class="article-nav clearfix">
+
+<div class="prev">
+<a href="/09.thread-signaling/"  title="线程通信">
+ <strong>上一篇：</strong><br/> 
+ <span>线程通信
+</span>
+</a>
+</div>
+
+
+
+ 
+ <div class="next" >
+ <a href="/11.deadlock-prevention/" title="死锁预防">
+  <strong>下一篇：</strong><br/>
+  <span>
+  死锁预防</span>
+</a>
+</div>
+
+</nav>
+
 	
 <section id="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="6yfoxnu1cqo88db8" data-title="http://fantasynew.github.io/book/index.html" data-url="undefined"></div>
+	<div class="ds-thread" data-thread-key="rllr3lvvj1rxdmgt" data-title="http://fantasynew.github.io/10.deadlock/" data-url="undefined"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -158,6 +206,11 @@ var duoshuoQuery = {short_name:"fantasynew"};
 
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#线程死锁"><span class="toc-number">1.</span> <span class="toc-text">线程死锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更复杂的死锁"><span class="toc-number">2.</span> <span class="toc-text">更复杂的死锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据库死锁"><span class="toc-number">3.</span> <span class="toc-text">数据库死锁</span></a></li></ol>
+  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -355,6 +408,34 @@ $(document).ready(function(){
 </script>
 
 
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
 
 
 <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
@@ -412,4 +493,4 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </script>
 
   </body>
- </html>
+</html>

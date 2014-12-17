@@ -4,7 +4,7 @@
   <subtitle><![CDATA[当你的才华还撑不起你的野心时，你就应该静下心来学习。]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://fantasynew.github.io/"/>
-  <updated>2014-12-17T13:01:11.443Z</updated>
+  <updated>2014-12-17T13:03:05.109Z</updated>
   <id>http://fantasynew.github.io/</id>
   
   <author>
@@ -16,8 +16,8 @@
   
   <entry>
     <title><![CDATA[嵌套监控锁定]]></title>
-    <link href="http://fantasynew.github.io/:13.nested-monitor-lockout/"/>
-    <id>http://fantasynew.github.io/:13.nested-monitor-lockout/</id>
+    <link href="http://fantasynew.github.io/13.nested-monitor-lockout/"/>
+    <id>http://fantasynew.github.io/13.nested-monitor-lockout/</id>
     <published>2014-05-05T14:06:44.000Z</published>
     <updated>2014-05-27T13:08:02.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/nested-monitor-lockout.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/nested-monitor-lockout.html</a></p>
@@ -81,8 +81,8 @@
   
   <entry>
     <title><![CDATA[饥饿与公平]]></title>
-    <link href="http://fantasynew.github.io/:12.starvation-and-fairness/"/>
-    <id>http://fantasynew.github.io/:12.starvation-and-fairness/</id>
+    <link href="http://fantasynew.github.io/12.starvation-and-fairness/"/>
+    <id>http://fantasynew.github.io/12.starvation-and-fairness/</id>
     <published>2014-05-03T14:06:44.000Z</published>
     <updated>2014-05-23T13:42:33.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html</a></p>
@@ -165,8 +165,8 @@
   
   <entry>
     <title><![CDATA[死锁预防]]></title>
-    <link href="http://fantasynew.github.io/:11.deadlock-prevention/"/>
-    <id>http://fantasynew.github.io/:11.deadlock-prevention/</id>
+    <link href="http://fantasynew.github.io/11.deadlock-prevention/"/>
+    <id>http://fantasynew.github.io/11.deadlock-prevention/</id>
     <published>2014-05-02T14:06:44.000Z</published>
     <updated>2014-05-23T13:34:39.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html</a></p>
@@ -232,8 +232,8 @@
   
   <entry>
     <title><![CDATA[死锁]]></title>
-    <link href="http://fantasynew.github.io/:10.deadlock/"/>
-    <id>http://fantasynew.github.io/:10.deadlock/</id>
+    <link href="http://fantasynew.github.io/10.deadlock/"/>
+    <id>http://fantasynew.github.io/10.deadlock/</id>
     <published>2014-05-01T14:06:44.000Z</published>
     <updated>2014-05-15T14:08:02.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/deadlock.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/deadlock.html</a></p>
@@ -291,8 +291,8 @@
   
   <entry>
     <title><![CDATA[线程通信]]></title>
-    <link href="http://fantasynew.github.io/:09.thread-signaling/"/>
-    <id>http://fantasynew.github.io/:09.thread-signaling/</id>
+    <link href="http://fantasynew.github.io/09.thread-signaling/"/>
+    <id>http://fantasynew.github.io/09.thread-signaling/</id>
     <published>2014-04-29T14:06:44.000Z</published>
     <updated>2014-05-15T14:04:48.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-signaling.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-signaling.html</a></p>
@@ -387,8 +387,8 @@
   
   <entry>
     <title><![CDATA[Java同步块]]></title>
-    <link href="http://fantasynew.github.io/:08.java-synchronized-blocks/"/>
-    <id>http://fantasynew.github.io/:08.java-synchronized-blocks/</id>
+    <link href="http://fantasynew.github.io/08.java-synchronized-blocks/"/>
+    <id>http://fantasynew.github.io/08.java-synchronized-blocks/</id>
     <published>2014-04-25T14:06:44.000Z</published>
     <updated>2014-05-14T14:33:14.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/synchronized.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/synchronized.html</a></p>
@@ -482,8 +482,8 @@
   
   <entry>
     <title><![CDATA[线程安全和不可变性]]></title>
-    <link href="http://fantasynew.github.io/:07.thread-safety-and-immutability/"/>
-    <id>http://fantasynew.github.io/:07.thread-safety-and-immutability/</id>
+    <link href="http://fantasynew.github.io/07.thread-safety-and-immutability/"/>
+    <id>http://fantasynew.github.io/07.thread-safety-and-immutability/</id>
     <published>2014-04-21T14:06:44.000Z</published>
     <updated>2014-05-04T14:40:01.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html</a></p>
@@ -533,8 +533,8 @@
   
   <entry>
     <title><![CDATA[线程安全和资源共享]]></title>
-    <link href="http://fantasynew.github.io/:06.thread-safety-and-shared-resources/"/>
-    <id>http://fantasynew.github.io/:06.thread-safety-and-shared-resources/</id>
+    <link href="http://fantasynew.github.io/06.thread-safety-and-shared-resources/"/>
+    <id>http://fantasynew.github.io/06.thread-safety-and-shared-resources/</id>
     <published>2014-04-18T14:06:44.000Z</published>
     <updated>2014-05-04T14:07:46.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety.html</a></p>
@@ -606,8 +606,8 @@
   
   <entry>
     <title><![CDATA[竞态条件与临界区]]></title>
-    <link href="http://fantasynew.github.io/:05.race-conditions-and-critical-sections/"/>
-    <id>http://fantasynew.github.io/:05.race-conditions-and-critical-sections/</id>
+    <link href="http://fantasynew.github.io/05.race-conditions-and-critical-sections/"/>
+    <id>http://fantasynew.github.io/05.race-conditions-and-critical-sections/</id>
     <published>2014-04-15T14:06:44.000Z</published>
     <updated>2014-04-26T10:43:13.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html</a></p>
@@ -645,8 +645,8 @@
   
   <entry>
     <title><![CDATA[创建和启动java线程]]></title>
-    <link href="http://fantasynew.github.io/:04.creating-and-starting-threads/"/>
-    <id>http://fantasynew.github.io/:04.creating-and-starting-threads/</id>
+    <link href="http://fantasynew.github.io/04.creating-and-starting-threads/"/>
+    <id>http://fantasynew.github.io/04.creating-and-starting-threads/</id>
     <published>2014-04-13T14:06:44.000Z</published>
     <updated>2014-04-26T10:42:49.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html</a></p>
@@ -752,8 +752,8 @@
   
   <entry>
     <title><![CDATA[多线程的代价]]></title>
-    <link href="http://fantasynew.github.io/:03.costs-of-multithreading/"/>
-    <id>http://fantasynew.github.io/:03.costs-of-multithreading/</id>
+    <link href="http://fantasynew.github.io/03.costs-of-multithreading/"/>
+    <id>http://fantasynew.github.io/03.costs-of-multithreading/</id>
     <published>2014-04-11T14:06:44.000Z</published>
     <updated>2014-04-26T10:41:23.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
@@ -788,8 +788,8 @@
   
   <entry>
     <title><![CDATA[多线程的优点]]></title>
-    <link href="http://fantasynew.github.io/:02.multithreading-benefits/"/>
-    <id>http://fantasynew.github.io/:02.multithreading-benefits/</id>
+    <link href="http://fantasynew.github.io/02.multithreading-benefits/"/>
+    <id>http://fantasynew.github.io/02.multithreading-benefits/</id>
     <published>2014-04-09T14:06:44.000Z</published>
     <updated>2014-04-26T10:42:24.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
@@ -848,8 +848,8 @@
   
   <entry>
     <title><![CDATA[Java并发介绍]]></title>
-    <link href="http://fantasynew.github.io/:01.introduction-to-java-concurrency/"/>
-    <id>http://fantasynew.github.io/:01.introduction-to-java-concurrency/</id>
+    <link href="http://fantasynew.github.io/01.introduction-to-java-concurrency/"/>
+    <id>http://fantasynew.github.io/01.introduction-to-java-concurrency/</id>
     <published>2014-04-07T14:06:44.000Z</published>
     <updated>2014-05-15T14:22:19.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
@@ -894,8 +894,8 @@
   
   <entry>
     <title><![CDATA[Hello World]]></title>
-    <link href="http://fantasynew.github.io/:hello-world/"/>
-    <id>http://fantasynew.github.io/:hello-world/</id>
+    <link href="http://fantasynew.github.io/hello-world/"/>
+    <id>http://fantasynew.github.io/hello-world/</id>
     <published>2014-04-01T14:06:44.000Z</published>
     <updated>2014-04-22T13:40:13.000Z</updated>
     <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io" target="_blank">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs" target="_blank">documentation</a> to learn how to use.</p>

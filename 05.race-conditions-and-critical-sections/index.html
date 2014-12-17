@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="baidu-site-verification" content="AWbDVIBAzX" />
   
-    <title>Fantasy Ace&#39;s blog</title>
+    <title>竞态条件与临界区 | Fantasy Ace&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Fantasy">
     
-    <meta name="description" content="FanTaSy&#39;s Blog">
+    <meta name="description" itemprop="description" content="在两个线程竞争同一资源的情况下，资源访问的顺序非常重要的，被称作存在竞态条件。导致竞态条件出现的代码区域被称作临界区。">
     
     
     
@@ -63,113 +63,132 @@
 </div>
     </header>
     <div id="container">
-      <div id="main">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/05.race-conditions-and-critical-sections/" title="竞态条件与临界区" itemprop="url">竞态条件与临界区</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://fantasynew.github.io/about" title="Fantasy">Fantasy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-04-15T14:06:44.000Z" itemprop="datePublished">发表于4月 15 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#竞态条件与临界区"><span class="toc-number">1.</span> <span class="toc-text">竞态条件与临界区</span></a></li></ol>
+		
+		</div>
+		
+		<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html</a></p>
+<p>　　在一个应用程序中同时运行多个线程本身不会引起问题，问题出现在多个线程访问相同资源的时候，比如同一内存（变量，数组或者对象），系统（数据库，网络服务等等）或者文件。事实上，问题只出现在一个或者多个线程对这些资源进行写操作的时候。只要这些资源没有变化，多个线程对同一资源进行读操作是安全的。</p>
+<p>　　下面是被多个线程同时执行时可能会失败的代码示例：
+　　</p>
+<blockquote>
+<p><code>public class Counter {</code><br>　　<code>protected long count = 0;</code><br>　　<code>public void add(long value){</code><br>　　　　<code>this.count = this.count + value;</code><br>　　<code>}</code><br><code>}</code>  </p>
+</blockquote>
+<p>　　想象如果两个线程A和B在同一个Counter实例中执行这个add方法，我们无法知道操作系统什么时候在这两个线程之间进行切换。java虚拟机不会把这段代码作为单指令执行，而是按照下面的顺序执行：</p>
+<blockquote>
+<p><code>把this.count从内存中读取到寄存器</code><br><code>将寄存器中的值加1</code><br><code>把寄存器中的值写到内存中</code>  </p>
+</blockquote>
+<p>　　观察如果线程A和B混合执行会发生什么：</p>
+<blockquote>
+<p><code>this.count = 0;</code><br><code>A: 把this.count从内存中读取到寄存器(0)</code><br><code>B: 把this.count从内存中读取到寄存器(0)</code><br><code>B: 将寄存器中的值加2</code><br><code>B：把寄存器中的值2写到内存中，this.count的值是2</code><br><code>A：将寄存器中的值加3</code><br><code>A：把寄存器中的值3写到内存中，this.count的值是3</code>  </p>
+</blockquote>
+<p>　　这两个线程把数值2和3加到了counter上面，所以两个线程混合执行完成之后预期值应该是5。然而，由于两个线程的执行是交错的，这两个线程从内存中读取的都是0，接着它们分别加它们自己的值2和3并写回到内存中。取代5留在this.count的值会是最后一个线程写入的值。在上面的例子中是线程A，但是也可能是线程B，没有适当的线程同步机制我们没办法知道线程是如何交错执行的。</p>
+<h2 id="竞态条件与临界区">竞态条件与临界区</h2>
+<p>　　在两个线程竞争同一资源的情况下，资源访问的顺序非常重要的，被称作存在竞态条件。导致竞态条件出现的代码区域被称作临界区。在前一个例子中方法add()就是一个临界区，它导致了竞态条件。临界区里适当的线程同步可以避免竞态条件的发生。　</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/13.nested-monitor-lockout/" title="嵌套监控锁定" itemprop="url">
-  
-    <h1 itemprop="name">嵌套监控锁定</h1>
-    
-     
-      <p itemprop="description" >如果线程1持有锁A并且等待线程2的信号，而线程2需要锁A来给线程1发送信号，这样导致的阻塞被称作嵌套监控锁定。</p>
-      
-    
-    <time datetime="2014-05-05T14:06:44.000Z" itemprop="datePublished">5月 5 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/12.starvation-and-fairness/" title="饥饿与公平" itemprop="url">
-  
-    <h1 itemprop="name">饥饿与公平</h1>
-    
-     
-      <p itemprop="description" >如果一个线程因为其它线程一直占用而没有获得CPU时间，就称为“饥饿”。线程被“饿死”是因为其它线程一直占用CPU时间而它没有。饥饿的解决方案被称作“公平”，所有的线程都被授予相同的执行机会。</p>
-      
-    
-    <time datetime="2014-05-03T14:06:44.000Z" itemprop="datePublished">5月 3 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/11.deadlock-prevention/" title="死锁预防" itemprop="url">
-  
-    <h1 itemprop="name">死锁预防</h1>
-    
-     
-      <p itemprop="description" >在某些情况下预防死锁是可能的。在本文中会介绍三个预防死锁的技术：加锁顺序，加锁时限，死锁检测。</p>
-      
-    
-    <time datetime="2014-05-02T14:06:44.000Z" itemprop="datePublished">5月 2 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/10.deadlock/" title="死锁" itemprop="url">
-  
-    <h1 itemprop="name">死锁</h1>
-    
-     
-      <p itemprop="description" >死锁是两个或多个线程阻塞的等待获取其它死锁线程拥有的锁。死锁发生在多个线程同时但以不同顺序获取请求同一组锁的情况下。</p>
-      
-    
-    <time datetime="2014-05-01T14:06:44.000Z" itemprop="datePublished">5月 1 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/09.thread-signaling/" title="线程通信" itemprop="url">
-  
-    <h1 itemprop="name">线程通信</h1>
-    
-     
-      <p itemprop="description" >线程通信的目的是让线程之间互相发送信号，另外线程通信可以使线程等待其它线程的信号。例如，线程B可以等待线程A的信号来表明待处理的数据已经准备好了。</p>
-      
-    
-    <time datetime="2014-04-29T14:06:44.000Z" itemprop="datePublished">4月 29 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/08.java-synchronized-blocks/" title="Java同步块" itemprop="url">
-  
-    <h1 itemprop="name">Java同步块</h1>
-    
-     
-      <p itemprop="description" >Java同步块（Java synchronized block）标记一个方法或者代码块是同步的，Java同步块可被用来防止竞态条件。</p>
-      
-    
-    <time datetime="2014-04-25T14:06:44.000Z" itemprop="datePublished">4月 25 2014</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/07.thread-safety-and-immutability/" title="线程安全和不可变性" itemprop="url">
-  
-    <h1 itemprop="name">线程安全和不可变性</h1>
-    
-     
-      <p itemprop="description" >我们可以通过创建不可变的共享对象来确保线程之间分享的对象不会被其它线程更新，以确保线程安全。</p>
-      
-    
-    <time datetime="2014-04-21T14:06:44.000Z" itemprop="datePublished">4月 21 2014</time>
-  </a>
-</section>
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/java多线程/">java多线程</a>
+</div>
 
 
-  <nav id="page-nav" class="clearfix">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" href="/page/2/">Next<span></span></a>
-  </nav>
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/java/">java</a><a href="/tags/多线程/">多线程</a><a href="/tags/竞态条件/">竞态条件</a><a href="/tags/临界区/">临界区</a>
+  </div>
+
+
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://fantasynew.github.io/05.race-conditions-and-critical-sections/" data-title="竞态条件与临界区 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  </div>
 
 </div>
+
+</footer>
+
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+
+<div class="prev">
+<a href="/04.creating-and-starting-threads/"  title="创建和启动java线程">
+ <strong>上一篇：</strong><br/> 
+ <span>创建和启动java线程
+</span>
+</a>
+</div>
+
+
+
+ 
+ <div class="next" >
+ <a href="/06.thread-safety-and-shared-resources/" title="线程安全和资源共享">
+  <strong>下一篇：</strong><br/>
+  <span>
+  线程安全和资源共享</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comment">
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="lihnuux7bi9q41ww" data-title="http://fantasynew.github.io/05.race-conditions-and-critical-sections/" data-url="undefined"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fantasynew"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+<!-- 多说公共JS代码 end -->
+</section>
+
+</div>  
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#竞态条件与临界区"><span class="toc-number">1.</span> <span class="toc-text">竞态条件与临界区</span></a></li></ol>
+  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -313,6 +332,8 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
@@ -332,6 +353,66 @@ $(document).ready(function(){
 });
 </script>
 
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
 
 
 
@@ -390,4 +471,4 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </script>
 
   </body>
- </html>
+</html>
