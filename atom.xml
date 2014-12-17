@@ -4,7 +4,7 @@
   <subtitle><![CDATA[当你的才华还撑不起你的野心时，你就应该静下心来学习。]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://fantasynew.github.io/"/>
-  <updated>2014-12-17T13:26:37.797Z</updated>
+  <updated>2014-12-17T15:16:13.444Z</updated>
   <id>http://fantasynew.github.io/</id>
   
   <author>
@@ -16,10 +16,10 @@
   
   <entry>
     <title><![CDATA[嵌套监控锁定]]></title>
-    <link href="http://fantasynew.github.io/2014/05/05/13.nested-monitor-lockout/"/>
-    <id>http://fantasynew.github.io/2014/05/05/13.nested-monitor-lockout/</id>
-    <published>2014-05-05T14:06:44.000Z</published>
-    <updated>2014-05-27T13:08:02.000Z</updated>
+    <link href="http://fantasynew.github.io/2014/09/05/13.nested-monitor-lockout/"/>
+    <id>http://fantasynew.github.io/2014/09/05/13.nested-monitor-lockout/</id>
+    <published>2014-09-05T14:06:44.000Z</published>
+    <updated>2014-12-17T15:15:25.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/nested-monitor-lockout.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/nested-monitor-lockout.html</a></p>
 <h2 id="嵌套监控锁定如何产生">嵌套监控锁定如何产生</h2>
 <p>　　嵌套监控锁定是类似于死锁的问题，嵌套监控锁定的产生就像这样：</p>
@@ -81,10 +81,10 @@
   
   <entry>
     <title><![CDATA[饥饿与公平]]></title>
-    <link href="http://fantasynew.github.io/2014/05/03/12.starvation-and-fairness/"/>
-    <id>http://fantasynew.github.io/2014/05/03/12.starvation-and-fairness/</id>
-    <published>2014-05-03T14:06:44.000Z</published>
-    <updated>2014-05-23T13:42:33.000Z</updated>
+    <link href="http://fantasynew.github.io/2014/08/13/12.starvation-and-fairness/"/>
+    <id>http://fantasynew.github.io/2014/08/13/12.starvation-and-fairness/</id>
+    <published>2014-08-13T14:06:44.000Z</published>
+    <updated>2014-12-17T15:15:35.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html</a></p>
 <p>如果一个线程因为其它线程一直占用而没有获得CPU时间，就称为“饥饿”。线程被“饿死”是因为其它线程一直占用CPU时间而它没有。饥饿的解决方案被称作“公平”，所有的线程都被授予相同的执行机会。</p>
 <h1 id="Java中引起饥饿的原因">Java中引起饥饿的原因</h1>
@@ -165,10 +165,10 @@
   
   <entry>
     <title><![CDATA[死锁预防]]></title>
-    <link href="http://fantasynew.github.io/2014/05/02/11.deadlock-prevention/"/>
-    <id>http://fantasynew.github.io/2014/05/02/11.deadlock-prevention/</id>
-    <published>2014-05-02T14:06:44.000Z</published>
-    <updated>2014-05-23T13:34:39.000Z</updated>
+    <link href="http://fantasynew.github.io/2014/06/16/11.deadlock-prevention/"/>
+    <id>http://fantasynew.github.io/2014/06/16/11.deadlock-prevention/</id>
+    <published>2014-06-16T14:06:44.000Z</published>
+    <updated>2014-12-17T15:15:46.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html</a></p>
 <p>在某些情况下预防死锁是可能的。在本文中我会介绍三个预防死锁的技术：</p>
 <ol>
@@ -387,10 +387,10 @@
   
   <entry>
     <title><![CDATA[Java同步块]]></title>
-    <link href="http://fantasynew.github.io/2014/04/25/08.java-synchronized-blocks/"/>
-    <id>http://fantasynew.github.io/2014/04/25/08.java-synchronized-blocks/</id>
-    <published>2014-04-25T14:06:44.000Z</published>
-    <updated>2014-05-14T14:33:14.000Z</updated>
+    <link href="http://fantasynew.github.io/2014/03/17/08.java-synchronized-blocks/"/>
+    <id>http://fantasynew.github.io/2014/03/17/08.java-synchronized-blocks/</id>
+    <published>2014-03-17T14:06:44.000Z</published>
+    <updated>2014-12-17T15:13:34.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/synchronized.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/synchronized.html</a></p>
 <p>　　Java同步块（Java synchronized block）标记一个方法或者代码块是同步的，Java同步块可被用来阻止竞态条件。</p>
 <h2 id="Java_synchronized关键词">Java synchronized关键词</h2>
@@ -482,10 +482,10 @@
   
   <entry>
     <title><![CDATA[线程安全和不可变性]]></title>
-    <link href="http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/"/>
-    <id>http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/</id>
-    <published>2014-04-21T14:06:44.000Z</published>
-    <updated>2014-05-04T14:40:01.000Z</updated>
+    <link href="http://fantasynew.github.io/2014/02/21/07.thread-safety-and-immutability/"/>
+    <id>http://fantasynew.github.io/2014/02/21/07.thread-safety-and-immutability/</id>
+    <published>2014-02-21T14:06:44.000Z</published>
+    <updated>2014-12-17T15:13:23.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety-and-immutability.html</a></p>
 <p>　　只有当多个线程访问相同的资源，并且它们中的一个或多个线程对资源进行写操作时才会出现竞态条件。多个线程读取相同的资源时竞态条件不会出现。</p>
 <p>　　我们可以通过创建不可变的共享对象来确保线程之间分享的对象不会被其它线程更新，以确保线程安全。例子如下：</p>
@@ -533,10 +533,10 @@
   
   <entry>
     <title><![CDATA[线程安全和资源共享]]></title>
-    <link href="http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/"/>
-    <id>http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/</id>
-    <published>2014-04-18T14:06:44.000Z</published>
-    <updated>2014-05-04T14:07:46.000Z</updated>
+    <link href="http://fantasynew.github.io/2013/12/28/06.thread-safety-and-shared-resources/"/>
+    <id>http://fantasynew.github.io/2013/12/28/06.thread-safety-and-shared-resources/</id>
+    <published>2013-12-28T14:06:44.000Z</published>
+    <updated>2014-12-17T15:12:44.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/thread-safety.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/thread-safety.html</a></p>
 <p>　　代码被多个线程同时调用还很安全被称作线程安全的。一段线程安全的代码不会存在竞态条件，竞态条件只存在于多个线程同时更新共享资源的情况下，所以了解java线程运行时都共享哪些资源是非常重要的。</p>
 <h2 id="局部变量">局部变量</h2>
@@ -606,10 +606,10 @@
   
   <entry>
     <title><![CDATA[竞态条件与临界区]]></title>
-    <link href="http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/"/>
-    <id>http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/</id>
-    <published>2014-04-15T14:06:44.000Z</published>
-    <updated>2014-04-26T10:43:13.000Z</updated>
+    <link href="http://fantasynew.github.io/2013/11/15/05.race-conditions-and-critical-sections/"/>
+    <id>http://fantasynew.github.io/2013/11/15/05.race-conditions-and-critical-sections/</id>
+    <published>2013-11-15T14:06:44.000Z</published>
+    <updated>2014-12-17T15:12:24.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html</a></p>
 <p>　　在一个应用程序中同时运行多个线程本身不会引起问题，问题出现在多个线程访问相同资源的时候，比如同一内存（变量，数组或者对象），系统（数据库，网络服务等等）或者文件。事实上，问题只出现在一个或者多个线程对这些资源进行写操作的时候。只要这些资源没有变化，多个线程对同一资源进行读操作是安全的。</p>
 <p>　　下面是被多个线程同时执行时可能会失败的代码示例：
@@ -645,10 +645,10 @@
   
   <entry>
     <title><![CDATA[创建和启动java线程]]></title>
-    <link href="http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/"/>
-    <id>http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/</id>
-    <published>2014-04-13T14:06:44.000Z</published>
-    <updated>2014-04-26T10:42:49.000Z</updated>
+    <link href="http://fantasynew.github.io/2013/10/11/04.creating-and-starting-threads/"/>
+    <id>http://fantasynew.github.io/2013/10/11/04.creating-and-starting-threads/</id>
+    <published>2013-10-11T14:06:44.000Z</published>
+    <updated>2014-12-17T15:12:15.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/creating-and-starting-threads.html</a></p>
 <p>　　java线程对象与其他java对象一样，所有的线程都继承java.lang.Thread类，或者java.lang.Thread的子类。除了作为对象，java线程还可以执行代码。</p>
 <h2 id="创建启动线程">创建启动线程</h2>
@@ -751,11 +751,72 @@
   </entry>
   
   <entry>
+    <title><![CDATA[拒绝剪刀手！21种男士自信自然拍照姿势]]></title>
+    <link href="http://fantasynew.github.io/2013/10/10/how-to-take-photo/"/>
+    <id>http://fantasynew.github.io/2013/10/10/how-to-take-photo/</id>
+    <published>2013-10-10T12:06:44.000Z</published>
+    <updated>2014-12-17T15:07:19.000Z</updated>
+    <content type="html"><![CDATA[<p>在YOKA上面看到的21种男士自然自信拍照姿势大全，帮助男士拍出效果更自然的照片，好好研究一下 </p>
+<p>1、交叉双手：很自然很舒适的基本动作，留意让肩膀稍稍拉后，使身体更挺拔，并注意收肚腩。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_001.jpg" alt=""></p>
+<p>2、交叉双手(全身照)：在拍摄全身照时，让一只脚绕到另一只脚前，但留意重心应放在其中一只脚上，而不要平均重心，否则看起来较奇怪。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_002.jpg" alt=""></p>
+<p>3、叉腰垂手：很多时男模特儿会不知道双手怎放才好，答案其实只有四个：轻松垂手、在臀部、在口袋或交叉胸前。重点是放松肌肉，除非你在拍摄健美先生比赛。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_003.jpg" alt=""></p>
+<p>4、双手插袋：陈奕迅唱“有人来拍照要记住插袋”是“浮夸”，但其实这姿势会让男模特儿感觉得自然而舒服，不论是全插或是半插都可。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_004.jpg" alt=""></p>
+<p>5、潇洒形：搭着外套，然后只插姆指进口袋，脚也绕着，是一种综合了的姿势。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_005.jpg" alt=""></p>
+<p>6、坐姿：把一只脚的足踝放到另一只脚上，感觉会放松自在些，试用高一点的角度拍摄。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_006.jpg" alt=""></p>
+<p>7、挨墙站姿：同样是很舒服的姿势。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_007.jpg" alt=""></p>
+<p>8、挨墙站姿2：以身侧挨着墙，这种姿势不论是随意拍摄，甚至较正式严肃的拍照都可以使用。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_008.jpg" alt=""></p>
+<p>9、正经肖像：姿势简单，重点在于手拿着的道具，可以是手提电脑、书或其他工具，以突显男士的职业。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_009.jpg" alt=""></p>
+<p>10、坐姿2：不要完全坐进椅子，坐出一点，身稍稍转向镜头，整体感觉会不那么硬绷绷，会更平易近人。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_010.jpg" alt=""></p>
+<p>11、坐在桌前：把专业相关的物件例如书本、电脑、其他工具等放在桌上，也可增加专业形象。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_011.jpg" alt=""></p>
+<p>12、坐在桌前2：上一幅图的变化，很适合正式人像照片。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_012.jpg" alt=""></p>
+<p>13、影后：从背后拍摄过去，可以展示工作环境，既认真却又友善款待的姿势。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_013.jpg" alt=""></p>
+<p>14、坐在桌前3：稍稍挨向桌边，同时转向镜头，当然也可在桌上放合适的物件以突出对象身份。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_014.jpg" alt=""></p>
+<p>15、扶椅站立：以椅子作为扶手，感觉会生动有趣得多，适合一些看来有活力及创意的对象。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_015.jpg" alt=""></p>
+<p>16、深坐椅子：完全坐进椅子并舒服地挨着，这个适合正式及企业形象的摄影。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_016.jpg" alt=""></p>
+<p>17、轻松坐姿：基本形态，试试找不同的角度和方向拍摄。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_017.jpg" alt=""></p>
+<p>18、轻松坐姿2：坐姿的变化，很适合户外环境使用。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_018.jpg" alt=""></p>
+<p>19、轻松坐姿3：颇适合男士使用，感觉会亲切而随意。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_019.jpg" alt=""></p>
+<p>20、随意坐卧：以背部挨着树或是墙之类，轻轻半躺着。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_020.jpg" alt=""></p>
+<p>21、大头：正面突破，让照片剪裁至集中对象的面孔，会很突出的。</p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/take_photo_021.jpg" alt=""></p>
+<p>当然以上都只是基本可做的姿势，大家仍要不断尝试及创造更好的方式，而共通之处在于要制造简单的背景、简单的服饰、简单的姿势及自然的表情。 </p>
+]]></content>
+    
+    
+      <category term="拍照" scheme="http://fantasynew.github.io/tags/%E6%8B%8D%E7%85%A7/"/>
+    
+      <category term="型男" scheme="http://fantasynew.github.io/tags/%E5%9E%8B%E7%94%B7/"/>
+    
+      <category term="杂谈" scheme="http://fantasynew.github.io/categories/%E6%9D%82%E8%B0%88/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[多线程的代价]]></title>
-    <link href="http://fantasynew.github.io/2014/04/11/03.costs-of-multithreading/"/>
-    <id>http://fantasynew.github.io/2014/04/11/03.costs-of-multithreading/</id>
-    <published>2014-04-11T14:06:44.000Z</published>
-    <updated>2014-04-26T10:41:23.000Z</updated>
+    <link href="http://fantasynew.github.io/2013/09/11/03.costs-of-multithreading/"/>
+    <id>http://fantasynew.github.io/2013/09/11/03.costs-of-multithreading/</id>
+    <published>2013-09-11T14:06:44.000Z</published>
+    <updated>2014-12-17T15:11:42.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
 <h2 id="简介">简介</h2>
 <p>　　从单线程应用程序更新到多线程可不光带来优点，它也会付出一些代价。千万不要仅仅因为你可以使用多线程就给应用程序添加多线程。你应该明确的知道使用多线程带来的好处比所付出的代价多的时候才可以使用多线程。有疑问时，试着衡量应用程序的性能和响应时间，不要只是简单的猜想。</p>
@@ -788,10 +849,10 @@
   
   <entry>
     <title><![CDATA[多线程的优点]]></title>
-    <link href="http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/"/>
-    <id>http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/</id>
-    <published>2014-04-09T14:06:44.000Z</published>
-    <updated>2014-04-26T10:42:24.000Z</updated>
+    <link href="http://fantasynew.github.io/2013/08/21/02.multithreading-benefits/"/>
+    <id>http://fantasynew.github.io/2013/08/21/02.multithreading-benefits/</id>
+    <published>2013-08-21T14:06:44.000Z</published>
+    <updated>2014-12-17T15:11:30.000Z</updated>
     <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
 <h2 id="简介">简介</h2>
 <p>　　尽管有许多挑战，多线程仍然被使用的原因是它有几个优点，这些优点是：</p>
@@ -848,11 +909,12 @@
   
   <entry>
     <title><![CDATA[Java并发介绍]]></title>
-    <link href="http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/"/>
-    <id>http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/</id>
-    <published>2014-04-07T14:06:44.000Z</published>
-    <updated>2014-05-15T14:22:19.000Z</updated>
-    <content type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
+    <link href="http://fantasynew.github.io/2013/08/07/01.introduction-to-java-concurrency/"/>
+    <id>http://fantasynew.github.io/2013/08/07/01.introduction-to-java-concurrency/</id>
+    <published>2013-08-07T13:06:44.000Z</published>
+    <updated>2014-12-17T15:11:02.000Z</updated>
+    <content type="html"><![CDATA[<p>在<a href="http://jakob.jenkov.com/" target="_blank">Jakob Jenkov</a>大神的博客上面看到了这个多线程的系列文章，打算翻译过来，锻炼下自己的英文文档阅读能力。</p>
+<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
 <h2 id="引子">引子</h2>
 <p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  <a id="more"></a></p>
 <p>　　多任务处理技术给软件开发人员带来了新的挑战。程序不能被假设占用所有的CPU可用时间、所有的内存和其它资源。一个“表现良好”的程序应该在不用这些资源的时候对其释放，以保证其它程序的使用。  </p>
@@ -878,7 +940,8 @@
 <li><a href="http://fantasynew.github.io/2014/05/01/10.deadlock/">死锁</a></li>
 </ul>
 ]]></content>
-    <summary type="html"><![CDATA[<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
+    <summary type="html"><![CDATA[<p>在<a href="http://jakob.jenkov.com/" target="_blank">Jakob Jenkov</a>大神的博客上面看到了这个多线程的系列文章，打算翻译过来，锻炼下自己的英文文档阅读能力。</p>
+<p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
 <h2 id="引子">引子</h2>
 <p>　　过去一台计算机只有单个CPU，每次只能执行一个程序。后来的计算机可以支持多任务处理，意味着它们可以同时执行多个程序（即任务或流程）。虽然不是真正意义上的“同时”，而是多个程序共享一个CPU，并交给操作系统在执行中的程序间进行切换，以保证每个程序在切换过程中都能得到一定的执行时间。  ]]></summary>
     
@@ -893,16 +956,162 @@
   </entry>
   
   <entry>
-    <title><![CDATA[Hello World]]></title>
-    <link href="http://fantasynew.github.io/2014/04/01/hello-world/"/>
-    <id>http://fantasynew.github.io/2014/04/01/hello-world/</id>
-    <published>2014-04-01T14:06:44.000Z</published>
-    <updated>2014-04-22T13:40:13.000Z</updated>
-    <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io" target="_blank">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs" target="_blank">documentation</a> to learn how to use.</p>
+    <title><![CDATA[向日葵公主与驴的故事]]></title>
+    <link href="http://fantasynew.github.io/2013/07/07/donkey-story/"/>
+    <id>http://fantasynew.github.io/2013/07/07/donkey-story/</id>
+    <published>2013-07-07T12:06:44.000Z</published>
+    <updated>2014-12-17T15:06:41.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/love.jpg" alt="">  </p>
+<p>　　向日葵公主是在河东岸边遇见驴的。驴是黑色的，但白嘴白肚白蹄。驴说他会说话，驴说他是美驴。<br>　　公主想过河去，河西的城堡里有等着娶她的王子。河不算深，但她穿着一身美丽的嫁衣，她怕河水会浸湿她的衣裙。<br>　　驴说：“想让我驮你过去吗？”<br>　　“你能保证不弄湿我的衣裙吗？”<br>　　“不能。”<br>　　“那就算了，谢谢！”<br>　　公主微笑作答：“我想王子会来接我。”<br>　　“如果他不来呢？”<br>　　“那我就多等等。”<br>　　良久，无人过来，公主独坐岸边，黯然叹息。<br>　　当她目光掠过驴的时候，驴笑了：“现在希望我驮你过去吗？”<br>　　“不”公主依然拒绝，但悄然打量着驴<br>　　“你心里很希望我驮你过去。”驴断言<br>　　“是你希望我让你驮我过去。”公主回答<br>　　“那你希望谁来驮你过去？”<br>　　“我要嫁的王子。”<br>　　“我驮你过去，你吻吻我，焉知我不能变成王子？”<br>　　“你以为你是青蛙王子？”<br>　　“我是美驴王子。”<br>　　“驴倒是驴，王子就不必勉强了”<br>　　“你为何不想让我帮你渡河？”<br>　　“我怕你弄湿我的嫁衣。”<br>　　“我想不会的。”<br>　　“为什么不会？”<br>　　“因为现在我想驮你过去”<br>　　“哦？我该相信吗？”<br>　　“你为什么不相信？”<br>　　“你说的话我不敢随便信”<br>　　“我说的话你都不信？”<br>　　“你说的话我才不信”<br>　　“我说的话你真不信？！”<br>　　“难道我应该信？”<br>　　“难道你不该信？”<br>　　“我信我自己的判断”<br>　　“好吧，那你慢慢判断吧！”<br>　　……<br>　　天色已晚，公主与驴相对无言。凉意袭来，公主拢了拢衣服。<br>　　驴打破沉默：“冷吗？”<br>　　“冷。”<br>　　“让我驮你过河吧，无论我是否弄湿你的衣裙我都会赠你三句爱的箴言。”<br>　　“那我该怎样报答你？”公主问。<br>　　“如果你衣裙不湿就带我回家吧。”<br>　　公主接受了驴的建议。<br>　　公主骑上了驴背。临行前驴郑重对她说：“记住我背着你时你不能流泪，你的泪会令我不堪重负。”<br>　　公主说她记得，然后也郑重地对驴说：“记住一定不要弄湿我的衣裙，否则我会立即放弃你的背负。”  </p>
+<p>　　驴迈步向河中走去。<br>　　“你以前驮过女孩过河吗？”公主问。<br>　　“当然。”驴坦然答道。<br>　　“她们的衣裙湿了吗？”<br>　　“第一个女孩的没湿，以后的都湿了”<br>　　“第一个女孩带你回家了吗？”<br>　　“没有，否则我不会再遇见别的女孩。”<br>　　“看来你遇见的女孩很多。”<br>　　“算上你的话，应该有15、6个了”<br>　　公主笑道：“你是第30头想驮我过河的驴。”<br>　　“呵呵”驴但笑无语。<br>　　公主忽然想起驴承诺的爱的箴言，驴告诉她第一句：<br>　　<code>“无论男人还是女人，只有在初恋时爱的是别人，以后恋爱时爱的都是自己。”</code><br>　　驴缓步轻行，果然很平稳，公主放心了，搂着驴的脖子，觉得温暖。<br>　　“喜欢我背你过河吗？”驴问。<br>　　“喜欢”公主微笑承认。<br>　　“我也喜欢这样背着你，希望就这样一直走下去。”<br>　　驴的声音于温情中透着忧郁，听起来像叹息。  </p>
+<p>　　风与驴的话语不时吻上公主的面颊，公主含笑悄然入睡。她做了一个公主常做的梦：她吻了驴，然后驴变成了王子，从此王子与公主快乐地生活在一起。当她醒来时看见驴依然缓步轻行，自己的衣裙分毫不湿。芳心窃喜，于是吻了驴——驴能因此变成王子吗？没有。  原来童话就是童话，驴不是王子，等着娶她的王子在河西的城堡里。她愣愣地想，一滴泪自目中滴落。  </p>
+<p>　　泪落在驴身上。似突然被灼伤般，驴猛地扬蹄嘶鸣，激起浪花千丈。公主的衣裙湿了。<br>　　“为什么？”公主问。<br>　　“我跟你说过”驴面无表情。<br>　　公主也记起了她当初对驴说的话。于是她一言不发，自驴背上下来，独自淌水向对岸走去。驴没做任何挽留或解释，也自转身回去，径直走向河东——那里又有个姑娘在等着谁驮她过河。依稀年轻，依稀美丽，她也有一身好看的嫁衣。<br>　　<code>“爱情是唯一的，但爱人不是唯一的”</code>，驴忽然说道：“这是第二句箴言。”<br>　　公主泪落成河，河水冷彻心肺。终于走到了对岸，她美丽的衣裙已经彻底湿透。她无力地在岸边坐下，像只小动物般抱膝蜷缩着黯然哭泣。还是寒冷。<br>　　一只白兔走到她身边：“公主，下次我陪你渡河。”<br>　　“谢谢”公主把白兔搂在怀中：“不必了，现在我只是需要一点温度。”  </p>
+<p>　　驴已经走回了河东岸边。<br>　　公主忽然记起还有一句箴言驴没说于是抬头向河西望去：“请告诉我最后一句箴言，美驴。”<br>　　驴冷冷看了她最后一眼，说：<code>“我爱我的爱情。”</code>然后向那等着渡河的女孩走去。</p>
+<p>　　在一个论坛里看到的，每个人对这个故事都有自己的理解。</p>
 ]]></content>
     
     
-      <category term="杂乱" scheme="http://fantasynew.github.io/categories/%E6%9D%82%E4%B9%B1/"/>
+      <category term="公主" scheme="http://fantasynew.github.io/tags/%E5%85%AC%E4%B8%BB/"/>
+    
+      <category term="爱情密码" scheme="http://fantasynew.github.io/tags/%E7%88%B1%E6%83%85%E5%AF%86%E7%A0%81/"/>
+    
+      <category term="杂谈" scheme="http://fantasynew.github.io/categories/%E6%9D%82%E8%B0%88/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[创建自己的博客：（二）简单配置hexo博客]]></title>
+    <link href="http://fantasynew.github.io/2013/04/10/build-blog-002/"/>
+    <id>http://fantasynew.github.io/2013/04/10/build-blog-002/</id>
+    <published>2013-04-10T13:06:44.000Z</published>
+    <updated>2014-12-17T14:57:00.000Z</updated>
+    <content type="html"><![CDATA[<p>在<a href="">上一节</a>中，我们只是在本地和github上面搭建起了一个简单的hexo博客站点，这个站点的配置还是原来的默认配置。在本节中，来学习一下如何对hexo进行个性化的设置，同时介绍下怎么撰文和发表文章。  </p>
+<p>　　hexo站点配置用到两个文件，一个是对整站进行配置的文件<code>D:\hexo\_config.yml</code>，另一个是对主题进行配置的文件<code>D:\hexo\themes\light_config.yml</code>，我们来分别介绍一下。</p>
+<h2 id="整站配置">整站配置</h2>
+<p>　　用文本编辑器打开<code>D:\hexo\_config.yml</code>。</p>
+<blockquote>
+<p><code># Hexo Configuration</code><br><code>## Docs: http://zespia.tw/hexo/docs/configure.html</code><br><code>## Source: https://github.com/tommy351/hexo/</code></p>
+<p><code># Site 这里的配置博客基本信息</code><br>title: Fantasy Ace’s blog <code>#站点名，站点左上角</code><br>subtitle: 当你的才华还撑不起你的野心时，你就应该静下心来学习。 <code>#副标题，站点左上角</code><br>description: FantasyAce’s blog <code>#给搜索引擎看的，对站点的描述，可以自定义</code><br>author: FantasyAce <code>#站点作者，可以在站点最下面看到</code><br>email: jingjiewuying@163.com <code>#你的联系邮箱</code><br>language: zh-CN <code>#中国人嘛，用中文</code></p>
+<p><code># URL #这项暂不配置，绑定域名后，欲创建sitemap.xml需要配置该项</code><br><code>## If your site is put in a subdirectory, set url as &#39;http://yoursite.com/child&#39; and root as &#39;/child/&#39;</code><br>url: <a href="http://fantasynew.github.io">http://fantasynew.github.io</a><br>root: /<br>permalink: :year/:month/:day/:title/ <code>#文章的链接格式</code><br>tag_dir: tags <code>#标签的目录</code><br>archive_dir: archives <code>#归档的目录</code><br>category_dir: categories <code>#分类的目录</code></p>
+<p><code># Directory</code><br>source_dir: source<br>public_dir: public</p>
+<p><code># Writing 文章布局、写作格式的定义，不修改</code><br>new_post_name: :title.md # File name of new posts<br>default_layout: post<br>auto_spacing: false # Add spaces between asian characters and western characters<br>titlecase: false # Transform title into titlecase<br>max_open_file: 100<br>filename_case: 0<br>highlight:<br>　　enable: true<br>　　backtick_code_block: true<br>　　line_number: true<br>　　tab_replace:</p>
+<p><code># Category &amp; Tag</code><br>default_category: uncategorized<br>category_map:<br>tag_map:  </p>
+<p><code># Archives 默认值为2，这里都修改为1，相应页面就只会列出标题，而非全文</code><br><code>## 2: Enable pagination</code><br><code>## 1: Disable pagination</code><br><code>## 0: Fully Disable</code><br>archive: 1<br>category: 1<br>tag: 1 </p>
+<p><code># Server 不修改</code><br><code>## Hexo uses Connect as a server</code><br><code>## You can customize the logger format as defined in</code><br><code>## http://www.senchalabs.org/connect/logger.html</code><br>port: 4000<br>logger: false<br>logger_format:  </p>
+<p><code># Date / Time format 日期格式，不修改</code><br><code>## Hexo uses Moment.js to parse and display date</code><br><code>## You can customize the date format as defined in</code><br><code>## http://momentjs.com/docs/#/displaying/format/</code><br>date_format: MMM D YYYY<br>time_format: H:mm:ss  </p>
+<p><code># Pagination 每页显示文章数，可以自定义，我设置成每页显示7个</code><br><code>## Set per_page to 0 to disable pagination</code><br>per_page: 7<br>pagination_dir: page  </p>
+<p><code># Disqus Disqus插件，我们会替换成“多说”，不修改</code><br>disqus_shortname:  </p>
+<p><code># Extensions 这里配置站点所用主题和插件，暂默认，后面会介绍怎么修改</code><br><code>## Plugins: https://github.com/tommy351/hexo/wiki/Plugins</code><br><code>## Themes: https://github.com/tommy351/hexo/wiki/Themes</code><br>theme: jacman<br>exclude_generator:<br>plugins:  </p>
+<ul>
+<li>hexo-generator-feed  </li>
+<li>hexo-generator-sitemap  </li>
+</ul>
+<p><code># Deployment 站点部署到github要配置，上一节中已经讲过</code><br><code>## Docs: http://zespia.tw/hexo/docs/deploy.html</code><br>deploy:<br>　　type: github<br>　　repository: git@github.com:FantasyNew/FantasyNew.github.io.git<br>　　branch: master  </p>
+</blockquote>
+<h2 id="主题配置">主题配置</h2>
+<p>　　用文本编辑器打开D:\hexo\themes\light_config.yml</p>
+]]></content>
+    
+    
+      <category term="hexo" scheme="http://fantasynew.github.io/tags/hexo/"/>
+    
+      <category term="博客" scheme="http://fantasynew.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="创建博客" scheme="http://fantasynew.github.io/categories/%E5%88%9B%E5%BB%BA%E5%8D%9A%E5%AE%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[创建自己的博客：（一）搭建hexo博客]]></title>
+    <link href="http://fantasynew.github.io/2013/04/07/build-blog-001/"/>
+    <id>http://fantasynew.github.io/2013/04/07/build-blog-001/</id>
+    <published>2013-04-07T14:06:44.000Z</published>
+    <updated>2014-12-17T13:54:42.000Z</updated>
+    <content type="html"><![CDATA[<p>本文所有的软件和配置是在Windows下进行的  </p>
+<h2 id="安装Git">安装Git</h2>
+<p>　　Git的客户端很多，本文使用的是<a href="http://code.google.com/p/msysgit/" target="_blank">msysgit</a>，下载下来并按步骤执行安装即可。
+　　</p>
+<h2 id="安装Node">安装Node</h2>
+<p>　　在Windows环境下安装Node.js非常简单，仅须到<a href="http://nodejs.org/download/" target="_blank">Node.js</a>官网下载相应平台的最新版本，一路安装即可。</p>
+<h2 id="安装hexo">安装hexo</h2>
+<p>　　Node和Git安装完成之后，利用npm命令即可安装hexo。（在任意位置点击鼠标右键，选择Git bash）</p>
+<blockquote>
+<p><code>npm install -g hexo</code>  </p>
+</blockquote>
+<h2 id="创建hexo文件夹">创建hexo文件夹</h2>
+<p>　　安装完成后，在指定的文件夹下（如Ｄ:\hexo），执行init指令(在Ｄ:\hexo内点击鼠标右键，选择Git bash)，Hexo即会自动在该文件夹下建立网站所需要的所有文件。  </p>
+<blockquote>
+<p><code>hexo init</code>  </p>
+</blockquote>
+<h2 id="本地查看">本地查看</h2>
+<p>　　现在已经搭建起一个基本的本地hexo博客了，执行以下命令(在Ｄ:\hexo)，然后到浏览器输入localhost:4000看看。  </p>
+<blockquote>
+<p><code>hexo generate</code><br><code>hexo server</code>  </p>
+</blockquote>
+<h2 id="Github准备">Github准备</h2>
+<p>　　首先注册一个『GitHub』帐号，已有的默认默认请忽略，没有的<a href="https://github.com/signup/free" target="_blank">在此</a>注册。</p>
+<p>　　建立与你用户名对应的仓库，仓库名必须为『your_user_name.github.com』，比如我的是<code>fantasynew.github.io</code>。  </p>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/blog_build001.jpg" alt="创建repository"></p>
+<p>　　添加SSH公钥到『Account settings -&gt; SSH Keys -&gt; Add SSH Key』<br>　　前两步比较简单，第三步具体说下如何添加SSH-Key，详细教程在<a href="https://help.github.com/articles/generating-ssh-keys/" target="_blank">这里</a>。</p>
+<p>　　首先设置你的用户名密码：  </p>
+<blockquote>
+<p><code>git config --global user.email &quot;jingjiewuying@163.com&quot;</code><br><code>git config --global user.name &quot;fantasynew&quot;</code>  </p>
+</blockquote>
+<p>　　生成密钥：  </p>
+<blockquote>
+<p><code>ssh-keygen -t rsa -C &quot;jingjiewuying@163.com&quot;</code>  </p>
+</blockquote>
+<p>　　输入文件路径：</p>
+<blockquote>
+<p><code>D:\hexo\blog&gt;ssh-keygen -t rsa -C &quot;jingjiewuying@163.com&quot;</code><br><code>Generating public/private rsa key pair.</code><br><code>Enter file in which to save the key (//.ssh/id_rsa): D:\git\myssh\ssh</code><br><code>Enter passphrase (empty for no passphrase):</code><br><code>Enter same passphrase again:</code><br><code>Your identification has been saved in D:\git\myssh\ssh.</code><br><code>Your public key has been saved in D:\git\myssh\ssh.pub.</code><br><code>The key fingerprint is:</code><br><code>b0:0c:2e:67:33:ab:c1:50:10:40:0a:ba:c1:80:59:22 jingjiewuying@163.com</code>  </p>
+</blockquote>
+<p>　　上述命令若执行成功，会在H:\git\myssh目录下生成两个文件id_rsa和id_rsa.pub，最后两步：</p>
+<ul>
+<li>用文本编辑器打开ssh.pub文件，拷贝其中的内容，将其添加到Add SSH Key  </li>
+<li>将id_rsa和id_rsa.pub拷贝至你Git安装目录下的.ssh目录，如D:\PortableGit-1.8.4.ssh</li>
+</ul>
+<p><img src="http://7fvdys.com1.z0.glb.clouddn.com/blog_build002.jpg" alt="创建repository"></p>
+<h2 id="部署到Github">部署到Github</h2>
+<p>　　编辑_config.yml(在Ｄ:\hexo下)。修改repository为你自己的github账号。</p>
+<blockquote>
+<p><code>deploy:</code><br><code>type: github</code><br><code>repository: https://github.com/zippera/zippera.github.io.git</code><br><code>branch: master</code>  </p>
+</blockquote>
+<p>　　执行下列指令完成到Github的部署。</p>
+<blockquote>
+<p><code>hexo generate</code><br><code>hexo deploy</code>  </p>
+</blockquote>
+<p>　　记住：每次修改本地文件后，需要hexo generate才能保存。每次使用命令时，都要在D:\hexo目录下。<br>　　Okay,我们的博客已经完全搭建起来了，在浏览器访问zippera.github.io就能看到你的成就了！</p>
+<h3 id="tips">tips</h3>
+<p>hexo现在支持更加简单的命令格式了，比如：</p>
+<blockquote>
+<pre><code>hexo g == hexo generate
+hexo d == hexo deploy
+hexo s == hexo <span class="keyword">server</span>
+hexo n == hexo <span class="keyword">new</span>
+</code></pre></blockquote>
+]]></content>
+    
+    
+      <category term="hexo" scheme="http://fantasynew.github.io/tags/hexo/"/>
+    
+      <category term="博客" scheme="http://fantasynew.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="创建博客" scheme="http://fantasynew.github.io/categories/%E5%88%9B%E5%BB%BA%E5%8D%9A%E5%AE%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <link href="http://fantasynew.github.io/2013/04/06/hello-world/"/>
+    <id>http://fantasynew.github.io/2013/04/06/hello-world/</id>
+    <published>2013-04-06T14:06:44.000Z</published>
+    <updated>2014-12-17T13:49:39.000Z</updated>
+    <content type="html"><![CDATA[<p>很早之前就想建立一个自己的网站，记录学习的体会、工作的经验和生活的点滴，总因为自己太懒而没有实施。  </p>
+<p>　　有一天在<a href="http://www.v2ex.com/" target="_blank">V2EX</a>上面看到有人分享用Hexo快速建立自己的blog，感觉很有趣，真正玩起来后发现真的非常简单。我终于可以有一个自己的博客可以写写东西了。^_^</p>
+]]></content>
+    
+    
+      <category term="杂谈" scheme="http://fantasynew.github.io/categories/%E6%9D%82%E8%B0%88/"/>
     
   </entry>
   
