@@ -4,7 +4,7 @@
   <subtitle><![CDATA[当你的才华还撑不起你的野心时，你就应该静下心来学习。]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://fantasynew.github.io/"/>
-  <updated>2014-12-17T15:16:13.444Z</updated>
+  <updated>2014-12-17T15:21:25.691Z</updated>
   <id>http://fantasynew.github.io/</id>
   
   <author>
@@ -912,7 +912,7 @@
     <link href="http://fantasynew.github.io/2013/08/07/01.introduction-to-java-concurrency/"/>
     <id>http://fantasynew.github.io/2013/08/07/01.introduction-to-java-concurrency/</id>
     <published>2013-08-07T13:06:44.000Z</published>
-    <updated>2014-12-17T15:11:02.000Z</updated>
+    <updated>2014-12-17T15:21:15.000Z</updated>
     <content type="html"><![CDATA[<p>在<a href="http://jakob.jenkov.com/" target="_blank">Jakob Jenkov</a>大神的博客上面看到了这个多线程的系列文章，打算翻译过来，锻炼下自己的英文文档阅读能力。</p>
 <p>原文地址：<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
 <h2 id="引子">引子</h2>
@@ -928,16 +928,19 @@
 　　</p>
 <h3 id="Java并发">Java并发</h3>
 <ul>
-<li><a href="http://fantasynew.github.io/2014/04/07/01.introduction-to-java-concurrency/">java并发介绍</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/09/02.multithreading-benefits/">多线程的优点</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/11/03.costs-of-multithreading/">多线程的代价</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/13/04.creating-and-starting-threads/">创建和启动java线程</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/15/05.race-conditions-and-critical-sections/">竞态条件与临界区</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/18/06.thread-safety-and-shared-resources/">线程安全和资源共享</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/21/07.thread-safety-and-immutability/">线程安全和不可变性</a></li>
-<li><a href="http://fantasynew.github.io/2014/04/25/08.java-synchronized-blocks/">Java同步块</a></li>
+<li><a href="http://fantasynew.github.io/2013/08/07/01.introduction-to-java-concurrency/">java并发介绍</a></li>
+<li><a href="http://fantasynew.github.io/2013/08/21/02.multithreading-benefits/">多线程的优点</a></li>
+<li><a href="http://fantasynew.github.io/2013/09/11/03.costs-of-multithreading/">多线程的代价</a></li>
+<li><a href="http://fantasynew.github.io/2013/10/11/04.creating-and-starting-threads/">创建和启动java线程</a></li>
+<li><a href="http://fantasynew.github.io/2013/11/15/05.race-conditions-and-critical-sections/">竞态条件与临界区</a></li>
+<li><a href="http://fantasynew.github.io/2013/12/28/06.thread-safety-and-shared-resources/">线程安全和资源共享</a></li>
+<li><a href="http://fantasynew.github.io/2014/02/21/07.thread-safety-and-immutability/">线程安全和不可变性</a></li>
+<li><a href="http://fantasynew.github.io/2014/03/17/08.java-synchronized-blocks/">Java同步块</a></li>
 <li><a href="http://fantasynew.github.io/2014/04/29/09.thread-signaling/">线程通信</a></li>
 <li><a href="http://fantasynew.github.io/2014/05/01/10.deadlock/">死锁</a></li>
+<li><a href="http://fantasynew.github.io/2014/06/16/11.deadlock-prevention/">死锁预防</a></li>
+<li><a href="http://fantasynew.github.io/2014/08/13/12.starvation-and-fairness/">饥饿与公平</a></li>
+<li><a href="http://fantasynew.github.io/2014/09/05/13.nested-monitor-lockout/">嵌套监控锁定</a></li>
 </ul>
 ]]></content>
     <summary type="html"><![CDATA[<p>在<a href="http://jakob.jenkov.com/" target="_blank">Jakob Jenkov</a>大神的博客上面看到了这个多线程的系列文章，打算翻译过来，锻炼下自己的英文文档阅读能力。</p>
