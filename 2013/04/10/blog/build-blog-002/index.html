@@ -1,0 +1,487 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu-site-verification" content="AWbDVIBAzX" />
+  
+    <title>创建自己的博客：（二）简单配置hexo博客 | Fantasy Ace&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Fantasy">
+    
+    <meta name="description" itemprop="description" content="hexo站点配置用到两个文件，一个是对整站进行配置的文件D:\hexo\_config.yml，另一个是对主题进行配置的文件D:\hexo\themes\light_config.yml，我们来分别介绍一下。">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="Fantasy Ace&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+	
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="Fantasy Ace&#39;s blog" title="Fantasy Ace&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Fantasy Ace&#39;s blog">Fantasy Ace&#39;s blog</a></h1>
+				<h2 class="blog-motto">当你的才华还撑不起你的野心时，你就应该静下心来学习。</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					
+					<li><form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:fantasynew.github.io">
+					</form></li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2013/04/10/blog/build-blog-002/" title="创建自己的博客：（二）简单配置hexo博客" itemprop="url">创建自己的博客：（二）简单配置hexo博客</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://fantasynew.github.io/about" title="Fantasy">Fantasy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2013-04-10T13:06:44.000Z" itemprop="datePublished">发表于4月 10 2013</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#整站配置"><span class="toc-number">1.</span> <span class="toc-text">整站配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主题配置"><span class="toc-number">2.</span> <span class="toc-text">主题配置</span></a></li></ol>
+		
+		</div>
+		
+		<p>在<a href="">上一节</a>中，我们只是在本地和github上面搭建起了一个简单的hexo博客站点，这个站点的配置还是原来的默认配置。在本节中，来学习一下如何对hexo进行个性化的设置，同时介绍下怎么撰文和发表文章。  </p>
+<p>　　hexo站点配置用到两个文件，一个是对整站进行配置的文件<code>D:\hexo\_config.yml</code>，另一个是对主题进行配置的文件<code>D:\hexo\themes\light_config.yml</code>，我们来分别介绍一下。</p>
+<h2 id="整站配置">整站配置</h2>
+<p>　　用文本编辑器打开<code>D:\hexo\_config.yml</code>。</p>
+<blockquote>
+<p><code># Hexo Configuration</code><br><code>## Docs: http://zespia.tw/hexo/docs/configure.html</code><br><code>## Source: https://github.com/tommy351/hexo/</code></p>
+<p><code># Site 这里的配置博客基本信息</code><br>title: Fantasy Ace’s blog <code>#站点名，站点左上角</code><br>subtitle: 当你的才华还撑不起你的野心时，你就应该静下心来学习。 <code>#副标题，站点左上角</code><br>description: FantasyAce’s blog <code>#给搜索引擎看的，对站点的描述，可以自定义</code><br>author: FantasyAce <code>#站点作者，可以在站点最下面看到</code><br>email: jingjiewuying@163.com <code>#你的联系邮箱</code><br>language: zh-CN <code>#中国人嘛，用中文</code></p>
+<p><code># URL #这项暂不配置，绑定域名后，欲创建sitemap.xml需要配置该项</code><br><code>## If your site is put in a subdirectory, set url as &#39;http://yoursite.com/child&#39; and root as &#39;/child/&#39;</code><br>url: <a href="http://fantasynew.github.io">http://fantasynew.github.io</a><br>root: /<br>permalink: :year/:month/:day/:title/ <code>#文章的链接格式</code><br>tag_dir: tags <code>#标签的目录</code><br>archive_dir: archives <code>#归档的目录</code><br>category_dir: categories <code>#分类的目录</code></p>
+<p><code># Directory</code><br>source_dir: source<br>public_dir: public</p>
+<p><code># Writing 文章布局、写作格式的定义，不修改</code><br>new_post_name: :title.md # File name of new posts<br>default_layout: post<br>auto_spacing: false # Add spaces between asian characters and western characters<br>titlecase: false # Transform title into titlecase<br>max_open_file: 100<br>filename_case: 0<br>highlight:<br>　　enable: true<br>　　backtick_code_block: true<br>　　line_number: true<br>　　tab_replace:</p>
+<p><code># Category &amp; Tag</code><br>default_category: uncategorized<br>category_map:<br>tag_map:  </p>
+<p><code># Archives 默认值为2，这里都修改为1，相应页面就只会列出标题，而非全文</code><br><code>## 2: Enable pagination</code><br><code>## 1: Disable pagination</code><br><code>## 0: Fully Disable</code><br>archive: 1<br>category: 1<br>tag: 1 </p>
+<p><code># Server 不修改</code><br><code>## Hexo uses Connect as a server</code><br><code>## You can customize the logger format as defined in</code><br><code>## http://www.senchalabs.org/connect/logger.html</code><br>port: 4000<br>logger: false<br>logger_format:  </p>
+<p><code># Date / Time format 日期格式，不修改</code><br><code>## Hexo uses Moment.js to parse and display date</code><br><code>## You can customize the date format as defined in</code><br><code>## http://momentjs.com/docs/#/displaying/format/</code><br>date_format: MMM D YYYY<br>time_format: H:mm:ss  </p>
+<p><code># Pagination 每页显示文章数，可以自定义，我设置成每页显示7个</code><br><code>## Set per_page to 0 to disable pagination</code><br>per_page: 7<br>pagination_dir: page  </p>
+<p><code># Disqus Disqus插件，我们会替换成“多说”，不修改</code><br>disqus_shortname:  </p>
+<p><code># Extensions 这里配置站点所用主题和插件，暂默认，后面会介绍怎么修改</code><br><code>## Plugins: https://github.com/tommy351/hexo/wiki/Plugins</code><br><code>## Themes: https://github.com/tommy351/hexo/wiki/Themes</code><br>theme: jacman<br>exclude_generator:<br>plugins:  </p>
+<ul>
+<li>hexo-generator-feed  </li>
+<li>hexo-generator-sitemap  </li>
+</ul>
+<p><code># Deployment 站点部署到github要配置，上一节中已经讲过</code><br><code>## Docs: http://zespia.tw/hexo/docs/deploy.html</code><br>deploy:<br>　　type: github<br>　　repository: git@github.com:FantasyNew/FantasyNew.github.io.git<br>　　branch: master  </p>
+</blockquote>
+<h2 id="主题配置">主题配置</h2>
+<p>　　用文本编辑器打开D:\hexo\themes\light_config.yml</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/创建博客/">创建博客</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/hexo/">hexo</a><a href="/tags/博客/">博客</a>
+  </div>
+
+
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://fantasynew.github.io/2013/04/10/blog/build-blog-002/" data-title="创建自己的博客：（二）简单配置hexo博客 | Fantasy Ace&#39;s blog" data-tsina="undefined" class="share clearfix">
+  </div>
+
+</div>
+
+</footer>
+
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+
+<div class="prev">
+<a href="/2013/04/07/blog/build-blog-001/"  title="创建自己的博客：（一）搭建hexo博客">
+ <strong>上一篇：</strong><br/> 
+ <span>创建自己的博客：（一）搭建hexo博客
+</span>
+</a>
+</div>
+
+
+
+ 
+ <div class="next" >
+ <a href="/2013/07/07/other/donkey-story/" title="向日葵公主与驴的故事">
+  <strong>下一篇：</strong><br/>
+  <span>
+  向日葵公主与驴的故事</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comment">
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="ddv2zstx4vd1mtul" data-title="http://fantasynew.github.io/2013/04/10/blog/build-blog-002/" data-url="undefined"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"fantasynew"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+<!-- 多说公共JS代码 end -->
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#整站配置"><span class="toc-number">1.</span> <span class="toc-text">整站配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主题配置"><span class="toc-number">2.</span> <span class="toc-text">主题配置</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/java基础/" title="java基础">java基础<sup>1</sup></a></li>
+		
+			<li><a href="/categories/java多线程/" title="java多线程">java多线程<sup>13</sup></a></li>
+		
+			<li><a href="/categories/创建博客/" title="创建博客">创建博客<sup>2</sup></a></li>
+		
+			<li><a href="/categories/杂谈/" title="杂谈">杂谈<sup>4</sup></a></li>
+		
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Detection/" title="Detection">Detection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Runnable接口/" title="Runnable接口">Runnable接口<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Thread类/" title="Thread类">Thread类<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Timeout/" title="Timeout">Timeout<sup>1</sup></a></li>
+		
+			<li><a href="/tags/hexo/" title="hexo">hexo<sup>2</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>15</sup></a></li>
+		
+			<li><a href="/tags/上下文切换/" title="上下文切换">上下文切换<sup>1</sup></a></li>
+		
+			<li><a href="/tags/不可变性/" title="不可变性">不可变性<sup>1</sup></a></li>
+		
+			<li><a href="/tags/临界区/" title="临界区">临界区<sup>1</sup></a></li>
+		
+			<li><a href="/tags/代理模式/" title="代理模式">代理模式<sup>1</sup></a></li>
+		
+			<li><a href="/tags/公主/" title="公主">公主<sup>1</sup></a></li>
+		
+			<li><a href="/tags/公平/" title="公平">公平<sup>1</sup></a></li>
+		
+			<li><a href="/tags/博客/" title="博客">博客<sup>2</sup></a></li>
+		
+			<li><a href="/tags/同步块/" title="同步块">同步块<sup>1</sup></a></li>
+		
+			<li><a href="/tags/型男/" title="型男">型男<sup>2</sup></a></li>
+		
+			<li><a href="/tags/多线程/" title="多线程">多线程<sup>13</sup></a></li>
+		
+			<li><a href="/tags/嵌套监控锁定/" title="嵌套监控锁定">嵌套监控锁定<sup>1</sup></a></li>
+		
+			<li><a href="/tags/并发/" title="并发">并发<sup>1</sup></a></li>
+		
+			<li><a href="/tags/序列化/" title="序列化">序列化<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://michaelhuang.github.io" target="_blank" title="michaelhuang">黄彼得林奇's Blog</a></li>
+      <li><a href="http://www.koolearn.com/" target="_blank" title="koolearn">koolearn.com</a></li>
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 一个人活在这个世界上是为了什么呢？是去经历和享受！ <br/>
+			无，则努力追求；有，则尽情享受。这是最简单也是最正确的道理。</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/3312405915" target="_blank" class="icon-weibo" title="weibo"></a>
+		
+		
+		<a href="https://github.com/fantasynew" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		<a href="https://www.douban.com/people/62072069" target="_blank" class="icon-douban" title="豆瓣"></a>
+		
+		
+		<a href="mailto:jingjiewuying@163.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="http://fantasynew.github.io" target="_blank" title="fantasyAce">fantasyAce</a> © 2014 
+		
+		<a href="http://fantasynew.github.io/about" target="_blank" title="Fantasy">Fantasy</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-50289648-1', 'fantasynew.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<script src="/js/totop.js"></script>
+
+
+<script type="text/x-mathjax-config"> 
+MathJax.Hub.Config({ 
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} 
+}); 
+</script>
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fdf317b428a1b0e50694b2fddb34ab285' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+  </body>
+</html>

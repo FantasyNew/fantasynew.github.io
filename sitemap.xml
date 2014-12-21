@@ -2,97 +2,117 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://fantasynew.github.io/2014/06/10/other/neaten/</loc>
+    <lastmod>2014-06-10T12:06:44.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://fantasynew.github.io/2014/09/07/javaee/java-serialization-deserialization/</loc>
+    <lastmod>2014-09-07T14:06:44.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://fantasynew.github.io/2014/06/07/pattern/01.java-and-pattern-adapter/</loc>
+    <lastmod>2014-06-07T13:06:44.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://fantasynew.github.io/2014/07/07/pattern/02.java-and-pattern-proxy/</loc>
+    <lastmod>2014-07-07T13:06:44.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://fantasynew.github.io/about/index.html</loc>
     <lastmod>2014-05-31T06:46:20.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/08/07/01.introduction-to-java-concurrency/</loc>
+    <loc>http://fantasynew.github.io/2013/08/07/multithread/01.introduction-to-java-concurrency/</loc>
     <lastmod>2013-08-07T13:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/06/16/11.deadlock-prevention/</loc>
+    <loc>http://fantasynew.github.io/2014/06/16/multithread/11.deadlock-prevention/</loc>
     <lastmod>2014-06-16T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/08/13/12.starvation-and-fairness/</loc>
+    <loc>http://fantasynew.github.io/2014/08/13/multithread/12.starvation-and-fairness/</loc>
     <lastmod>2014-08-13T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/09/05/13.nested-monitor-lockout/</loc>
+    <loc>http://fantasynew.github.io/2014/09/05/multithread/13.nested-monitor-lockout/</loc>
     <lastmod>2014-09-05T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/03/17/08.java-synchronized-blocks/</loc>
+    <loc>http://fantasynew.github.io/2014/03/17/multithread/08.java-synchronized-blocks/</loc>
     <lastmod>2014-03-17T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/02/21/07.thread-safety-and-immutability/</loc>
+    <loc>http://fantasynew.github.io/2014/02/21/multithread/07.thread-safety-and-immutability/</loc>
     <lastmod>2014-02-21T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/12/28/06.thread-safety-and-shared-resources/</loc>
+    <loc>http://fantasynew.github.io/2013/12/28/multithread/06.thread-safety-and-shared-resources/</loc>
     <lastmod>2013-12-28T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/11/15/05.race-conditions-and-critical-sections/</loc>
+    <loc>http://fantasynew.github.io/2013/11/15/multithread/05.race-conditions-and-critical-sections/</loc>
     <lastmod>2013-11-15T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/10/11/04.creating-and-starting-threads/</loc>
+    <loc>http://fantasynew.github.io/2013/10/11/multithread/04.creating-and-starting-threads/</loc>
     <lastmod>2013-10-11T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/09/11/03.costs-of-multithreading/</loc>
+    <loc>http://fantasynew.github.io/2013/09/11/multithread/03.costs-of-multithreading/</loc>
     <lastmod>2013-09-11T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/08/21/02.multithreading-benefits/</loc>
+    <loc>http://fantasynew.github.io/2013/08/21/multithread/02.multithreading-benefits/</loc>
     <lastmod>2013-08-21T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/10/10/how-to-take-photo/</loc>
+    <loc>http://fantasynew.github.io/2013/10/10/other/how-to-take-photo/</loc>
     <lastmod>2013-10-10T12:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/07/07/donkey-story/</loc>
+    <loc>http://fantasynew.github.io/2013/07/07/other/donkey-story/</loc>
     <lastmod>2013-07-07T12:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/04/10/build-blog-002/</loc>
+    <loc>http://fantasynew.github.io/2013/04/10/blog/build-blog-002/</loc>
     <lastmod>2013-04-10T13:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/04/07/build-blog-001/</loc>
+    <loc>http://fantasynew.github.io/2013/04/07/blog/build-blog-001/</loc>
     <lastmod>2013-04-07T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2013/04/06/hello-world/</loc>
+    <loc>http://fantasynew.github.io/2013/04/06/other/hello-world/</loc>
     <lastmod>2013-04-06T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/05/01/10.deadlock/</loc>
+    <loc>http://fantasynew.github.io/2014/05/01/multithread/10.deadlock/</loc>
     <lastmod>2014-05-01T14:06:44.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://fantasynew.github.io/2014/04/29/09.thread-signaling/</loc>
+    <loc>http://fantasynew.github.io/2014/04/29/multithread/09.thread-signaling/</loc>
     <lastmod>2014-04-29T14:06:44.000Z</lastmod>
   </url>
   
