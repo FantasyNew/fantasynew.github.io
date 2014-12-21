@@ -4,7 +4,7 @@
   <subtitle><![CDATA[当你的才华还撑不起你的野心时，你就应该静下心来学习。]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://fantasynew.github.io/"/>
-  <updated>2014-12-21T15:01:47.717Z</updated>
+  <updated>2014-12-21T15:08:01.901Z</updated>
   <id>http://fantasynew.github.io/</id>
   
   <author>
@@ -1320,7 +1320,7 @@
     <link href="http://fantasynew.github.io/2013/04/10/blog/build-blog-002/"/>
     <id>http://fantasynew.github.io/2013/04/10/blog/build-blog-002/</id>
     <published>2013-04-10T13:06:44.000Z</published>
-    <updated>2014-12-21T15:01:25.000Z</updated>
+    <updated>2014-12-21T15:07:39.000Z</updated>
     <content type="html"><![CDATA[<p>在<a href="">上一节</a>中，我们只是在本地和github上面搭建起了一个简单的hexo博客站点，这个站点的配置还是原来的默认配置。在本节中，来学习一下如何对hexo进行个性化的设置，同时介绍下怎么撰文和发表文章。  </p>
 <p>　　hexo站点配置用到两个文件，一个是对整站进行配置的文件<code>D:\hexo\_config.yml</code>，另一个是对主题进行配置的文件<code>D:\hexo\themes\light_config.yml</code>，我们来分别介绍一下。</p>
 <h2 id="整站配置">整站配置</h2>
@@ -1347,44 +1347,16 @@
 <h2 id="主题配置">主题配置</h2>
 <p>　　用文本编辑器打开D:\hexo\themes\light_config.yml</p>
 <blockquote>
-<pre><code><span class="label">menu:</span> <span class="escape">`#</span>站点右上角导航栏，暂时默认，后面介绍修改<span class="escape">`
-</span><span class="label">  首页:</span> /
-<span class="label">  存档:</span> /archives
-<span class="label">  关于:</span> /about
-<span class="label">  ToDo:</span> /todolist
-
-
-<span class="label">widgets:</span> <span class="escape">`#</span>站点右边栏，暂时默认，后面介绍修改和添加<span class="escape">`
-</span>- search
-- category
-- tagcloud
-- blogroll
-
-
-<span class="label">excerpt_link:</span> 阅读全文 <span class="escape">`#</span>替换为中文<span class="escape">`
-</span>
-<span class="label">plugins:</span> 
-<span class="label">totop:</span> <span class="literal">true</span> <span class="escape">`#</span>回到顶部的小按钮<span class="escape">` </span>  
-
-<span class="label">fancybox:</span> <span class="literal">true</span> <span class="escape">`#</span>图片效果，默认<span class="escape">`
-</span>
-<span class="label">rss:</span> /atom.xml <span class="escape">`#</span>生成RSS，需要配置路径，暂时默认，后面介绍<span class="escape">`
-</span><span class="label">duoshuo:</span> <span class="escape">`#</span>#设置评论，我用多说<span class="escape">`
-</span><span class="label">  enable:</span> <span class="literal">true</span>  <span class="escape">`#</span># duoshuo.com<span class="escape">`
-</span><span class="label">  short_name:</span> fantasynew   <span class="escape">`#</span># duoshuo short name.`
-</code></pre></blockquote>
+<p>　　menu: <code>#站点右上角导航栏，暂时默认，后面介绍修改</code><br>　　　　首页: /<br>　　　　存档: /archives<br>　　　　关于: /about<br>　　　　ToDo: /todolist  </p>
+<p>　　widgets: <code>#站点右边栏，暂时默认，后面介绍修改和添加</code><br>　　　　- search<br>　　　　- category<br>　　　　- tagcloud<br>　　　　- blogroll<br>    excerpt_link: 阅读全文 <code>#替换为中文</code><br>    plugins:<br>    totop: true <code>#回到顶部的小按钮</code><br>    fancybox: true <code>#图片效果，默认</code><br>    rss: /atom.xml <code>#生成RSS，需要配置路径，暂时默认，后面介绍</code><br>    duoshuo: <code>##设置评论，我用多说</code><br>      enable: true  <code>## duoshuo.com</code><br>      short_name: fantasynew   <code>## duoshuo short name.</code>  </p>
+</blockquote>
 <p>简单的主题配置需要配置的东西不多，但是后面随着要加入的插件增多，主题配置也会变复杂。</p>
-<h3 id="发表文章">发表文章</h3>
+<h2 id="发表文章">发表文章</h2>
 <p>　　最后说一下如何增加并发表一篇文章。</p>
 <p>1、<code>hexo new &quot;title&quot;</code><br>2、在<code>D:\hexo\source\_posts</code>中打开这个文件（打开方式用“记事本”即可），配置开头。</p>
 <blockquote>
-<pre><code><span class="label">title:</span> title <span class="escape">`#</span>可以改成中文的，如“新文章”<span class="escape">`
-</span><span class="label">date: 2013-05-29 07:56:</span><span class="number">29</span> <span class="escape">`#</span>发表日期，一般不改动<span class="escape">`
-</span><span class="label">categories:</span> blog <span class="escape">`#</span>文章文类<span class="escape">`
-</span><span class="label">tags:</span> [博客，文章] <span class="escape">`#</span>文章标签，多于一项时用这种格式<span class="escape">`
-</span>---
-<span class="escape">`#</span>这里是正文`
-</code></pre></blockquote>
+<p>　　title: title <code>#可以改成中文的，如“新文章”</code><br>　　date: 2013-05-29 07:56:29 <code>#发表日期，一般不改动</code><br>　　categories: blog <code>#文章文类</code><br>　　tags: [博客，文章] <code>#文章标签，多于一项时用这种格式</code><br>　　—-<br>　　<code>#这里是正文</code>  </p>
+</blockquote>
 <p>　　编写文章最好用的工具是markdown，可以在<a href="http://wowubuntu.com/markdown/" target="_blank">这篇</a>文章里看到markdown的使用。</p>
 ]]></content>
     
